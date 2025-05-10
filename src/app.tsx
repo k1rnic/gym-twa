@@ -1,13 +1,9 @@
-import WebApp from '@twa-dev/sdk';
-import { useEffect } from 'react';
+import { useTelegramData } from '@/shared/lib/telegram';
 
 const App = () => {
-  useEffect(() => {
-    WebApp.ready();
-    WebApp.expand();
-  }, []);
+  const { user } = useTelegramData();
 
-  return <>initialized...</>;
+  return <>Hello, {user?.firstName}</>;
 };
 
 export default App;
