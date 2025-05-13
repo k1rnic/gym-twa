@@ -4,19 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bunx --bun vite",
-    "build": "bunx --bun vite build",
+    "dev": "react-router dev",
+    "build": "react-router build",
+    "start": "bunx http-server build/client",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
+    "typecheck": "react-router typegen && tsc",
     "api:extract": "bun run src/shared/api/lib/extract-api.ts"
   },
   "dependencies": {
+    "@react-router/node": "^7.6.0",
     "@telegram-apps/sdk-react": "^3.2.4",
     "axios": "^1.9.0",
+    "isbot": "^5",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router": "^7.6.0"
   },
   "devDependencies": {
+    "@react-router/dev": "^7.6.0",
     "@types/bun": "^1.2.12",
     "@types/node": "^22.15.15",
     "@types/react": "^18.2.66",
