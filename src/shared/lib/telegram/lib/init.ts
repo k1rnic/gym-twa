@@ -10,7 +10,7 @@ import {
 } from '@telegram-apps/sdk-react';
 
 if (import.meta.env.DEV) {
-  await import('./mock-env');
+  await import('./mock-env.client');
 }
 
 export async function init(): Promise<void> {

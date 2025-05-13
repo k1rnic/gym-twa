@@ -1,32 +1,16 @@
 import {
   emitEvent,
-  EventPayload,
   isTMA,
   MethodName,
   mockTelegramEnv,
   SafeAreaInsets,
 } from '@telegram-apps/sdk-react';
+import { DEFAULT_LIGHT_THEME } from '../model/constants';
 
 if (import.meta.env.DEV) {
   const isInContext = await isTMA('complete');
 
   if (!isInContext) {
-    const theme: EventPayload<'theme_changed'>['theme_params'] = {
-      accent_text_color: '#6ab2f2',
-      bg_color: '#17212b',
-      button_color: '#5288c1',
-      button_text_color: '#ffffff',
-      destructive_text_color: '#ec3942',
-      header_bg_color: '#17212b',
-      hint_color: '#708499',
-      link_color: '#6ab3f3',
-      secondary_bg_color: '#232e3c',
-      section_bg_color: '#17212b',
-      section_header_text_color: '#6ab3f3',
-      subtitle_text_color: '#708499',
-      text_color: '#f5f5f5',
-    };
-
     const noInsets: SafeAreaInsets = { left: 0, top: 0, bottom: 0, right: 0 };
 
     mockTelegramEnv({
@@ -34,7 +18,9 @@ if (import.meta.env.DEV) {
         const ev = e[0] as MethodName;
 
         if (ev === 'web_app_request_theme') {
-          return emitEvent('theme_changed', { theme_params: theme });
+          return emitEvent('theme_changed', {
+            theme_params: DEFAULT_LIGHT_THEME,
+          });
         }
         if (ev === 'web_app_request_viewport') {
           return emitEvent('viewport_changed', {
@@ -54,7 +40,7 @@ if (import.meta.env.DEV) {
       launchParams: new URLSearchParams([
         // Discover more launch parameters:
         // https://docs.telegram-mini-apps.com/platform/launch-parameters#parameters-list
-        ['tgWebAppThemeParams', JSON.stringify(theme)],
+        ['tgWebAppThemeParams', JSON.stringify(DEFAULT_LIGHT_THEME)],
         // Your init data goes here. Learn more about it here:
         // https://docs.telegram-mini-apps.com/platform/init-data#parameters-list
         //

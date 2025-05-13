@@ -1,4 +1,4 @@
-import { StrictMode, startTransition } from 'react';
+import { startTransition, StrictMode } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 
 import { initTgMiniApp } from '@/shared/lib/telegram';
