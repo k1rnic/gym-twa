@@ -31,10 +31,30 @@ export interface ExerciseDescSimple {
   exercise: Exercise;
 }
 
+/** Gymer */
+export interface Gymer {
+  /** Gymer Id */
+  gymer_id: number;
+  /** User Id */
+  user_id: number;
+  /** Is Active */
+  is_active: boolean;
+}
+
 /** HTTPValidationError */
 export interface HTTPValidationError {
   /** Detail */
   detail?: ValidationError[];
+}
+
+/** Master */
+export interface Master {
+  /** Master Id */
+  master_id: number;
+  /** User Id */
+  user_id: number;
+  /** Is Active */
+  is_active: boolean;
 }
 
 /** MastersGymer */
@@ -164,6 +184,46 @@ export interface TaskWithExercise {
   /** Update Dttm */
   update_dttm: string | null;
   exercise_desc: ExerciseDescSimple;
+}
+
+/** User */
+export interface User {
+  /** User Id */
+  user_id: number;
+  /** Username */
+  username?: string | null;
+  /** Phone */
+  phone?: string | null;
+  /** First Name */
+  first_name?: string | null;
+  /** Last Name */
+  last_name?: string | null;
+  /** Email */
+  email?: string | null;
+  /** Telegram Id */
+  telegram_id: number;
+  /** Photo */
+  photo?: string | null;
+  master?: Master | null;
+  gymer?: Gymer | null;
+}
+
+/** UserIn */
+export interface UserIn {
+  /** Username */
+  username?: string | null;
+  /** Phone */
+  phone?: string | null;
+  /** First Name */
+  first_name?: string | null;
+  /** Last Name */
+  last_name?: string | null;
+  /** Email */
+  email?: string | null;
+  /** Telegram Id */
+  telegram_id: number;
+  /** Photo */
+  photo?: string | null;
 }
 
 /** ValidationError */
@@ -371,6 +431,67 @@ export class Endpoints<
       this.request<MastersGymer[], HTTPValidationError>({
         path: `/gym/user/${masterId}/gymers`,
         method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name GetListOfMastersGymer
+     * @summary Getting user data by telegram_id
+     * @request GET:/gym/user/{telegram_id}
+     */
+    getListOfMastersGymer: (telegramId: number, params: RequestParams = {}) =>
+      this.request<User, HTTPValidationError>({
+        path: `/gym/user/${telegramId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name AddUser
+     * @summary Adding user
+     * @request POST:/gym/user
+     */
+    addUser: (data: UserIn, params: RequestParams = {}) =>
+      this.request<User, HTTPValidationError>({
+        path: `/gym/user`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name AddGymerForMaster
+     * @summary Adding gymer for master
+     * @request POST:/gym/user/{master_id}/gymer_id
+     */
+    addGymerForMaster: (
+      masterId: number,
+      query: {
+        /**
+         * Gymer Id
+         * user id
+         */
+        gymer_id: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<MastersGymer[], HTTPValidationError>({
+        path: `/gym/user/${masterId}/gymer_id`,
+        method: "POST",
+        query: query,
         format: "json",
         ...params,
       }),
