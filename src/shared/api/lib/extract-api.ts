@@ -14,6 +14,7 @@ await generateApiBase({
   httpClientType: 'axios',
   extractEnums: true,
   unwrapResponseData: true,
+  moduleNameFirstTag: true,
   hooks: {
     onCreateRouteName: (route, rawRouteInfo) => {
       const routeTransformed = `${rawRouteInfo.route.replace(/[{}/]/g, '_')}_${

@@ -60,7 +60,10 @@ if (import.meta.env.DEV) {
             ['auth_date', ((new Date().getTime() / 1000) | 0).toString()],
             ['hash', 'some-hash'],
             ['signature', 'some-signature'],
-            ['user', JSON.stringify({ id: 2, first_name: 'Anonymous' })],
+            [
+              'user',
+              JSON.stringify({ id: 297913083, first_name: 'Anonymous' }),
+            ],
           ]).toString(),
         ],
         ['tgWebAppVersion', '8.4'],

@@ -1,5 +1,5 @@
+import { viewerModel } from '@/entities/viewer';
 import { useLocalStorage } from '@/shared/lib/hooks';
-import { useTelegramData } from '@/shared/lib/telegram';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex, Segmented } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
@@ -15,16 +15,21 @@ const OPTIONS: SegmentedOptions<LayoutView> = [
 
 export default function Page() {
   const navigate = useNavigate();
-  const { user } = useTelegramData();
+  const viewer = viewerModel.useViewer();
+
   const { token } = useTheme();
 
   const [view, setView] = useLocalStorage<LayoutView>('view_mode', 'gymmer');
 
   useEffect(() => {
-    if (user?.id) {
-      navigate(`/${view}/${user.id}`);
+    if (viewer) {
+      navigate(
+        `/${view}/${
+          view === 'coach' ? viewer.master?.master_id : viewer.gymer?.gymer_id
+        }`,
+      );
     }
-  }, [view, user?.id]);
+  }, [view, viewer]);
 
   return (
     <Flex

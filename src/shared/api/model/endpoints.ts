@@ -418,7 +418,7 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Endpoints<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
-  gym = {
+  user = {
     /**
      * No description
      *
@@ -439,11 +439,11 @@ export class Endpoints<
      * No description
      *
      * @tags user
-     * @name GetListOfMastersGymer
+     * @name GetUserDataByTelegramId
      * @summary Getting user data by telegram_id
      * @request GET:/gym/user/{telegram_id}
      */
-    getListOfMastersGymer: (telegramId: number, params: RequestParams = {}) =>
+    getUserDataByTelegramId: (telegramId: number, params: RequestParams = {}) =>
       this.request<User, HTTPValidationError>({
         path: `/gym/user/${telegramId}`,
         method: "GET",
@@ -495,7 +495,8 @@ export class Endpoints<
         format: "json",
         ...params,
       }),
-
+  };
+  task = {
     /**
      * No description
      *
@@ -571,7 +572,8 @@ export class Endpoints<
         format: "json",
         ...params,
       }),
-
+  };
+  taskGroup = {
     /**
      * No description
      *
@@ -637,7 +639,8 @@ export class Endpoints<
         format: "json",
         ...params,
       }),
-
+  };
+  exercise = {
     /**
      * No description
      *
