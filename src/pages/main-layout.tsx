@@ -35,7 +35,12 @@ export default function Page() {
     <Flex
       vertical
       gap="small"
-      style={{ height: '100%', width: '100%', padding: token.padding }}
+      style={{
+        height: '100%',
+        width: '100%',
+        padding: token.padding,
+        backgroundColor: token.colorBgContainer,
+      }}
     >
       <Segmented block value={view} onChange={setView} options={OPTIONS} />
       <Flex vertical flex={1}>
