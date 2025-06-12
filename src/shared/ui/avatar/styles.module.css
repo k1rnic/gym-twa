@@ -1,0 +1,17 @@
+.root {
+  padding: 8px;
+  gap: 4px;
+  align-items: center;
+}
+
+.avatarWrapper {
+  border-style: solid;
+  border-radius: 50%;
+}
+
+.avatar {
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  /* scroll-margin-left: 100; */
+}

@@ -4,6 +4,7 @@
     "": {
       "name": "gym-tg-mini-app",
       "dependencies": {
+        "@ant-design/icons": "5.x",
         "@react-router/node": "^7.6.0",
         "@telegram-apps/sdk-react": "^3.2.4",
         "antd": "^5.25.1",

@@ -1,0 +1,8 @@
+.header {
+  & > div {
+    flex-direction: row-reverse;
+    button {
+      margin-right: 0 !important;
+    }
+  }
+}

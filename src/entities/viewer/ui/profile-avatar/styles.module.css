@@ -1,0 +1,10 @@
+.root {
+  position: relative;
+}
+
+.swap {
+  border: 2px solid white;
+  position: absolute;
+  bottom: 28px;
+  right: 0px;
+}

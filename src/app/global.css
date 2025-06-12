@@ -1,2 +1,6 @@
 @layer reset, antd;
 @import url(antd/dist/reset.css) layer(reset);
+
+*::-webkit-scrollbar {
+  display: none;
+}

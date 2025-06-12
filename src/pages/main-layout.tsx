@@ -1,49 +1,40 @@
 import { viewerModel } from '@/entities/viewer';
-import { useLocalStorage } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
-import { Flex, Segmented } from 'antd';
-import { SegmentedOptions } from 'antd/es/segmented';
+import { Flex } from '@/shared/ui/flex';
+
+import { useSwitchView } from '@/features/switch-view';
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router';
+import { Route } from './+types/main-layout';
 
-type LayoutView = 'gymmer' | 'coach';
-
-const OPTIONS: SegmentedOptions<LayoutView> = [
-  { label: ' Спортсмен', value: 'gymmer' },
-  { label: 'Тренер', value: 'coach' },
-];
-
-export default function Page() {
+export default function Page(props: Route.ComponentProps) {
   const navigate = useNavigate();
-  const viewer = viewerModel.useViewer();
-
+  const [view] = useSwitchView();
   const { token } = useTheme();
 
-  const [view, setView] = useLocalStorage<LayoutView>('view_mode', 'gymmer');
+  const viewer = viewerModel.useViewer();
+  const viewerId =
+    view === 'master' ? viewer.master?.master_id : viewer.gymer?.gymer_id;
 
   useEffect(() => {
-    if (viewer) {
-      navigate(
-        `/${view}/${
-          view === 'coach' ? viewer.master?.master_id : viewer.gymer?.gymer_id
-        }`,
-      );
+    const isDiffView = !props.matches.at(-1)?.pathname.startsWith(`/${view}`);
+
+    if (isDiffView) {
+      navigate(`/${view}/${viewerId}`);
     }
-  }, [view, viewer]);
+  }, [view]);
 
   return (
     <Flex
-      vertical
       gap="small"
+      p={token.padding}
       style={{
         height: '100%',
         width: '100%',
-        padding: token.padding,
         backgroundColor: token.colorBgContainer,
       }}
     >
-      <Segmented block value={view} onChange={setView} options={OPTIONS} />
-      <Flex vertical flex={1}>
+      <Flex flex={1} py={token.paddingXS} style={{ overflow: 'hidden' }}>
         <Outlet />
       </Flex>
     </Flex>

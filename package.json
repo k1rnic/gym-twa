@@ -8,10 +8,11 @@
     "build": "react-router build",
     "start": "bunx http-server build/client",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "typecheck": "react-router typegen && tsc",
+    "type-check": "react-router typegen && tsc",
     "api:extract": "bun run src/shared/api/lib/extract-api.ts"
   },
   "dependencies": {
+    "@ant-design/icons": "5.x",
     "@react-router/node": "^7.6.0",
     "@telegram-apps/sdk-react": "^3.2.4",
     "antd": "^5.25.1",
