@@ -3,7 +3,6 @@ import { Flex } from '@/shared/ui/flex';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Form, InputNumber, Space } from 'antd';
 import { useMemo } from 'react';
-import { ExerciseDescriptionSelector } from './description-selector';
 import { ExerciseSelector } from './selector';
 
 type FormData = Task & { exercise_id: number };
@@ -18,7 +17,6 @@ export type ExerciseFormProps = {
 
 export const ExerciseForm = (props: ExerciseFormProps) => {
   const [form] = Form.useForm<FormData>();
-  const exIdFieldValue = Form.useWatch((values) => values.exercise_id, form);
 
   const readonly = props.status
     ? props.status !== TaskGroupStatus.Planned
@@ -59,17 +57,7 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
           name="exercise_id"
           rules={[{ required: true, message: 'Необходимо выбрать упражнение' }]}
         >
-          <ExerciseSelector
-            masterId={props.masterId}
-            onChange={() => form.setFieldValue('exercise_desc_id', '')}
-          />
-        </Form.Item>
-
-        <Form.Item<FormData>
-          name="exercise_desc_id"
-          rules={[{ required: true, message: 'Необходимо выбрать описание' }]}
-        >
-          <ExerciseDescriptionSelector exerciseId={exIdFieldValue} />
+          <ExerciseSelector masterId={props.masterId} />
         </Form.Item>
 
         <Space align="baseline">
