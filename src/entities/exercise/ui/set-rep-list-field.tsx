@@ -1,10 +1,10 @@
-import { TaskWithExercise } from '@/shared/api';
+import { exerciseModel } from '@/entities/exercise';
 import { Flex } from '@/shared/ui/flex';
 import { InputNumber } from 'antd';
 import { InputNumberProps } from 'antd/lib';
 
 export type SetRepListFieldProps = {
-  exercise: TaskWithExercise;
+  exercise: exerciseModel.ExerciseInstance;
   inputProps?: Omit<InputNumberProps, 'onChange'>;
   onChange?: (value: number | null, idx: number) => void;
 };

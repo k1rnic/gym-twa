@@ -1,9 +1,9 @@
-import { TaskWithExercise } from '@/shared/api';
+import { exerciseModel } from '@/entities/exercise';
 import { List, Typography } from 'antd';
 import { ListItemMetaProps } from 'antd/lib/list';
 
 export type ExerciseCardBaseProps = {
-  ex: TaskWithExercise;
+  ex: exerciseModel.ExerciseInstance;
   onTitleClick?: () => void;
 } & Pick<ListItemMetaProps, 'description'>;
 

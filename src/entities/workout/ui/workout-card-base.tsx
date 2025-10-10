@@ -1,10 +1,10 @@
-import { TaskGroupWithTasks } from '@/shared/api';
+import { workoutModel } from '@/entities/workout';
 import { Card } from 'antd';
 import { CardProps } from 'antd/lib';
 import { PropsWithChildren } from 'react';
 
 export type WorkoutCardBaseProps = {
-  workout: TaskGroupWithTasks;
+  workout: workoutModel.Workout;
 } & Pick<CardProps, 'title' | 'extra' | 'style'>;
 
 export const WorkoutCardBase = ({

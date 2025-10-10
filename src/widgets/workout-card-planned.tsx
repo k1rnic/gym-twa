@@ -3,13 +3,17 @@ import {
   ExerciseCardList,
   ExerciseMeta,
   ExerciseMetaDivider,
+  exerciseModel,
   RestInfo,
   SetsXRepsInfo,
   WeightInfo,
 } from '@/entities/exercise';
-import { WorkoutCardBase, WorkoutCardBaseProps } from '@/entities/workout';
+import {
+  WorkoutCardBase,
+  WorkoutCardBaseProps,
+  workoutModel,
+} from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
-import { TaskGroupWithTasks, TaskWithExercise } from '@/shared/api';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
 import { ReactNode } from 'react';
@@ -17,10 +21,13 @@ import { Link } from 'react-router';
 
 export type WorkoutCardPlannedProps = {
   masterId?: number;
-  workout: TaskGroupWithTasks;
+  workout: workoutModel.Workout;
   createEnabled?: boolean;
   copyEnabled?: boolean;
-  onExClick?: (w: TaskGroupWithTasks, ex: TaskWithExercise) => void;
+  onExClick?: (
+    w: workoutModel.Workout,
+    ex: exerciseModel.ExerciseInstance,
+  ) => void;
   extraBefore?: ReactNode;
   extraAfter?: ReactNode;
 } & Pick<WorkoutCardBaseProps, 'title' | 'style'>;

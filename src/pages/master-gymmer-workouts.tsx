@@ -1,10 +1,7 @@
+import { exerciseModel } from '@/entities/exercise';
+import { workoutModel } from '@/entities/workout';
 import { WorkoutFilter, WorkoutsFilterProps } from '@/features/filter-workouts';
-import {
-  Api,
-  TaskGroupStatus,
-  TaskGroupWithTasks,
-  TaskWithExercise,
-} from '@/shared/api';
+import { Api, TaskGroupStatus } from '@/shared/api';
 import { sortByCreated } from '@/shared/lib/date';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
@@ -32,14 +29,14 @@ export const clientLoader = async ({
     .then((data) =>
       data
         .map(
-          ({ task, ...data }): TaskGroupWithTasks => ({
+          ({ task, ...data }): workoutModel.Workout => ({
             ...data,
             task: task.sort(sortByCreated),
           }),
         )
         .sort(sortByCreated),
     )
-    .catch((): TaskGroupWithTasks[] => []);
+    .catch((): workoutModel.Workout[] => []);
 };
 
 const Page = ({ loaderData, params }: Route.ComponentProps) => {
@@ -52,7 +49,7 @@ const Page = ({ loaderData, params }: Route.ComponentProps) => {
   );
 
   const [filteredWorkouts, setFilteredWorkouts] = useState<
-    TaskGroupWithTasks[]
+    workoutModel.Workout[]
   >([]);
 
   const WorkoutComponent = (
@@ -82,7 +79,10 @@ const Page = ({ loaderData, params }: Route.ComponentProps) => {
     await revalidate();
   };
 
-  const goToExercise = (workout: TaskGroupWithTasks, ex: TaskWithExercise) =>
+  const goToExercise = (
+    workout: workoutModel.Workout,
+    ex: exerciseModel.ExerciseInstance,
+  ) =>
     navigate({
       pathname: `${workout.task_group_id}/${ex.task_id}`,
       search: `status=${workout.status}`,

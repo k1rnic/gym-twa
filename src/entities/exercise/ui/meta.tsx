@@ -1,4 +1,4 @@
-import { TaskWithExercise } from '@/shared/api';
+import { exerciseModel } from '@/entities/exercise';
 import { Flex } from '@/shared/ui/flex';
 import { ClockCircleOutlined, GoldOutlined } from '@ant-design/icons';
 import { Divider, Space } from 'antd';
@@ -16,7 +16,10 @@ export const ExerciseMetaDivider = () => <Divider type="vertical" />;
 export const WeightInfo = ({
   min_weight,
   max_weight,
-}: Pick<TaskWithExercise['properties'], 'min_weight' | 'max_weight'>) => (
+}: Pick<
+  exerciseModel.ExerciseInstance['properties'],
+  'min_weight' | 'max_weight'
+>) => (
   <MetaItem
     icon={<GoldOutlined />}
     text={`${min_weight ?? 0} - ${max_weight ?? 0} кг`}
@@ -26,13 +29,13 @@ export const WeightInfo = ({
 export const SetsXRepsInfo = ({
   sets,
   repeats,
-}: Pick<TaskWithExercise['properties'], 'sets' | 'repeats'>) => (
+}: Pick<exerciseModel.ExerciseInstance['properties'], 'sets' | 'repeats'>) => (
   <MetaItem text={`${sets ?? 0} х ${repeats ?? 0}`} />
 );
 
 export const RestInfo = ({
   rest,
-}: Pick<TaskWithExercise['properties'], 'rest'>) => (
+}: Pick<exerciseModel.ExerciseInstance['properties'], 'rest'>) => (
   <MetaItem icon={<ClockCircleOutlined />} text={`${rest ?? 0} сек`} />
 );
 

@@ -1,5 +1,6 @@
+import { workoutModel } from '@/entities/workout';
 import { WorkoutFilter, WorkoutsFilterProps } from '@/features/filter-workouts';
-import { Api, TaskGroupStatus, TaskGroupWithTasks } from '@/shared/api';
+import { Api, TaskGroupStatus } from '@/shared/api';
 import { sortByCreated } from '@/shared/lib/date';
 import { Flex } from '@/shared/ui/flex';
 import {
@@ -23,14 +24,14 @@ export const clientLoader = async ({
     .then((data) =>
       data
         .map(
-          ({ task, ...data }): TaskGroupWithTasks => ({
+          ({ task, ...data }): workoutModel.Workout => ({
             ...data,
             task: task.sort(sortByCreated),
           }),
         )
         .sort(sortByCreated),
     )
-    .catch((): TaskGroupWithTasks[] => []);
+    .catch((): workoutModel.Workout[] => []);
 };
 
 const Page = ({ loaderData }: Route.ComponentProps) => {
@@ -41,7 +42,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
   );
 
   const [filteredWorkouts, setFilteredWorkouts] = useState<
-    TaskGroupWithTasks[]
+    workoutModel.Workout[]
   >([]);
 
   const WorkoutComponent = (
