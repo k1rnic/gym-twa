@@ -1,5 +1,5 @@
 import { mapTgUserToViewer, viewerModel } from '@/entities/viewer';
-import { Api } from '@/shared/api';
+import { Api } from '@/shared/api-v2';
 import { TgWebAppData, useTelegramData } from '@/shared/lib/telegram';
 import { isAxiosError } from 'axios';
 import { ComponentType, useEffect } from 'react';
