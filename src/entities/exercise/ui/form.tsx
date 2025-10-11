@@ -1,18 +1,18 @@
-import { Task, TaskGroupStatus } from '@/shared/api';
+import { exerciseModel } from '@/entities/exercise';
+import { TaskGroupStatus } from '@/shared/api';
 import { Flex } from '@/shared/ui/flex';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Form, InputNumber, Space } from 'antd';
 import { useMemo } from 'react';
 import { ExerciseSelector } from './selector';
 
-type FormData = Task & { exercise_id: number };
+type FormData = exerciseModel.ExerciseInstance;
 
 export type ExerciseFormProps = {
   masterId: number;
-  workoutId: number;
   values: Partial<FormData>;
   status?: TaskGroupStatus | null;
-  onSubmit: (values: Task) => void;
+  onSubmit: (values: FormData) => void;
 };
 
 export const ExerciseForm = (props: ExerciseFormProps) => {
@@ -28,17 +28,19 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
   );
 
   const updateWeights = () => {
-    const minWeight = form.getFieldValue(['properties', 'min_weight']) || 0;
-    const maxWeight = form.getFieldValue(['properties', 'max_weight']) || 0;
+    const minWeight =
+      form.getFieldValue(['task_properties', 'min_weight']) || 0;
+    const maxWeight =
+      form.getFieldValue(['task_properties', 'max_weight']) || 0;
     if (minWeight > maxWeight) {
-      form.setFieldValue(['properties', 'max_weight'], minWeight);
+      form.setFieldValue(['task_properties', 'max_weight'], minWeight);
     } else if (maxWeight < minWeight) {
-      form.setFieldValue(['properties', 'min_weight'], maxWeight);
+      form.setFieldValue(['task_properties', 'min_weight'], maxWeight);
     }
   };
 
-  const handleSubmit = ({ exercise_id: _, ...formData }: FormData) => {
-    props.onSubmit({ ...formData, task_group_id: props.workoutId });
+  const handleSubmit = (formData: FormData) => {
+    props.onSubmit(formData);
   };
 
   return (
@@ -61,7 +63,7 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
         </Form.Item>
 
         <Space align="baseline">
-          <Form.Item<FormData> name={['properties', 'min_weight']}>
+          <Form.Item<FormData> name={['task_properties', 'min_weight']}>
             <InputNumber
               controls={false}
               placeholder="Вес"
@@ -71,7 +73,7 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
             />
           </Form.Item>
           -
-          <Form.Item<FormData> name={['properties', 'max_weight']}>
+          <Form.Item<FormData> name={['task_properties', 'max_weight']}>
             <InputNumber
               controls={false}
               placeholder="Вес"
@@ -82,7 +84,7 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
           </Form.Item>
         </Space>
 
-        <Form.Item<FormData> name={['properties', 'rest']}>
+        <Form.Item<FormData> name={['task_properties', 'rest']}>
           <InputNumber
             controls={false}
             placeholder="Отдых"
@@ -92,7 +94,7 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
         </Form.Item>
 
         <Space align="baseline">
-          <Form.Item<FormData> name={['properties', 'sets']}>
+          <Form.Item<FormData> name={['task_properties', 'sets']}>
             <InputNumber
               controls={false}
               placeholder="Подходы"
@@ -102,13 +104,13 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
 
           <CloseOutlined />
 
-          <Form.Item<FormData> name={['properties', 'repeats']}>
+          {/* <Form.Item<FormData> name={['task_properties', 'repeats']}>
             <InputNumber
               controls={false}
               placeholder="Повторения"
               style={{ width: '100%' }}
             />
-          </Form.Item>
+          </Form.Item> */}
         </Space>
 
         {!readonly && (
