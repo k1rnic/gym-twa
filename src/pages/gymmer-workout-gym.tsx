@@ -1,4 +1,4 @@
-import { Api } from '@/shared/api';
+import { Api, UpdateTask } from '@/shared/api-v2';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { useNavigate, useRevalidator } from 'react-router';
 import { Route } from './+types/gymmer-workout-gym';
@@ -9,8 +9,6 @@ import {
   ExerciseMeta,
   ExerciseMetaDivider,
   RestInfo,
-  SetRepListField,
-  SetsXRepsInfo,
   WeightInfo,
 } from '@/entities/exercise';
 import { Flex } from '@/shared/ui/flex';
@@ -18,8 +16,8 @@ import { Typography } from 'antd';
 import { useState } from 'react';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
-  return await Api.task
-    .getMasterTaskGroupsWithTasks(+params.gId)
+  return await Api.taskGroup
+    .listTaskGroup({ gymer_id: +params.gId })
     .then((data) => data.find((group) => group.task_group_id === +params.wId));
 };
 
@@ -30,35 +28,37 @@ const Page = ({ params, loaderData }: Route.ComponentProps) => {
 
   const goBack = () => navigate('../', { replace: true });
 
-  const handleRepsChange = (
-    reps: number | null,
-    taskIdx: number,
-    setIdx: number,
-  ) => {
-    const cloned = structuredClone(workout);
-    const task = cloned.task[taskIdx];
+  // FIXME: logic
+  // const handleRepsChange = (
+  //   reps: number | null,
+  //   taskIdx: number,
+  //   setIdx: number,
+  // ) => {
+  //   const cloned = structuredClone(workout);
+  //   const task = cloned.tasks?.[taskIdx];
 
-    if (task.properties.values?.length !== task.properties.sets) {
-      task.properties.values = Array.from(
-        { length: task.properties.sets ?? 0 },
-        (_, idx) => ({
-          num_set: idx,
-          value: null,
-        }),
-      );
-    }
+  //   if (task.task_properties?.values?.length !== task.task_properties?.sets) {
+  //     task.properties.values = Array.from(
+  //       { length: task.properties.sets ?? 0 },
+  //       (_, idx) => ({
+  //         num_set: idx,
+  //         value: null,
+  //       }),
+  //     );
+  //   }
 
-    if (task.properties.values?.[setIdx]) {
-      task.properties.values[setIdx].value = reps;
-    }
+  //   if (task.properties.values?.[setIdx]) {
+  //     task.properties.values[setIdx].value = reps;
+  //   }
 
-    setWorkout(cloned);
-  };
+  //   setWorkout(cloned);
+  // };
 
   const submitForm = async () => {
     await Promise.all(
-      workout.task.map((task) =>
-        Api.task.gymerUpdateTask(task.task_id, { gymer_id: +params.gId }, task),
+      (workout.tasks ?? []).map((task) =>
+        // FIXME: why I need to cast here?
+        Api.task.updateTask(task as UpdateTask),
       ),
     );
 
@@ -78,34 +78,38 @@ const Page = ({ params, loaderData }: Route.ComponentProps) => {
       styles={{ body: { padding: 8 } }}
     >
       <ExerciseCardList
-        exercises={workout!.task}
+        exercises={workout!.tasks ?? []}
         renderItem={(ex, index) => (
           <ExerciseCardBase
             ex={ex}
             description={
               <Flex gap={8}>
-                {ex.exercise_desc.description}
-                {ex.properties.sets ? <Typography>Подходы</Typography> : null}
+                {/* {ex.exercise_desc.description} */}
+                {ex.task_properties?.sets ? (
+                  <Typography>Подходы</Typography>
+                ) : null}
 
-                <SetRepListField
+                {/* FIXME: fix dependencies */}
+                {/* <SetRepListField
                   exercise={ex}
                   onChange={(value, setIdx) =>
                     handleRepsChange(value, index, setIdx)
                   }
-                />
+                /> */}
 
                 <ExerciseMeta>
                   <WeightInfo
-                    min_weight={ex.properties.min_weight}
-                    max_weight={ex.properties.max_weight}
+                    min_weight={ex.task_properties?.min_weight}
+                    max_weight={ex.task_properties?.max_weight}
                   />
                   <ExerciseMetaDivider />
-                  <SetsXRepsInfo
-                    sets={ex.properties.sets}
-                    repeats={ex.properties.repeats}
-                  />
+                  {/* FIXME: fix dependencies */}
+                  {/* <SetsXRepsInfo
+                  sets={ex.task_properties?.sets}
+                  repeats={ex.task_properties?.repeats}
+                /> */}
                   <ExerciseMetaDivider />
-                  <RestInfo rest={ex.properties.rest} />
+                  <RestInfo rest={ex.task_properties?.rest} />
                 </ExerciseMeta>
               </Flex>
             }

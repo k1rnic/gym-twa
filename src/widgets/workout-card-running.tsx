@@ -3,10 +3,7 @@ import {
   ExerciseCardList,
   ExerciseMeta,
   ExerciseMetaDivider,
-  exerciseModel,
   RestInfo,
-  SetRepListField,
-  SetsXRepsInfo,
   WeightInfo,
 } from '@/entities/exercise';
 import {
@@ -15,6 +12,7 @@ import {
   workoutModel,
 } from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
+import { TaskAggregate } from '@/shared/api-v2';
 import { formatDate } from '@/shared/lib/date';
 import { Flex } from '@/shared/ui/flex';
 import { Space, Typography } from 'antd';
@@ -28,7 +26,8 @@ export type WorkoutCardRunningProps = {
   extraAfter?: ReactNode;
   onExClick?: (
     w: workoutModel.Workout,
-    ex: exerciseModel.ExerciseInstance,
+    // FIXME: fix dependencies
+    ex: TaskAggregate,
   ) => void;
 } & Pick<WorkoutCardBaseProps, 'style'>;
 
@@ -55,32 +54,36 @@ export const WorkoutCardRunning = (props: WorkoutCardRunningProps) => {
       }
     >
       <ExerciseCardList
-        exercises={w.task}
+        exercises={w.tasks ?? []}
         renderItem={(ex) => (
           <ExerciseCardBase
             ex={ex}
             onTitleClick={onExClick ? () => onExClick(w, ex) : undefined}
             description={
               <Flex gap={8}>
-                {ex.properties.sets ? <Typography>Подходы</Typography> : null}
+                {ex.task_properties?.sets ? (
+                  <Typography>Подходы</Typography>
+                ) : null}
 
-                <SetRepListField
+                {/* FIXME: fix dependencies */}
+                {/* <SetRepListField
                   exercise={ex}
                   inputProps={{ readOnly: true }}
-                />
+                /> */}
 
                 <ExerciseMeta>
                   <WeightInfo
-                    min_weight={ex.properties.min_weight}
-                    max_weight={ex.properties.max_weight}
+                    min_weight={ex.task_properties?.min_weight}
+                    max_weight={ex.task_properties?.max_weight}
                   />
                   <ExerciseMetaDivider />
-                  <SetsXRepsInfo
-                    sets={ex.properties.sets}
-                    repeats={ex.properties.repeats}
-                  />
+                  {/* FIXME: fix dependencies */}
+                  {/* <SetsXRepsInfo
+                    sets={ex.task_properties?.sets}
+                    repeats={ex.task_properties?.repeats}
+                  /> */}
                   <ExerciseMetaDivider />
-                  <RestInfo rest={ex.properties.rest} />
+                  <RestInfo rest={ex.task_properties?.rest} />
                 </ExerciseMeta>
               </Flex>
             }

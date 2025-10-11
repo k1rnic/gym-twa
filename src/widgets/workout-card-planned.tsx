@@ -3,9 +3,7 @@ import {
   ExerciseCardList,
   ExerciseMeta,
   ExerciseMetaDivider,
-  exerciseModel,
   RestInfo,
-  SetsXRepsInfo,
   WeightInfo,
 } from '@/entities/exercise';
 import {
@@ -14,6 +12,7 @@ import {
   workoutModel,
 } from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
+import { TaskAggregate } from '@/shared/api-v2';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
 import { ReactNode } from 'react';
@@ -26,7 +25,8 @@ export type WorkoutCardPlannedProps = {
   copyEnabled?: boolean;
   onExClick?: (
     w: workoutModel.Workout,
-    ex: exerciseModel.ExerciseInstance,
+    // FIXME: fix dependencies
+    ex: TaskAggregate,
   ) => void;
   extraBefore?: ReactNode;
   extraAfter?: ReactNode;
@@ -60,7 +60,7 @@ export const WorkoutCardPlanned = (props: WorkoutCardPlannedProps) => {
       }
     >
       <ExerciseCardList
-        exercises={w.task}
+        exercises={w.tasks ?? []}
         renderItem={(ex) => (
           <ExerciseCardBase
             ex={ex}
@@ -68,16 +68,17 @@ export const WorkoutCardPlanned = (props: WorkoutCardPlannedProps) => {
             description={
               <ExerciseMeta>
                 <WeightInfo
-                  min_weight={ex.properties.min_weight}
-                  max_weight={ex.properties.max_weight}
+                  min_weight={ex.task_properties?.min_weight}
+                  max_weight={ex.task_properties?.max_weight}
                 />
                 <ExerciseMetaDivider />
-                <SetsXRepsInfo
-                  sets={ex.properties.sets}
-                  repeats={ex.properties.repeats}
-                />
+                {/* FIXME: fix dependencies */}
+                {/* <SetsXRepsInfo
+                  sets={ex.task_properties?.sets}
+                  repeats={ex.task_properties?.repeats}
+                /> */}
                 <ExerciseMetaDivider />
-                <RestInfo rest={ex.properties.rest} />
+                <RestInfo rest={ex.task_properties?.rest} />
               </ExerciseMeta>
             }
           />

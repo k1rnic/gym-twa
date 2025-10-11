@@ -1,7 +1,7 @@
-import { exerciseModel } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { WorkoutFilter, WorkoutsFilterProps } from '@/features/filter-workouts';
-import { Api, TaskGroupStatus } from '@/shared/api';
+import { TaskGroupStatus } from '@/shared/api';
+import { Api, TaskAggregate } from '@/shared/api-v2';
 import { sortByCreated } from '@/shared/lib/date';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
@@ -21,22 +21,18 @@ import { Route } from './+types/master-gymmer-workouts';
 
 export const clientLoader = async ({
   params: { mId, gId },
-}: Route.ClientLoaderArgs) => {
-  return await Api.task
-    .getMasterTaskGroupsWithTasks(+gId, {
-      master_id: +mId,
-    })
+}: Route.ClientLoaderArgs): Promise<workoutModel.Workout[]> => {
+  return await Api.taskGroup
+    .listTaskGroup({ gymer_id: +gId, master_id: +mId })
     .then((data) =>
       data
-        .map(
-          ({ task, ...data }): workoutModel.Workout => ({
-            ...data,
-            task: task.sort(sortByCreated),
-          }),
-        )
+        .map(({ tasks, ...data }) => ({
+          ...data,
+          tasks: tasks?.sort(sortByCreated) ?? [],
+        }))
         .sort(sortByCreated),
     )
-    .catch((): workoutModel.Workout[] => []);
+    .catch(() => []);
 };
 
 const Page = ({ loaderData, params }: Route.ComponentProps) => {
@@ -72,16 +68,17 @@ const Page = ({ loaderData, params }: Route.ComponentProps) => {
   };
 
   const createWorkout = async () => {
-    await Api.taskGroup.createTaskGroup(
-      { master_id: +params.mId },
-      { gymer_id: +params.gId },
-    );
+    await Api.taskGroup.createTaskGroup({
+      master_id: +params.mId,
+      gymer_id: +params.gId,
+    });
     await revalidate();
   };
 
   const goToExercise = (
     workout: workoutModel.Workout,
-    ex: exerciseModel.ExerciseInstance,
+    // FIXME: fix dependencies
+    ex: TaskAggregate,
   ) =>
     navigate({
       pathname: `${workout.task_group_id}/${ex.task_id}`,

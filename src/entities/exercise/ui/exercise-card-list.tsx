@@ -1,10 +1,11 @@
-import { exerciseModel } from '@/entities/exercise';
+import { TaskAggregate } from '@/shared/api-v2';
 import { List } from 'antd';
 import { ListProps } from 'antd/lib/list';
 
 export type ExerciseCardListProps = {
-  exercises: exerciseModel.ExerciseInstance[];
-} & Pick<ListProps<exerciseModel.ExerciseInstance>, 'renderItem'>;
+  // FIXME: replace with exerciseModel.ExerciseInstance
+  exercises: TaskAggregate[];
+} & Pick<ListProps<TaskAggregate>, 'renderItem'>;
 
 export const ExerciseCardList = ({
   exercises,
