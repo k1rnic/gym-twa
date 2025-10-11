@@ -10,13 +10,15 @@ export type SetRepListFieldProps = {
 };
 
 export const SetRepListField = ({
-  exercise: { properties },
+  exercise: { task_properties: properties },
   inputProps,
   onChange,
 }: SetRepListFieldProps) => {
   return (
     <Flex vertical={false} gap={8} style={{ overflow: 'auto' }}>
-      {Array.from({ length: properties.sets ?? 0 }, (_, idx) => (
+      <></>
+      {/* FIXME: fix deps */}
+      {/* {Array.from({ length: properties?.sets?.length ?? 0 }, (_, idx) => (
         <InputNumber
           key={idx}
           style={{ width: 48, flexShrink: 0 }}
@@ -24,7 +26,7 @@ export const SetRepListField = ({
           onChange={(value) => onChange?.(value as number, idx)}
           {...inputProps}
         />
-      ))}
+      ))} */}
     </Flex>
   );
 };

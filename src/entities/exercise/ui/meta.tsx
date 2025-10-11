@@ -17,7 +17,7 @@ export const WeightInfo = ({
   min_weight,
   max_weight,
 }: Pick<
-  exerciseModel.ExerciseInstance['properties'],
+  Partial<exerciseModel.ExerciseInstanceProps>,
   'min_weight' | 'max_weight'
 >) => (
   <MetaItem
@@ -26,16 +26,16 @@ export const WeightInfo = ({
   />
 );
 
-export const SetsXRepsInfo = ({
-  sets,
-  repeats,
-}: Pick<exerciseModel.ExerciseInstance['properties'], 'sets' | 'repeats'>) => (
-  <MetaItem text={`${sets ?? 0} х ${repeats ?? 0}`} />
-);
+// export const SetsXRepsInfo = ({
+//   sets,
+//   repeats,
+// }: Pick<Partial<exerciseModel.ExerciseInstanceProps>, 'sets' | 'repeats'>) => (
+//   <MetaItem text={`${sets ?? 0} х ${repeats ?? 0}`} />
+// );
 
 export const RestInfo = ({
   rest,
-}: Pick<exerciseModel.ExerciseInstance['properties'], 'rest'>) => (
+}: Pick<Partial<exerciseModel.ExerciseInstanceProps>, 'rest'>) => (
   <MetaItem icon={<ClockCircleOutlined />} text={`${rest ?? 0} сек`} />
 );
 
