@@ -3,6 +3,7 @@ import {
   ExerciseCardList,
   ExerciseMeta,
   ExerciseMetaDivider,
+  exerciseModel,
   RestInfo,
   WeightInfo,
 } from '@/entities/exercise';
@@ -12,7 +13,7 @@ import {
   workoutModel,
 } from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
-import { TaskAggregate } from '@/shared/api-v2';
+
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
 import { ReactNode } from 'react';
@@ -25,8 +26,7 @@ export type WorkoutCardPlannedProps = {
   copyEnabled?: boolean;
   onExClick?: (
     w: workoutModel.Workout,
-    // FIXME: fix dependencies
-    ex: TaskAggregate,
+    ex: exerciseModel.ExerciseInstance,
   ) => void;
   extraBefore?: ReactNode;
   extraAfter?: ReactNode;

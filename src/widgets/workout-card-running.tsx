@@ -3,6 +3,7 @@ import {
   ExerciseCardList,
   ExerciseMeta,
   ExerciseMetaDivider,
+  exerciseModel,
   RestInfo,
   WeightInfo,
 } from '@/entities/exercise';
@@ -12,7 +13,7 @@ import {
   workoutModel,
 } from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
-import { TaskAggregate } from '@/shared/api-v2';
+
 import { formatDate } from '@/shared/lib/date';
 import { Flex } from '@/shared/ui/flex';
 import { Space, Typography } from 'antd';
@@ -26,8 +27,7 @@ export type WorkoutCardRunningProps = {
   extraAfter?: ReactNode;
   onExClick?: (
     w: workoutModel.Workout,
-    // FIXME: fix dependencies
-    ex: TaskAggregate,
+    ex: exerciseModel.ExerciseInstance,
   ) => void;
 } & Pick<WorkoutCardBaseProps, 'style'>;
 

@@ -1,10 +1,9 @@
-import { TaskAggregate } from '@/shared/api-v2';
+import { exerciseModel } from '@/entities/exercise';
 import { List, Typography } from 'antd';
 import { ListItemMetaProps } from 'antd/lib/list';
 
 export type ExerciseCardBaseProps = {
-  // FIXME: replace with exerciseModel.ExerciseInstance
-  ex: TaskAggregate;
+  ex: exerciseModel.ExerciseInstance;
   onTitleClick?: () => void;
 } & Pick<ListItemMetaProps, 'description'>;
 

@@ -1,7 +1,8 @@
+import { exerciseModel } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { WorkoutFilter, WorkoutsFilterProps } from '@/features/filter-workouts';
 import { TaskGroupStatus } from '@/shared/api';
-import { Api, TaskAggregate } from '@/shared/api-v2';
+import { Api } from '@/shared/api-v2';
 import { sortByCreated } from '@/shared/lib/date';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
@@ -77,8 +78,7 @@ const Page = ({ loaderData, params }: Route.ComponentProps) => {
 
   const goToExercise = (
     workout: workoutModel.Workout,
-    // FIXME: fix dependencies
-    ex: TaskAggregate,
+    ex: exerciseModel.ExerciseInstance,
   ) =>
     navigate({
       pathname: `${workout.task_group_id}/${ex.task_id}`,
