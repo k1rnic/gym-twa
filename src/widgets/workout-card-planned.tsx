@@ -33,7 +33,14 @@ export type WorkoutCardPlannedProps = {
 } & Pick<WorkoutCardBaseProps, 'title' | 'style'>;
 
 export const WorkoutCardPlanned = (props: WorkoutCardPlannedProps) => {
-  const { workout: w, masterId, title, style, onExClick } = props;
+  const {
+    workout: w,
+    masterId,
+    title,
+    style,
+    copyEnabled = false,
+    onExClick,
+  } = props;
 
   return (
     <WorkoutCardBase
@@ -49,7 +56,7 @@ export const WorkoutCardPlanned = (props: WorkoutCardPlannedProps) => {
               <Button type="primary" icon={<PlusOutlined />} />
             </Link>
           )}
-          {props.copyEnabled && masterId && (
+          {copyEnabled && masterId && (
             <CopyWorkoutButton
               workoutId={w.task_group_id}
               masterId={masterId}
