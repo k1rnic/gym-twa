@@ -10,6 +10,13 @@
  * ---------------------------------------------------------------
  */
 
+/** TaskStatus */
+export enum TaskStatus {
+  Planned = "planned",
+  Running = "running",
+  Finished = "finished",
+}
+
 /** TaskGroupStatus */
 export enum TaskGroupStatus {
   Planned = "planned",
@@ -17,25 +24,67 @@ export enum TaskGroupStatus {
   Finished = "finished",
 }
 
+/** ExerciseStatus */
+export enum ExerciseStatus {
+  Active = "active",
+  Archive = "archive",
+}
+
+/** CreateExercise */
+export interface CreateExercise {
+  /** Master Id */
+  master_id: number;
+  /** Exercise Name */
+  exercise_name: string | null;
+  /** Description */
+  description: string | null;
+  /** @default "active" */
+  status?: ExerciseStatus;
+  /** Link Ids */
+  link_ids: number[] | null;
+}
+
+/** CreateLink */
+export interface CreateLink {
+  /** Link */
+  link: string;
+  /** Title */
+  title: string | null;
+  /**
+   * Master Id
+   * @default 1
+   */
+  master_id?: number;
+}
+
 /** Exercise */
 export interface Exercise {
   /** Exercise Id */
-  exercise_id: number;
-  /** Title */
-  title: string;
+  exercise_id: number | null;
   /** Master Id */
   master_id: number;
+  /** Exercise Name */
+  exercise_name: string | null;
+  /** Description */
+  description: string | null;
+  /** @default "active" */
+  status?: ExerciseStatus;
 }
 
-/** ExerciseDescSimple */
-export interface ExerciseDescSimple {
+/** ExerciseAggregate */
+export interface ExerciseAggregate {
   /** Exercise Id */
-  exercise_id: number;
-  /** Exercise Desc Id */
-  exercise_desc_id: number;
+  exercise_id: number | null;
+  /** Master Id */
+  master_id: number;
+  /** Exercise Name */
+  exercise_name: string | null;
   /** Description */
-  description: string;
-  exercise: Exercise;
+  description: string | null;
+  /** @default "active" */
+  status?: ExerciseStatus;
+  /** Links */
+  links?: Link[];
 }
 
 /** Gymer */
@@ -52,6 +101,18 @@ export interface Gymer {
 export interface HTTPValidationError {
   /** Detail */
   detail?: ValidationError[];
+}
+
+/** Link */
+export interface Link {
+  /** Link Id */
+  link_id: number;
+  /** Link */
+  link: string;
+  /** Title */
+  title: string | null;
+  /** Master Id */
+  master_id: number;
 }
 
 /** Master */
@@ -78,16 +139,45 @@ export interface MastersGymer {
   gymer_id: number;
 }
 
-/** Task */
-export interface Task {
-  /** Task Group Id */
-  task_group_id: number;
-  /** Exercise Desc Id */
-  exercise_desc_id: number;
-  /** Order Idx */
-  order_idx: number | null;
+/** Set */
+export interface Set {
+  /** Set Id */
+  set_id: number;
+  /** Task Properties Id */
+  task_properties_id: number;
+  /** Fact Value */
+  fact_value: number | null;
+  /** Fact Rep */
+  fact_rep: number | null;
+  /** Plan Value */
+  plan_value: number | null;
+  /** Plan Rep */
+  plan_rep: number | null;
+}
+
+/** SetUpdate */
+export interface SetUpdate {
+  /** Set Id */
+  set_id?: number | null;
+  /** Fact Value */
+  fact_value?: number | null;
+  /** Fact Rep */
+  fact_rep?: number | null;
+  /** Plan Value */
+  plan_value?: number | null;
+  /** Plan Rep */
+  plan_rep?: number | null;
+}
+
+/** TaskAggregate */
+export interface TaskAggregate {
   /** Task Id */
   task_id: number;
+  /** Task Group Id */
+  task_group_id: number;
+  /** Exercise Id */
+  exercise_id: number | null;
+  status: TaskStatus;
   /**
    * Create Dttm
    * @format date-time
@@ -95,30 +185,21 @@ export interface Task {
   create_dttm: string;
   /** Update Dttm */
   update_dttm: string | null;
-  properties: TaskProperties;
-}
-
-/** TaskCreate */
-export interface TaskCreate {
-  /** Task Group Id */
-  task_group_id: number;
-  /** Exercise Desc Id */
-  exercise_desc_id: number;
   /** Order Idx */
   order_idx: number | null;
-  properties?: TaskProperties | null;
+  exercise?: ExerciseAggregate | null;
+  task_properties?: TaskPropertiesAggregate | null;
 }
 
 /** TaskGroup */
 export interface TaskGroup {
+  /** Task Group Id */
+  task_group_id: number;
   /** Master Id */
   master_id: number;
   /** Gymer Id */
   gymer_id: number;
-  /** Properties */
-  properties?: object;
-  /** Task Group Id */
-  task_group_id: number;
+  status: TaskGroupStatus;
   /**
    * Create Dttm
    * @format date-time
@@ -128,17 +209,32 @@ export interface TaskGroup {
   update_dttm: string | null;
   /** Start Dttm */
   start_dttm: string | null;
-  status: TaskGroupStatus;
   /** Order Idx */
   order_idx: number | null;
 }
 
-/** TaskGroupCreate */
-export interface TaskGroupCreate {
+/** TaskGroupAggregate */
+export interface TaskGroupAggregate {
+  /** Task Group Id */
+  task_group_id: number;
+  /** Master Id */
+  master_id: number;
   /** Gymer Id */
   gymer_id: number;
-  /** Properties */
-  properties?: object;
+  status: TaskGroupStatus;
+  /**
+   * Create Dttm
+   * @format date-time
+   */
+  create_dttm: string;
+  /** Update Dttm */
+  update_dttm: string | null;
+  /** Start Dttm */
+  start_dttm: string | null;
+  /** Order Idx */
+  order_idx: number | null;
+  /** Tasks */
+  tasks?: TaskAggregate[];
 }
 
 /** TaskGroupOrderIndex */
@@ -149,24 +245,6 @@ export interface TaskGroupOrderIndex {
   order_idx: number;
 }
 
-/** TaskGroupWithTasks */
-export interface TaskGroupWithTasks {
-  /** Task Group Id */
-  task_group_id: number;
-  status: TaskGroupStatus;
-  /**
-   * Create Dttm
-   * @format date-time
-   */
-  create_dttm: string;
-  /** Update Dttm */
-  update_dttm: string | null;
-  /** Start Dttm */
-  start_dttm: string | null;
-  /** Task */
-  task: TaskWithExercise[];
-}
-
 /** TaskOrderIndex */
 export interface TaskOrderIndex {
   /** Task Id */
@@ -175,42 +253,42 @@ export interface TaskOrderIndex {
   order_idx: number;
 }
 
-/** TaskProperties */
-export interface TaskProperties {
-  /** Max Weight */
-  max_weight?: number | null;
-  /** Min Weight */
-  min_weight?: number | null;
-  /** Rest */
-  rest?: number | null;
-  /** Repeats */
-  repeats?: number | null;
-  /** Sets */
-  sets?: number | null;
-  /** Values */
-  values?: Value[];
-}
-
-/** TaskUpdate */
-export interface TaskUpdate {
-  /** Exercise Desc Id */
-  exercise_desc_id?: number | null;
-  properties?: TaskProperties | null;
-}
-
-/** TaskWithExercise */
-export interface TaskWithExercise {
+/** TaskPropertiesAggregate */
+export interface TaskPropertiesAggregate {
+  /** Task Properties Id */
+  task_properties_id: number;
   /** Task Id */
   task_id: number;
-  /**
-   * Create Dttm
-   * @format date-time
-   */
-  create_dttm: string;
-  /** Update Dttm */
-  update_dttm: string | null;
-  exercise_desc: ExerciseDescSimple;
-  properties: TaskProperties;
+  /** Max Weight */
+  max_weight: number | null;
+  /** Min Weight */
+  min_weight: number | null;
+  /** Rest */
+  rest: number | null;
+  /** Sets */
+  sets?: Set[];
+}
+
+/** TaskPropertiesAggregateUpdate */
+export interface TaskPropertiesAggregateUpdate {
+  /** Max Weight */
+  max_weight: number | null;
+  /** Min Weight */
+  min_weight: number | null;
+  /** Rest */
+  rest: number | null;
+  /** Sets */
+  sets?: SetUpdate[];
+}
+
+/** UpdateTask */
+export interface UpdateTask {
+  /** Task Id */
+  task_id: number;
+  /** Exercise Id */
+  exercise_id: number;
+  status: TaskStatus | null;
+  task_properties?: TaskPropertiesAggregateUpdate | null;
 }
 
 /** User */
@@ -261,14 +339,6 @@ export interface ValidationError {
   msg: string;
   /** Error Type */
   type: string;
-}
-
-/** Value */
-export interface Value {
-  /** Num Set */
-  num_set?: number | null;
-  /** Value */
-  value?: number | null;
 }
 
 import type {
@@ -517,7 +587,7 @@ export class Endpoints<
       query: {
         /**
          * Gymer Id
-         * user id
+         * gymer id
          */
         gymer_id: number;
       },
@@ -540,12 +610,20 @@ export class Endpoints<
      * @summary Creating a new task
      * @request POST:/gym/task
      */
-    createTask: (data: TaskCreate, params: RequestParams = {}) =>
-      this.request<Task, HTTPValidationError>({
+    createTask: (
+      query: {
+        /**
+         * Task Group Id
+         * task_group_id
+         */
+        task_group_id: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<TaskAggregate | null, HTTPValidationError>({
         path: `/gym/task`,
         method: "POST",
-        body: data,
-        type: ContentType.Json,
+        query: query,
         format: "json",
         ...params,
       }),
@@ -554,26 +632,14 @@ export class Endpoints<
      * No description
      *
      * @tags task
-     * @name MasterUpdateTask
-     * @summary Master updating task by task_id
-     * @request PUT:/gym/task/{task_id}/master_id
+     * @name UpdateTask
+     * @summary Update task
+     * @request PUT:/gym/task
      */
-    masterUpdateTask: (
-      taskId: number,
-      query: {
-        /**
-         * Master Id
-         * master_id
-         */
-        master_id: number;
-      },
-      data: TaskUpdate,
-      params: RequestParams = {},
-    ) =>
-      this.request<Task, HTTPValidationError>({
-        path: `/gym/task/${taskId}/master_id`,
+    updateTask: (data: UpdateTask, params: RequestParams = {}) =>
+      this.request<TaskAggregate, HTTPValidationError>({
+        path: `/gym/task`,
         method: "PUT",
-        query: query,
         body: data,
         type: ContentType.Json,
         format: "json",
@@ -584,79 +650,16 @@ export class Endpoints<
      * No description
      *
      * @tags task
-     * @name GymerUpdateTask
-     * @summary Gymer updating task by task_id
-     * @request PUT:/gym/task/{task_id}/gymer_id
+     * @name GetTasksWithExerciseByGroup
+     * @summary Getting a list of task by task_group_id
+     * @request GET:/gym/task/tasks/{task_group_id}
      */
-    gymerUpdateTask: (
-      taskId: number,
-      query: {
-        /**
-         * Gymer Id
-         * gymer_id
-         */
-        gymer_id: number;
-      },
-      data: TaskUpdate,
+    getTasksWithExerciseByGroup: (
+      taskGroupId: number,
       params: RequestParams = {},
     ) =>
-      this.request<Task, HTTPValidationError>({
-        path: `/gym/task/${taskId}/gymer_id`,
-        method: "PUT",
-        query: query,
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags task
-     * @name GetMasterTaskGroupsWithTasks
-     * @summary Getting training history by master_id and gymmer_id
-     * @request GET:/gym/task/{gymer_id}/history
-     */
-    getMasterTaskGroupsWithTasks: (
-      gymerId: number,
-      query?: {
-        /** Master Id */
-        master_id?: number | null;
-        /**
-         * Page No
-         * Номер страницы
-         * @default 1
-         */
-        page_no?: number;
-        /**
-         * Page Size
-         * Размер страницы
-         * @default 100
-         */
-        page_size?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<TaskGroupWithTasks[], HTTPValidationError>({
-        path: `/gym/task/${gymerId}/history`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags task
-     * @name GetTaskByTaskId
-     * @summary Getting task by task_id
-     * @request GET:/gym/task/{task_id}
-     */
-    getTaskByTaskId: (taskId: number, params: RequestParams = {}) =>
-      this.request<TaskWithExercise, HTTPValidationError>({
-        path: `/gym/task/${taskId}`,
+      this.request<TaskAggregate[], HTTPValidationError>({
+        path: `/gym/task/tasks/${taskGroupId}`,
         method: "GET",
         format: "json",
         ...params,
@@ -696,16 +699,18 @@ export class Endpoints<
          * master id
          */
         master_id: number;
+        /**
+         * Gymer Id
+         * gymer id
+         */
+        gymer_id: number;
       },
-      data: TaskGroupCreate,
       params: RequestParams = {},
     ) =>
       this.request<TaskGroup, HTTPValidationError>({
         path: `/gym/task_group`,
         method: "POST",
         query: query,
-        body: data,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -719,7 +724,7 @@ export class Endpoints<
      * @request GET:/gym/task_group
      */
     listTaskGroup: (
-      query?: {
+      query: {
         /**
          * Master Id
          * master id
@@ -729,7 +734,7 @@ export class Endpoints<
          * Gymer Id
          * gymmer id
          */
-        gymer_id?: number | null;
+        gymer_id: number;
         /**
          * Статус task_group
          * @default "planned"
@@ -738,36 +743,9 @@ export class Endpoints<
       },
       params: RequestParams = {},
     ) =>
-      this.request<TaskGroupWithTasks[], HTTPValidationError>({
+      this.request<TaskGroupAggregate[], HTTPValidationError>({
         path: `/gym/task_group`,
         method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags task_group
-     * @name CopyTaskGroup
-     * @summary Creating task group
-     * @request POST:/gym/task_group/copy/{task_group_id}
-     */
-    copyTaskGroup: (
-      taskGroupId: number,
-      query: {
-        /**
-         * Master Id
-         * master id
-         */
-        master_id: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<TaskGroupWithTasks, HTTPValidationError>({
-        path: `/gym/task_group/copy/${taskGroupId}`,
-        method: "POST",
         query: query,
         format: "json",
         ...params,
@@ -799,28 +777,9 @@ export class Endpoints<
      * No description
      *
      * @tags exercise
-     * @name GetTasksWithExerciseByGroup
-     * @summary Getgin a list of task by task_group_id
-     * @request GET:/gym/exercise/{task_group_id}/tasks
-     */
-    getTasksWithExerciseByGroup: (
-      taskGroupId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<Task[], HTTPValidationError>({
-        path: `/gym/exercise/${taskGroupId}/tasks`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags exercise
      * @name GetListOfExercise
      * @summary Getting a list of exercise by master_id
-     * @request GET:/gym/exercise/{master_id}/exercises
+     * @request GET:/gym/exercise/{master_id}
      */
     getListOfExercise: (
       masterId: number,
@@ -834,7 +793,7 @@ export class Endpoints<
       params: RequestParams = {},
     ) =>
       this.request<Exercise[], HTTPValidationError>({
-        path: `/gym/exercise/${masterId}/exercises`,
+        path: `/gym/exercise/${masterId}`,
         method: "GET",
         query: query,
         format: "json",
@@ -845,17 +804,172 @@ export class Endpoints<
      * No description
      *
      * @tags exercise
-     * @name GetListOfExerciseDescription
-     * @summary Getting a list of exercise description by exercise_id
-     * @request GET:/gym/exercise/{exercise_id}/descriptions
+     * @name GetExercise
+     * @summary Get exercise by id
+     * @request GET:/gym/exercise/id/{exercise_id}
      */
-    getListOfExerciseDescription: (
-      exerciseId: number,
+    getExercise: (exerciseId: number, params: RequestParams = {}) =>
+      this.request<ExerciseAggregate, HTTPValidationError>({
+        path: `/gym/exercise/id/${exerciseId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name UpdateExercise
+     * @summary Update exercise
+     * @request PUT:/gym/exercise
+     */
+    updateExercise: (data: ExerciseAggregate, params: RequestParams = {}) =>
+      this.request<ExerciseAggregate, HTTPValidationError>({
+        path: `/gym/exercise`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name CreateExercise
+     * @summary Create exercise
+     * @request POST:/gym/exercise
+     */
+    createExercise: (data: CreateExercise, params: RequestParams = {}) =>
+      this.request<ExerciseAggregate, HTTPValidationError>({
+        path: `/gym/exercise`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name CopyExercise
+     * @summary Copy exercise
+     * @request POST:/gym/exercise/copy/{exercise_id}
+     */
+    copyExercise: (exerciseId: number, params: RequestParams = {}) =>
+      this.request<ExerciseAggregate, HTTPValidationError>({
+        path: `/gym/exercise/copy/${exerciseId}`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name AddLinkToExercise
+     * @summary Add link to exercise
+     * @request POST:/gym/exercise/link
+     */
+    addLinkToExercise: (
+      query: {
+        /**
+         * Exercise Id
+         * exercise id
+         */
+        exercise_id: number;
+        /**
+         * Link Id
+         * link id
+         */
+        link_id: number;
+      },
       params: RequestParams = {},
     ) =>
-      this.request<ExerciseDescSimple[], HTTPValidationError>({
-        path: `/gym/exercise/${exerciseId}/descriptions`,
+      this.request<any, HTTPValidationError>({
+        path: `/gym/exercise/link`,
+        method: "POST",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name DeleteLinkFromExercise
+     * @summary Delete link from exercise
+     * @request DELETE:/gym/exercise/link
+     */
+    deleteLinkFromExercise: (
+      query: {
+        /**
+         * Exercise Id
+         * exercise id
+         */
+        exercise_id: number;
+        /**
+         * Link Id
+         * link id
+         */
+        link_id: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, HTTPValidationError>({
+        path: `/gym/exercise/link`,
+        method: "DELETE",
+        query: query,
+        ...params,
+      }),
+  };
+  link = {
+    /**
+     * No description
+     *
+     * @tags link
+     * @name GetLinksById
+     * @summary Getting a list of links by id
+     * @request GET:/gym/link
+     */
+    getLinksById: (
+      query: {
+        /**
+         * Link Ids
+         * List link_ids
+         */
+        link_ids: number[];
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<Link[], HTTPValidationError>({
+        path: `/gym/link`,
         method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags link
+     * @name CreateLink
+     * @summary Create Link
+     * @request POST:/gym/link
+     */
+    createLink: (data: CreateLink, params: RequestParams = {}) =>
+      this.request<Link, HTTPValidationError>({
+        path: `/gym/link`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

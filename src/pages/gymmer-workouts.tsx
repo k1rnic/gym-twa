@@ -1,7 +1,6 @@
 import { workoutModel } from '@/entities/workout';
 import { WorkoutFilter, WorkoutsFilterProps } from '@/features/filter-workouts';
-import { TaskGroupStatus } from '@/shared/api';
-import { Api } from '@/shared/api-v2';
+import { Api, TaskGroupStatus } from '@/shared/api';
 import { sortByCreated } from '@/shared/lib/date';
 import { Flex } from '@/shared/ui/flex';
 import {

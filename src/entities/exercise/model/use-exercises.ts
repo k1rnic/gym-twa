@@ -1,5 +1,5 @@
 import { exerciseModel } from '@/entities/exercise';
-import { Api } from '@/shared/api-v2';
+import { Api } from '@/shared/api';
 import { useEffect, useState } from 'react';
 
 export const useExercises = (masterId: number) => {

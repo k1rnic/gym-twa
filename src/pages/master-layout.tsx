@@ -1,5 +1,5 @@
 import { GymmerAvatarList } from '@/entities/gymmer';
-import { Api } from '@/shared/api-v2';
+import { Api } from '@/shared/api';
 
 import { ProfileAvatar, ProfileViews } from '@/entities/viewer';
 import { useSwitchView } from '@/features/switch-view';

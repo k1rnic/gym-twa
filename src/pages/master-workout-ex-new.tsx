@@ -1,5 +1,5 @@
 import { ExerciseForm, exerciseModel } from '@/entities/exercise';
-import { Api } from '@/shared/api-v2';
+import { Api } from '@/shared/api';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';

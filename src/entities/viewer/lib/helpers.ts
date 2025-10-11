@@ -1,4 +1,4 @@
-import type { UserIn } from '@/shared/api-v2';
+import type { UserIn } from '@/shared/api';
 import { TgWebAppData } from '@/shared/lib/telegram';
 
 export const mapTgUserToViewer = (

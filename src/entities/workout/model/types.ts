@@ -1,3 +1,3 @@
-import { TaskGroupAggregate } from '@/shared/api-v2';
+import { TaskGroupAggregate } from '@/shared/api';
 
 export type Workout = TaskGroupAggregate;

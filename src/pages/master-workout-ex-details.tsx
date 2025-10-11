@@ -1,5 +1,5 @@
 import { ExerciseForm, exerciseModel } from '@/entities/exercise';
-import { Api, TaskGroupStatus, UpdateTask } from '@/shared/api-v2';
+import { Api, TaskGroupStatus, UpdateTask } from '@/shared/api';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { useNavigate, useSearchParams } from 'react-router';
 import { Route } from './+types/master-workout-ex-details';

@@ -1,4 +1,4 @@
-import { MastersGymer } from '@/shared/api-v2';
+import { MastersGymer } from '@/shared/api';
 import { Avatar } from '@/shared/ui/avatar';
 import { Space } from 'antd';
 import { useRef } from 'react';

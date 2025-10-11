@@ -9,7 +9,7 @@
     "start": "bunx http-server build/client",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type-check": "react-router typegen && tsc",
-    "api:extract": "bun run src/shared/api/lib/extract-api.ts && bun run src/shared/api-v2/lib/extract-api.ts"
+    "api:extract": "bun run src/shared/api/lib/extract-api.ts"
   },
   "dependencies": {
     "@ant-design/icons": "5.x",

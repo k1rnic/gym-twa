@@ -2,7 +2,7 @@ import {
   Exercise as ExerciseApi,
   TaskAggregate,
   TaskPropertiesAggregate,
-} from '@/shared/api-v2';
+} from '@/shared/api';
 
 export type ExerciseInstance = TaskAggregate;
 export type ExerciseInstanceProps = TaskPropertiesAggregate;

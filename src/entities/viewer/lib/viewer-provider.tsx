@@ -1,4 +1,4 @@
-import { User } from '@/shared/api-v2';
+import { User } from '@/shared/api';
 import {
   createContext,
   Dispatch,
