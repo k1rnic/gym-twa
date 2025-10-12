@@ -1,10 +1,7 @@
+import { exerciseModel } from '@/entities/exercise';
+import { workoutModel } from '@/entities/workout';
 import { WorkoutFilter, WorkoutsFilterProps } from '@/features/filter-workouts';
-import {
-  Api,
-  TaskGroupStatus,
-  TaskGroupWithTasks,
-  TaskWithExercise,
-} from '@/shared/api';
+import { Api, TaskGroupStatus } from '@/shared/api';
 import { sortByCreated } from '@/shared/lib/date';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
@@ -24,22 +21,18 @@ import { Route } from './+types/master-gymmer-workouts';
 
 export const clientLoader = async ({
   params: { mId, gId },
-}: Route.ClientLoaderArgs) => {
-  return await Api.task
-    .getMasterTaskGroupsWithTasks(+gId, {
-      master_id: +mId,
-    })
+}: Route.ClientLoaderArgs): Promise<workoutModel.Workout[]> => {
+  return await Api.taskGroup
+    .listTaskGroup({ gymer_id: +gId, master_id: +mId })
     .then((data) =>
       data
-        .map(
-          ({ task, ...data }): TaskGroupWithTasks => ({
-            ...data,
-            task: task.sort(sortByCreated),
-          }),
-        )
+        .map(({ tasks, ...data }) => ({
+          ...data,
+          tasks: tasks?.sort(sortByCreated) ?? [],
+        }))
         .sort(sortByCreated),
     )
-    .catch((): TaskGroupWithTasks[] => []);
+    .catch(() => []);
 };
 
 const Page = ({ loaderData, params }: Route.ComponentProps) => {
@@ -52,7 +45,7 @@ const Page = ({ loaderData, params }: Route.ComponentProps) => {
   );
 
   const [filteredWorkouts, setFilteredWorkouts] = useState<
-    TaskGroupWithTasks[]
+    workoutModel.Workout[]
   >([]);
 
   const WorkoutComponent = (
@@ -75,14 +68,17 @@ const Page = ({ loaderData, params }: Route.ComponentProps) => {
   };
 
   const createWorkout = async () => {
-    await Api.taskGroup.createTaskGroup(
-      { master_id: +params.mId },
-      { gymer_id: +params.gId },
-    );
+    await Api.taskGroup.createTaskGroup({
+      master_id: +params.mId,
+      gymer_id: +params.gId,
+    });
     await revalidate();
   };
 
-  const goToExercise = (workout: TaskGroupWithTasks, ex: TaskWithExercise) =>
+  const goToExercise = (
+    workout: workoutModel.Workout,
+    ex: exerciseModel.ExerciseInstance,
+  ) =>
     navigate({
       pathname: `${workout.task_group_id}/${ex.task_id}`,
       search: `status=${workout.status}`,

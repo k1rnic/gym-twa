@@ -1,5 +1,6 @@
+import { workoutModel } from '@/entities/workout';
 import { WorkoutFilter, WorkoutsFilterProps } from '@/features/filter-workouts';
-import { Api, TaskGroupStatus, TaskGroupWithTasks } from '@/shared/api';
+import { Api, TaskGroupStatus } from '@/shared/api';
 import { sortByCreated } from '@/shared/lib/date';
 import { Flex } from '@/shared/ui/flex';
 import {
@@ -17,20 +18,18 @@ import { Route } from './+types/gymmer-workouts';
 
 export const clientLoader = async ({
   params: { gId },
-}: Route.ClientLoaderArgs) => {
-  return await Api.task
-    .getMasterTaskGroupsWithTasks(+gId)
+}: Route.ClientLoaderArgs): Promise<workoutModel.Workout[]> => {
+  return await Api.taskGroup
+    .listTaskGroup({ gymer_id: +gId })
     .then((data) =>
       data
-        .map(
-          ({ task, ...data }): TaskGroupWithTasks => ({
-            ...data,
-            task: task.sort(sortByCreated),
-          }),
-        )
+        .map(({ tasks, ...data }) => ({
+          ...data,
+          tasks: tasks?.sort(sortByCreated) ?? [],
+        }))
         .sort(sortByCreated),
     )
-    .catch((): TaskGroupWithTasks[] => []);
+    .catch(() => []);
 };
 
 const Page = ({ loaderData }: Route.ComponentProps) => {
@@ -41,7 +40,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
   );
 
   const [filteredWorkouts, setFilteredWorkouts] = useState<
-    TaskGroupWithTasks[]
+    workoutModel.Workout[]
   >([]);
 
   const WorkoutComponent = (
@@ -57,7 +56,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
             extraAfter={
               <Button
                 type="primary"
-                disabled={!props.workout.task.length}
+                disabled={!props.workout.tasks?.length}
                 onClick={() => navigate(`${props.workout.task_group_id}`)}
               >
                 GYM
@@ -73,7 +72,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
             extraAfter={
               <Button
                 type="primary"
-                disabled={!props.workout.task.length}
+                disabled={!props.workout.tasks?.length}
                 onClick={() => navigate(`${props.workout.task_group_id}`)}
               >
                 GYM

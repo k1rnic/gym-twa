@@ -1,14 +1,14 @@
-import { TaskWithExercise } from '@/shared/api';
+import { exerciseModel } from '@/entities/exercise';
 import { List, Typography } from 'antd';
 import { ListItemMetaProps } from 'antd/lib/list';
 
 export type ExerciseCardBaseProps = {
-  ex: TaskWithExercise;
+  ex: exerciseModel.ExerciseInstance;
   onTitleClick?: () => void;
 } & Pick<ListItemMetaProps, 'description'>;
 
 export const ExerciseCardBase = ({
-  ex,
+  // ex,
   description,
   onTitleClick,
 }: ExerciseCardBaseProps) => {
@@ -20,7 +20,8 @@ export const ExerciseCardBase = ({
         style={{ marginBlockEnd: 0 }}
         title={
           <TitleComponent onClick={onTitleClick}>
-            {ex.exercise_desc.exercise.title}
+            {/* FIXME: update name here */}
+            {/* {ex.exercise_name} */}
           </TitleComponent>
         }
         description={description}

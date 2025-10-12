@@ -62,7 +62,11 @@ if (import.meta.env.DEV) {
             ['signature', 'some-signature'],
             [
               'user',
-              JSON.stringify({ id: 297913083, first_name: 'Anonymous' }),
+              JSON.stringify({
+                id: 297913083,
+                first_name: 'nik',
+                username: 'k1r',
+              }),
             ],
           ]).toString(),
         ],

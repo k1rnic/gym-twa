@@ -1,2 +1,2 @@
-export * from './use-exercise-descriptions';
+export * from './types';
 export * from './use-exercises';

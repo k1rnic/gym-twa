@@ -3,13 +3,17 @@ import {
   ExerciseCardList,
   ExerciseMeta,
   ExerciseMetaDivider,
+  exerciseModel,
   RestInfo,
-  SetsXRepsInfo,
   WeightInfo,
 } from '@/entities/exercise';
-import { WorkoutCardBase, WorkoutCardBaseProps } from '@/entities/workout';
+import {
+  WorkoutCardBase,
+  WorkoutCardBaseProps,
+  workoutModel,
+} from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
-import { TaskGroupWithTasks, TaskWithExercise } from '@/shared/api';
+
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
 import { ReactNode } from 'react';
@@ -17,16 +21,26 @@ import { Link } from 'react-router';
 
 export type WorkoutCardPlannedProps = {
   masterId?: number;
-  workout: TaskGroupWithTasks;
+  workout: workoutModel.Workout;
   createEnabled?: boolean;
   copyEnabled?: boolean;
-  onExClick?: (w: TaskGroupWithTasks, ex: TaskWithExercise) => void;
+  onExClick?: (
+    w: workoutModel.Workout,
+    ex: exerciseModel.ExerciseInstance,
+  ) => void;
   extraBefore?: ReactNode;
   extraAfter?: ReactNode;
 } & Pick<WorkoutCardBaseProps, 'title' | 'style'>;
 
 export const WorkoutCardPlanned = (props: WorkoutCardPlannedProps) => {
-  const { workout: w, masterId, title, style, onExClick } = props;
+  const {
+    workout: w,
+    masterId,
+    title,
+    style,
+    copyEnabled = false,
+    onExClick,
+  } = props;
 
   return (
     <WorkoutCardBase
@@ -42,7 +56,7 @@ export const WorkoutCardPlanned = (props: WorkoutCardPlannedProps) => {
               <Button type="primary" icon={<PlusOutlined />} />
             </Link>
           )}
-          {props.copyEnabled && masterId && (
+          {copyEnabled && masterId && (
             <CopyWorkoutButton
               workoutId={w.task_group_id}
               masterId={masterId}
@@ -53,7 +67,7 @@ export const WorkoutCardPlanned = (props: WorkoutCardPlannedProps) => {
       }
     >
       <ExerciseCardList
-        exercises={w.task}
+        exercises={w.tasks ?? []}
         renderItem={(ex) => (
           <ExerciseCardBase
             ex={ex}
@@ -61,16 +75,17 @@ export const WorkoutCardPlanned = (props: WorkoutCardPlannedProps) => {
             description={
               <ExerciseMeta>
                 <WeightInfo
-                  min_weight={ex.properties.min_weight}
-                  max_weight={ex.properties.max_weight}
+                  min_weight={ex.task_properties?.min_weight}
+                  max_weight={ex.task_properties?.max_weight}
                 />
                 <ExerciseMetaDivider />
-                <SetsXRepsInfo
-                  sets={ex.properties.sets}
-                  repeats={ex.properties.repeats}
-                />
+                {/* FIXME: fix dependencies */}
+                {/* <SetsXRepsInfo
+                  sets={ex.task_properties?.sets}
+                  repeats={ex.task_properties?.repeats}
+                /> */}
                 <ExerciseMetaDivider />
-                <RestInfo rest={ex.properties.rest} />
+                <RestInfo rest={ex.task_properties?.rest} />
               </ExerciseMeta>
             }
           />

@@ -12,8 +12,8 @@ export const ExerciseSelector = ({ masterId, ...selectProps }: Props) => {
 
   const options = useMemo(
     () =>
-      exercises?.map<DefaultOptionType>(({ exercise_id, title }) => ({
-        label: title,
+      exercises?.map<DefaultOptionType>(({ exercise_id, exercise_name }) => ({
+        label: exercise_name,
         value: exercise_id,
       })) ?? [],
     [exercises],

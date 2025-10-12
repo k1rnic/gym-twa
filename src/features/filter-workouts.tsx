@@ -1,11 +1,12 @@
-import { TaskGroupStatus, TaskGroupWithTasks } from '@/shared/api';
+import { workoutModel } from '@/entities/workout';
+import { TaskGroupStatus } from '@/shared/api';
 import { Segmented } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 
 export type WorkoutsFilterProps = {
   initialStatus?: TaskGroupStatus;
-  workouts: TaskGroupWithTasks[];
-  onFilter: (workouts: TaskGroupWithTasks[], status: TaskGroupStatus) => void;
+  workouts: workoutModel.Workout[];
+  onFilter: (workouts: workoutModel.Workout[], status: TaskGroupStatus) => void;
 };
 
 export const WorkoutFilter = (props: WorkoutsFilterProps) => {

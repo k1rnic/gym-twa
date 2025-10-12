@@ -1,17 +1,13 @@
-import { ExerciseForm, ExerciseFormProps } from '@/entities/exercise';
-import { Api, Task, TaskGroupStatus } from '@/shared/api';
+import { ExerciseForm, exerciseModel } from '@/entities/exercise';
+import { Api, TaskGroupStatus, UpdateTask } from '@/shared/api';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { useNavigate, useSearchParams } from 'react-router';
 import { Route } from './+types/master-workout-ex-details';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.task
-    .getTaskByTaskId(+params.exId)
-    .then(({ exercise_desc, ...data }): ExerciseFormProps['values'] => ({
-      ...data,
-      exercise_id: exercise_desc.exercise_id,
-      exercise_desc_id: exercise_desc.exercise_id,
-    }));
+    .getTasksWithExerciseByGroup(+params.exId)
+    .then((data) => data.find((item) => item.task_id === +params.exId)!);
 };
 
 const Page = ({ params, loaderData }: Route.ComponentProps) => {
@@ -22,12 +18,8 @@ const Page = ({ params, loaderData }: Route.ComponentProps) => {
 
   const goBack = () => navigate('../');
 
-  const handleSubmit = async (formData: Task) => {
-    await Api.task.masterUpdateTask(
-      +params.exId,
-      { master_id: +params.mId },
-      formData,
-    );
+  const handleSubmit = async (formData: exerciseModel.ExerciseInstance) => {
+    await Api.task.updateTask(formData as UpdateTask);
     goBack();
   };
 
@@ -41,7 +33,6 @@ const Page = ({ params, loaderData }: Route.ComponentProps) => {
     >
       <ExerciseForm
         masterId={+params.mId}
-        workoutId={+params.wId}
         values={loaderData}
         status={status}
         onSubmit={handleSubmit}

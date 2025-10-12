@@ -1,10 +1,10 @@
-import { TaskWithExercise } from '@/shared/api';
+import { exerciseModel } from '@/entities/exercise';
 import { List } from 'antd';
 import { ListProps } from 'antd/lib/list';
 
 export type ExerciseCardListProps = {
-  exercises: TaskWithExercise[];
-} & Pick<ListProps<TaskWithExercise>, 'renderItem'>;
+  exercises: exerciseModel.ExerciseInstance[];
+} & Pick<ListProps<exerciseModel.ExerciseInstance>, 'renderItem'>;
 
 export const ExerciseCardList = ({
   exercises,

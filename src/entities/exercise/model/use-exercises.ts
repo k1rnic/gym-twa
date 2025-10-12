@@ -1,8 +1,9 @@
-import { Api, Exercise } from '@/shared/api';
+import { exerciseModel } from '@/entities/exercise';
+import { Api } from '@/shared/api';
 import { useEffect, useState } from 'react';
 
 export const useExercises = (masterId: number) => {
-  const [data, setData] = useState<Exercise[]>([]);
+  const [data, setData] = useState<exerciseModel.Exercise[]>([]);
 
   useEffect(() => {
     Api.exercise.getListOfExercise(masterId).then(setData);

@@ -3,14 +3,17 @@ import {
   ExerciseCardList,
   ExerciseMeta,
   ExerciseMetaDivider,
+  exerciseModel,
   RestInfo,
-  SetRepListField,
-  SetsXRepsInfo,
   WeightInfo,
 } from '@/entities/exercise';
-import { WorkoutCardBase, WorkoutCardBaseProps } from '@/entities/workout';
+import {
+  WorkoutCardBase,
+  WorkoutCardBaseProps,
+  workoutModel,
+} from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
-import { TaskGroupWithTasks, TaskWithExercise } from '@/shared/api';
+
 import { formatDate } from '@/shared/lib/date';
 import { Flex } from '@/shared/ui/flex';
 import { Space, Typography } from 'antd';
@@ -18,15 +21,18 @@ import { ReactNode } from 'react';
 
 export type WorkoutCardRunningProps = {
   masterId?: number;
-  workout: TaskGroupWithTasks;
+  workout: workoutModel.Workout;
   copyEnabled?: boolean;
   extraBefore?: ReactNode;
   extraAfter?: ReactNode;
-  onExClick?: (w: TaskGroupWithTasks, ex: TaskWithExercise) => void;
+  onExClick?: (
+    w: workoutModel.Workout,
+    ex: exerciseModel.ExerciseInstance,
+  ) => void;
 } & Pick<WorkoutCardBaseProps, 'style'>;
 
 export const WorkoutCardRunning = (props: WorkoutCardRunningProps) => {
-  const { workout: w, masterId, style, onExClick } = props;
+  const { workout: w, masterId, style, copyEnabled = false, onExClick } = props;
 
   return (
     <WorkoutCardBase
@@ -37,7 +43,7 @@ export const WorkoutCardRunning = (props: WorkoutCardRunningProps) => {
       extra={
         <Space>
           {props.extraBefore}
-          {props.copyEnabled && masterId && (
+          {copyEnabled && masterId && (
             <CopyWorkoutButton
               workoutId={w.task_group_id}
               masterId={masterId}
@@ -48,32 +54,36 @@ export const WorkoutCardRunning = (props: WorkoutCardRunningProps) => {
       }
     >
       <ExerciseCardList
-        exercises={w.task}
+        exercises={w.tasks ?? []}
         renderItem={(ex) => (
           <ExerciseCardBase
             ex={ex}
             onTitleClick={onExClick ? () => onExClick(w, ex) : undefined}
             description={
               <Flex gap={8}>
-                {ex.properties.sets ? <Typography>Подходы</Typography> : null}
+                {ex.task_properties?.sets ? (
+                  <Typography>Подходы</Typography>
+                ) : null}
 
-                <SetRepListField
+                {/* FIXME: fix dependencies */}
+                {/* <SetRepListField
                   exercise={ex}
                   inputProps={{ readOnly: true }}
-                />
+                /> */}
 
                 <ExerciseMeta>
                   <WeightInfo
-                    min_weight={ex.properties.min_weight}
-                    max_weight={ex.properties.max_weight}
+                    min_weight={ex.task_properties?.min_weight}
+                    max_weight={ex.task_properties?.max_weight}
                   />
                   <ExerciseMetaDivider />
-                  <SetsXRepsInfo
-                    sets={ex.properties.sets}
-                    repeats={ex.properties.repeats}
-                  />
+                  {/* FIXME: fix dependencies */}
+                  {/* <SetsXRepsInfo
+                    sets={ex.task_properties?.sets}
+                    repeats={ex.task_properties?.repeats}
+                  /> */}
                   <ExerciseMetaDivider />
-                  <RestInfo rest={ex.properties.rest} />
+                  <RestInfo rest={ex.task_properties?.rest} />
                 </ExerciseMeta>
               </Flex>
             }
