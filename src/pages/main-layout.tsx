@@ -16,13 +16,13 @@ export default function Page(props: Route.ComponentProps) {
   const viewerId =
     view === 'master' ? viewer.master?.master_id : viewer.gymer?.gymer_id;
 
-  useEffect(() => {
-    const isDiffView = !props.matches.at(-1)?.pathname.startsWith(`/${view}`);
+  // useEffect(() => {
+  //   const isDiffView = !props.matches.at(-1)?.pathname.startsWith(`/${view}`);
 
-    if (isDiffView) {
-      navigate(`/${view}/${viewerId}`);
-    }
-  }, [view]);
+  //   if (isDiffView) {
+  //     navigate(`/${view}/${viewerId}`);
+  //   }
+  // }, [view]);
 
   return (
     <Flex

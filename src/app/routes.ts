@@ -13,5 +13,9 @@ export default [
         route(':wId', '../pages/gymmer-workout-gym.tsx'),
       ]),
     ]),
+    route('exercises', '../pages/exercise-layout.tsx', [
+      route('', '../pages/exercises.tsx'),
+      route(':exId', '../pages/exercise-details.tsx'),
+    ]),
   ]),
 ] satisfies RouteConfig;

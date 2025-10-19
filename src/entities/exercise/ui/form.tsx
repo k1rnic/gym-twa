@@ -1,7 +1,7 @@
 import { exerciseModel } from '@/entities/exercise';
 import { TaskGroupStatus } from '@/shared/api';
 import { Flex } from '@/shared/ui/flex';
-import { CloseOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, InputNumber, Space } from 'antd';
 import { useMemo } from 'react';
 import { ExerciseSelector } from './selector';
@@ -22,22 +22,17 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
     ? props.status !== TaskGroupStatus.Planned
     : false;
 
-  const initialData = useMemo<Partial<FormData>>(
-    () => ({ properties: {}, ...props.values }),
+  const initialData = useMemo<DeepPartial<FormData>>(
+    () => ({
+      task_properties: {
+        rest: 0,
+        sets: [],
+        ...props.values?.task_properties,
+      },
+      ...props.values,
+    }),
     [props.values],
   );
-
-  const updateWeights = () => {
-    const minWeight =
-      form.getFieldValue(['task_properties', 'min_weight']) || 0;
-    const maxWeight =
-      form.getFieldValue(['task_properties', 'max_weight']) || 0;
-    if (minWeight > maxWeight) {
-      form.setFieldValue(['task_properties', 'max_weight'], minWeight);
-    } else if (maxWeight < minWeight) {
-      form.setFieldValue(['task_properties', 'min_weight'], maxWeight);
-    }
-  };
 
   const handleSubmit = (formData: FormData) => {
     props.onSubmit(formData);
@@ -48,6 +43,7 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
       form={form}
       disabled={readonly}
       initialValues={initialData}
+      requiredMark={false}
       size="middle"
       onFinish={handleSubmit}
       onFinishFailed={(props) => {
@@ -62,28 +58,6 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
           <ExerciseSelector masterId={props.masterId} />
         </Form.Item>
 
-        <Space align="baseline">
-          <Form.Item<FormData> name={['task_properties', 'min_weight']}>
-            <InputNumber
-              controls={false}
-              placeholder="Вес"
-              suffix="кг"
-              style={{ width: '100%' }}
-              onBlur={updateWeights}
-            />
-          </Form.Item>
-          -
-          <Form.Item<FormData> name={['task_properties', 'max_weight']}>
-            <InputNumber
-              controls={false}
-              placeholder="Вес"
-              suffix="кг"
-              style={{ width: '100%' }}
-              onBlur={updateWeights}
-            />
-          </Form.Item>
-        </Space>
-
         <Form.Item<FormData> name={['task_properties', 'rest']}>
           <InputNumber
             controls={false}
@@ -93,25 +67,79 @@ export const ExerciseForm = (props: ExerciseFormProps) => {
           />
         </Form.Item>
 
-        <Space align="baseline">
-          <Form.Item<FormData> name={['task_properties', 'sets']}>
-            <InputNumber
-              controls={false}
-              placeholder="Подходы"
-              style={{ width: '100%' }}
-            />
-          </Form.Item>
+        <Form.List name={['task_properties', 'sets']}>
+          {(fields, { add, remove }) => (
+            <div>
+              {fields.map((field, index) => (
+                <Space
+                  key={field.key}
+                  align="center"
+                  style={{
+                    display: 'flex',
+                    marginBottom: 8,
+                    width: '100%',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Form.Item
+                    {...field}
+                    name={[field.name, 'plan_value']}
+                    label={`Вес`}
+                    style={{ flex: 1 }}
+                    rules={[{ required: true, message: 'Введите вес' }]}
+                  >
+                    <InputNumber
+                      suffix="кг"
+                      min={0}
+                      style={{ width: '100%' }}
+                    />
+                  </Form.Item>
 
-          <CloseOutlined />
+                  <Form.Item
+                    {...field}
+                    name={[field.name, 'plan_rep']}
+                    label={`Повторы`}
+                    style={{ flex: 1 }}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Введите количество повторений',
+                      },
+                    ]}
+                  >
+                    <InputNumber
+                      placeholder="Количество"
+                      min={1}
+                      style={{ width: '100%' }}
+                    />
+                  </Form.Item>
 
-          {/* <Form.Item<FormData> name={['task_properties', 'repeats']}>
-            <InputNumber
-              controls={false}
-              placeholder="Повторения"
-              style={{ width: '100%' }}
-            />
-          </Form.Item> */}
-        </Space>
+                  {!readonly && (
+                    <Button
+                      danger
+                      type="text"
+                      icon={<MinusCircleOutlined />}
+                      onClick={() => remove(field.name)}
+                    />
+                  )}
+                </Space>
+              ))}
+
+              {!readonly && (
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => add({ plan_value: null, plan_rep: null })}
+                    icon={<PlusOutlined />}
+                    block
+                  >
+                    Добавить подход
+                  </Button>
+                </Form.Item>
+              )}
+            </div>
+          )}
+        </Form.List>
 
         {!readonly && (
           <Button block type="primary" htmlType="submit">

@@ -1,7 +1,11 @@
 import { stringToColor } from '@/shared/lib/string';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { Avatar as AvatarAntd, Typography } from 'antd';
+import {
+  AvatarProps as AntdAvatarProps,
+  Avatar as AvatarAntd,
+  Typography,
+} from 'antd';
 import { forwardRef } from 'react';
 import classes from './styles.module.css';
 
@@ -17,8 +21,9 @@ export type AvatarProps = {
   name?: string;
   active?: boolean;
   size?: number;
+  disableFallback?: boolean;
   onItemClick?: () => void;
-};
+} & Pick<AntdAvatarProps, 'icon'>;
 
 export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>((props, ref) => {
   const { name = '', active, size = 64, onItemClick } = props;
@@ -41,11 +46,12 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>((props, ref) => {
         <AvatarAntd
           ref={ref}
           size={size}
+          icon={props.icon}
           className={classes.avatar}
           style={{ backgroundColor: avatarFallback.color }}
           onClick={() => onItemClick?.()}
         >
-          {avatarFallback.children}
+          {!props.disableFallback && avatarFallback.children}
         </AvatarAntd>
       </Flex>
 
