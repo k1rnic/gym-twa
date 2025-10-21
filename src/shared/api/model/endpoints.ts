@@ -15,6 +15,8 @@ export enum TaskStatus {
   Planned = "planned",
   Running = "running",
   Finished = "finished",
+  Deleted = "deleted",
+  Closed = "closed",
 }
 
 /** TaskGroupStatus */
@@ -22,6 +24,8 @@ export enum TaskGroupStatus {
   Planned = "planned",
   Running = "running",
   Finished = "finished",
+  Deleted = "deleted",
+  Closed = "closed",
 }
 
 /** ExerciseStatus */
@@ -195,6 +199,8 @@ export interface TaskAggregate {
 export interface TaskGroup {
   /** Task Group Id */
   task_group_id: number;
+  /** Title */
+  title: string | null;
   /** Master Id */
   master_id: number;
   /** Gymer Id */
@@ -217,6 +223,8 @@ export interface TaskGroup {
 export interface TaskGroupAggregate {
   /** Task Group Id */
   task_group_id: number;
+  /** Title */
+  title: string | null;
   /** Master Id */
   master_id: number;
   /** Gymer Id */
@@ -704,6 +712,11 @@ export class Endpoints<
          * gymer id
          */
         gymer_id: number;
+        /**
+         * Title
+         * title
+         */
+        title?: string | null;
       },
       params: RequestParams = {},
     ) =>
@@ -768,6 +781,73 @@ export class Endpoints<
         method: "PUT",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_group
+     * @name UpdateTaskGroupStatus
+     * @summary update task_group status
+     * @request PUT:/gym/task_group/{task_group_id}/status
+     */
+    updateTaskGroupStatus: (
+      taskGroupId: number,
+      query: {
+        /** status task_group */
+        status_name: TaskGroupStatus;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/task_group/${taskGroupId}/status`,
+        method: "PUT",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_group
+     * @name UpdateTaskGroupTitle
+     * @summary update task_group title
+     * @request PUT:/gym/task_group/{task_group_id}/title
+     */
+    updateTaskGroupTitle: (
+      taskGroupId: number,
+      query: {
+        /**
+         * Title
+         * title task_group
+         */
+        title: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/task_group/${taskGroupId}/title`,
+        method: "PUT",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_group
+     * @name CopyTaskGroup
+     * @summary Creating task group
+     * @request POST:/gym/task_group/copy/{task_group_id}
+     */
+    copyTaskGroup: (taskGroupId: number, params: RequestParams = {}) =>
+      this.request<TaskGroupAggregate, HTTPValidationError>({
+        path: `/gym/task_group/copy/${taskGroupId}`,
+        method: "POST",
         format: "json",
         ...params,
       }),
