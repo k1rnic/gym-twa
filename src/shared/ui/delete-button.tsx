@@ -1,16 +1,25 @@
 import { Button } from 'antd';
+import { ButtonProps } from 'antd/lib';
 import { PropsWithChildren } from 'react';
 
 type DeleteButtonProps = {
   onDelete: () => void;
-};
+} & ButtonProps;
 
 export const DeleteButton = ({
   children,
   onDelete,
+  ...buttonProps
 }: PropsWithChildren<DeleteButtonProps>) => {
   return (
-    <Button block size="middle" danger type="primary" onClick={onDelete}>
+    <Button
+      block
+      size="middle"
+      danger
+      type="primary"
+      onClick={onDelete}
+      {...buttonProps}
+    >
       {children || 'Удалить'}
     </Button>
   );

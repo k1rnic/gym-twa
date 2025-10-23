@@ -1,7 +1,6 @@
 import { Route } from '.react-router/types/src/pages/+types/workout-layout';
 import { viewerModel } from '@/entities/viewer';
 import { Api, TaskGroupStatus } from '@/shared/api';
-import { useMatchExact } from '@/shared/lib/router';
 import { AvatarList, AvatarListItem } from '@/shared/ui/avatar-list';
 import { Flex } from '@/shared/ui/flex';
 import { Divider } from 'antd';
@@ -14,7 +13,6 @@ export const clientLoader = async (props: Route.ClientLoaderArgs) => {
 
 const Page = ({ loaderData, params }: Route.ComponentProps) => {
   const viewer = viewerModel.useViewer();
-  const match = useMatchExact();
 
   const navigate = useNavigate();
 

@@ -706,6 +706,22 @@ export class Endpoints<
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags task
+     * @name GetTaskByTaskId
+     * @summary Getting task by task_id
+     * @request GET:/gym/task/{task_id}
+     */
+    getTaskByTaskId: (taskId: number, params: RequestParams = {}) =>
+      this.request<TaskAggregate | null, HTTPValidationError>({
+        path: `/gym/task/${taskId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
   };
   taskGroup = {
     /**
@@ -765,10 +781,10 @@ export class Endpoints<
          */
         gymer_id: number;
         /**
+         * Status
          * Статус task_group
-         * @default "planned"
          */
-        status?: TaskGroupStatus;
+        status?: TaskGroupStatus | null;
       },
       params: RequestParams = {},
     ) =>
@@ -805,14 +821,30 @@ export class Endpoints<
      * No description
      *
      * @tags task_group
-     * @name UpdateTaskGroupStatus
-     * @summary update task_group status
+     * @name DeleteTaskGroup
+     * @summary Delete task_group
      * @request DELETE:/gym/task_group/{task_group_id}
      */
-    updateTaskGroupStatus: (taskGroupId: number, params: RequestParams = {}) =>
+    deleteTaskGroup: (taskGroupId: number, params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/task_group/${taskGroupId}`,
         method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_group
+     * @name TaskGroupById
+     * @summary Getting task group by id
+     * @request GET:/gym/task_group/{task_group_id}
+     */
+    taskGroupById: (taskGroupId: number, params: RequestParams = {}) =>
+      this.request<TaskGroupAggregate | null, HTTPValidationError>({
+        path: `/gym/task_group/${taskGroupId}`,
+        method: "GET",
         format: "json",
         ...params,
       }),
@@ -848,8 +880,32 @@ export class Endpoints<
      * No description
      *
      * @tags task_group
+     * @name UpdateTaskGroupStatus
+     * @summary Update task_group status
+     * @request PUT:/gym/task_group/{task_group_id}/status
+     */
+    updateTaskGroupStatus: (
+      taskGroupId: number,
+      query: {
+        /** status task_group */
+        status: TaskGroupStatus;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/task_group/${taskGroupId}/status`,
+        method: "PUT",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_group
      * @name CopyTaskGroup
-     * @summary Creating task group
+     * @summary Creating task_group
      * @request POST:/gym/task_group/copy/{task_group_id}
      */
     copyTaskGroup: (taskGroupId: number, params: RequestParams = {}) =>

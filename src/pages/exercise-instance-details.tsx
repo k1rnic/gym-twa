@@ -1,29 +1,29 @@
 import { ExerciseInstanceForm, exerciseModel } from '@/entities/exercise';
 import { Api, TaskGroupStatus, UpdateTask } from '@/shared/api';
 import { DeleteButton } from '@/shared/ui/delete-button';
+import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Route } from './+types/exercise-instance-details';
-import { Flex } from '@/shared/ui/flex';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
-  return await Api.task
-    .getTasksWithExerciseByGroup(+params.wId)
-    .then((data) => data.find((item) => item.task_id === +params.exId)!);
+  return await Api.task.getTaskByTaskId(+params.exId);
 };
 
-const Page = ({ params, loaderData }: Route.ComponentProps) => {
+const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   const navigate = useNavigate();
-  const [formValues, setFormValues] =
-    useState<exerciseModel.ExerciseInstance>(loaderData);
+  const [formValues, setFormValues] = useState<exerciseModel.ExerciseInstance>(
+    initialValues!,
+  );
 
   const status = params.status as TaskGroupStatus;
+  const readonly = status === TaskGroupStatus.Finished;
 
   const goBack = () => navigate('../');
 
   const deleteExercise = async () => {
-    await Api.task.deleteTask(loaderData.task_id);
+    await Api.task.deleteTask(initialValues!.task_id);
     goBack();
   };
 
@@ -44,14 +44,15 @@ const Page = ({ params, loaderData }: Route.ComponentProps) => {
     >
       <Flex height="100%">
         <ExerciseInstanceForm
-          type="plan"
+          readonly={readonly}
+          type={status === TaskGroupStatus.Planned ? 'plan' : 'fact'}
           masterId={+params.mId}
-          values={loaderData}
+          values={initialValues!}
           status={status}
           onChange={setFormValues}
         />
 
-        <DeleteButton onDelete={deleteExercise} />
+        <DeleteButton hidden={readonly} onDelete={deleteExercise} />
       </Flex>
     </PageDrawer>
   );

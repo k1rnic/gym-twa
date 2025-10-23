@@ -20,6 +20,7 @@ export type ExerciseInstanceFormProps<T extends 'fact' | 'plan'> = {
   type: T;
   onSubmit?: (values: FormValues) => void;
   onChange?: (values: FormValues) => void;
+  readonly?: boolean;
 };
 
 export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
@@ -56,6 +57,7 @@ export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
       form={form}
       initialValues={initialValues}
       size="middle"
+      disabled={props.readonly}
       style={{ overflow: 'hidden', height: '100%' }}
     >
       <Flex height="100%">
@@ -76,7 +78,7 @@ export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
         <Form.List name={['task_properties', 'sets']}>
           {(fields, { add, remove }) => (
             <Flex height="100%" style={{ overflow: 'hidden' }}>
-              <Form.Item>
+              <Form.Item hidden={props.readonly}>
                 <Button
                   block
                   type="dashed"
@@ -156,6 +158,7 @@ export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
 
                     <Button
                       type="text"
+                      hidden={props.readonly}
                       icon={<CloseOutlined />}
                       onClick={() => remove(field.name)}
                     />

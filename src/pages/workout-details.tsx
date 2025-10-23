@@ -1,6 +1,7 @@
 import { exerciseModel } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { Api, TaskGroupStatus } from '@/shared/api';
+import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { PlusOutlined } from '@ant-design/icons';
@@ -9,17 +10,11 @@ import { DescriptionsItemType } from 'antd/lib/descriptions';
 import { useCallback, useMemo } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { Route } from './+types/workout-details';
-import { DeleteButton } from '@/shared/ui/delete-button';
 
 type FormValues = workoutModel.Workout;
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
-  return await Api.taskGroup
-    .listTaskGroup({
-      gymer_id: +params.gId,
-      master_id: +params.mId,
-    })
-    .then((data) => data.find((group) => group.task_group_id === +params.wId));
+  return await Api.taskGroup.taskGroupById(+params.wId);
 };
 
 const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
@@ -33,6 +28,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   );
 
   const status = params.status as TaskGroupStatus;
+  const readonly = status === TaskGroupStatus.Finished;
 
   const getExerciseDescriptions = useCallback(
     (ex: exerciseModel.ExerciseInstance): DescriptionsItemType[] => [
@@ -67,7 +63,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
 
   const deleteWorkout = async () => {
     try {
-      await Api.taskGroup.updateTaskGroupStatus(workout!.task_group_id);
+      await Api.taskGroup.deleteTaskGroup(workout!.task_group_id);
     } finally {
       navigate('../');
     }
@@ -94,7 +90,12 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
       onClose={submitChanges}
     >
       <Flex height="100%" style={{ overflow: 'hidden' }}>
-        <Form<FormValues> form={form} initialValues={initialData} size="middle">
+        <Form<FormValues>
+          form={form}
+          initialValues={initialData}
+          size="middle"
+          disabled={readonly}
+        >
           <Form.Item<FormValues> name="title">
             <Input style={{ width: '100%' }} placeholder="Название" />
           </Form.Item>
@@ -126,7 +127,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
           ))}
         </Flex>
 
-        <DeleteButton onDelete={deleteWorkout} />
+        <DeleteButton hidden={readonly} onDelete={deleteWorkout} />
       </Flex>
 
       <Outlet />

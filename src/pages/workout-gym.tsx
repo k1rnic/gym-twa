@@ -13,12 +13,7 @@ import { Route } from './+types/workout-details';
 type FormValues = workoutModel.Workout;
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
-  return await Api.taskGroup
-    .listTaskGroup({
-      gymer_id: +params.gId,
-      master_id: +params.mId,
-    })
-    .then((data) => data.find((group) => group.task_group_id === +params.wId));
+  return await Api.taskGroup.taskGroupById(+params.wId);
 };
 
 const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
@@ -77,7 +72,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
       }
       if (status === TaskGroupStatus.Planned) {
         await Api.taskGroup.updateTaskGroupStatus(+params.wId, {
-          status_name: TaskGroupStatus.Running,
+          status: TaskGroupStatus.Running,
         });
         goToWorkouts(TaskGroupStatus.Running);
       }
@@ -89,7 +84,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   const finishWorkout = async () => {
     try {
       await Api.taskGroup.updateTaskGroupStatus(+params.wId, {
-        status_name: TaskGroupStatus.Finished,
+        status: TaskGroupStatus.Finished,
       });
       goToWorkouts(TaskGroupStatus.Finished);
     } catch {

@@ -6,15 +6,14 @@ import { useNavigate } from 'react-router';
 import { Route } from './+types/exercise-instance-gym';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
-  return await Api.task
-    .getTasksWithExerciseByGroup(+params.wId)
-    .then((data) => data.find((item) => item.task_id === +params.exId)!);
+  return await Api.task.getTaskByTaskId(+params.exId);
 };
 
-const Page = ({ params, loaderData }: Route.ComponentProps) => {
+const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   const navigate = useNavigate();
-  const [formValues, setFormValues] =
-    useState<exerciseModel.ExerciseInstance>(loaderData);
+  const [formValues, setFormValues] = useState<exerciseModel.ExerciseInstance>(
+    initialValues!,
+  );
 
   const status = params.status as TaskGroupStatus;
 
@@ -38,7 +37,7 @@ const Page = ({ params, loaderData }: Route.ComponentProps) => {
       <ExerciseInstanceForm
         type="fact"
         masterId={+params.mId}
-        values={loaderData}
+        values={initialValues!}
         status={status}
         onChange={setFormValues}
       />
