@@ -11,12 +11,14 @@ interface ExerciseGroupProps {
   data: Exercise[];
   onSelect: (exercise: Exercise) => void;
   icon?: React.ReactNode;
+  listItemStyle?: (ex: Exercise, idx: number) => React.CSSProperties;
 }
 
 export const ExerciseGroup: React.FC<ExerciseGroupProps> = ({
   title,
   data,
   icon,
+  listItemStyle,
   onSelect,
 }) => {
   if (!data.length) return null;
@@ -27,10 +29,15 @@ export const ExerciseGroup: React.FC<ExerciseGroupProps> = ({
       <List
         itemLayout="horizontal"
         dataSource={data}
-        renderItem={(item) => (
+        renderItem={(item, idx) => (
           <List.Item
             onClick={() => onSelect(item)}
-            style={{ cursor: 'pointer', paddingLeft: 0, paddingRight: 0 }}
+            style={{
+              cursor: 'pointer',
+              paddingLeft: 0,
+              paddingRight: 0,
+              ...listItemStyle?.(item, idx),
+            }}
           >
             <Flex vertical={false} width="100%">
               <List.Item.Meta

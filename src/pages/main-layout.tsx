@@ -1,42 +1,27 @@
-import { viewerModel } from '@/entities/viewer';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
+import { AppToolbar } from '@/widgets/app-toolbar';
 
-import { useSwitchView } from '@/features/switch-view';
-import { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router';
-import { Route } from './+types/main-layout';
+import { Outlet } from 'react-router';
 
-export default function Page(props: Route.ComponentProps) {
-  const navigate = useNavigate();
-  const [view] = useSwitchView();
+export default function Page() {
   const { token } = useTheme();
-
-  const viewer = viewerModel.useViewer();
-  const viewerId =
-    view === 'master' ? viewer.master?.master_id : viewer.gymer?.gymer_id;
-
-  // useEffect(() => {
-  //   const isDiffView = !props.matches.at(-1)?.pathname.startsWith(`/${view}`);
-
-  //   if (isDiffView) {
-  //     navigate(`/${view}/${viewerId}`);
-  //   }
-  // }, [view]);
 
   return (
     <Flex
+      height="100%"
+      width="100%"
       gap="small"
       p={token.padding}
-      style={{
-        height: '100%',
-        width: '100%',
-        backgroundColor: token.colorBgContainer,
-      }}
+      style={{ backgroundColor: token.colorBgContainer, paddingBottom: 0 }}
     >
-      <Flex flex={1} py={token.paddingXS} style={{ overflow: 'hidden' }}>
+      <Flex
+        flex={1}
+        style={{ overflow: 'hidden', paddingTop: token.paddingXS }}
+      >
         <Outlet />
       </Flex>
+      <AppToolbar />
     </Flex>
   );
 }

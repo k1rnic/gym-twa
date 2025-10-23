@@ -4,3 +4,15 @@
 *::-webkit-scrollbar {
   display: none;
 }
+
+.ant-input-number-affix-wrapper {
+  color: var(--ant-color-text-quaternary);
+}
+
+.ant-descriptions.ant-descriptions-bordered > .ant-descriptions-view {
+  border: none;
+}
+
+.ant-flex:empty {
+  display: unset;
+}
