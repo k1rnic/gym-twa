@@ -30,7 +30,7 @@ export const ExerciseList = ({
     <Flex height="100%" style={{ overflow: 'hidden' }} gap={8}>
       <Search
         allowClear
-        size="middle"
+        size="large"
         placeholder={searchPlaceholder}
         onChange={(e) => setQuery(e.target.value)}
       />
@@ -46,6 +46,9 @@ export const ExerciseList = ({
             title="Базовые"
             data={grouped.basic}
             onSelect={(ex) => onSelect?.(ex)}
+            listItemStyle={(_, idx) => ({
+              marginBottom: idx === grouped.basic.length - 1 ? 64 : 0,
+            })}
           />
         </Flex>
       ) : (

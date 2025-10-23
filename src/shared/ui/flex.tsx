@@ -1,12 +1,13 @@
 import { useSpacing, UseSpacingProps } from '@/shared/lib/theme';
 import { Flex as FlexAntd, FlexProps as FlexAntdProps } from 'antd';
-import { CSSProperties } from 'react';
+import { AnyObject } from 'antd/lib/_util/type';
+import { CSSProperties, PropsWithChildren } from 'react';
 
-export type FlexProps<P> = FlexAntdProps<P> &
+export type FlexProps<P = AnyObject> = Omit<FlexAntdProps<P>, 'children'> &
   Pick<CSSProperties, 'height' | 'width'> &
   UseSpacingProps;
 
-export const Flex = <P,>(props: FlexProps<P>) => {
+export const Flex = <P,>(props: PropsWithChildren<FlexProps<P>>) => {
   const {
     p = 0,
     px,

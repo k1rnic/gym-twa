@@ -24,7 +24,7 @@ export const ExerciseSelector = ({ masterId, ...selectProps }: Props) => {
   return (
     <Select
       showSearch
-      placeholder="Выбрать упражнение"
+      placeholder="Упражнение"
       optionFilterProp="label"
       options={options}
       {...selectProps}

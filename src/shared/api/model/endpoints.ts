@@ -690,6 +690,22 @@ export class Endpoints<
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags task
+     * @name DeleteTask
+     * @summary Delete task
+     * @request DELETE:/gym/task/{task_id}
+     */
+    deleteTask: (taskId: number, params: RequestParams = {}) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/task/${taskId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
   };
   taskGroup = {
     /**
@@ -791,20 +807,12 @@ export class Endpoints<
      * @tags task_group
      * @name UpdateTaskGroupStatus
      * @summary update task_group status
-     * @request PUT:/gym/task_group/{task_group_id}/status
+     * @request DELETE:/gym/task_group/{task_group_id}
      */
-    updateTaskGroupStatus: (
-      taskGroupId: number,
-      query: {
-        /** status task_group */
-        status_name: TaskGroupStatus;
-      },
-      params: RequestParams = {},
-    ) =>
+    updateTaskGroupStatus: (taskGroupId: number, params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
-        path: `/gym/task_group/${taskGroupId}/status`,
-        method: "PUT",
-        query: query,
+        path: `/gym/task_group/${taskGroupId}`,
+        method: "DELETE",
         format: "json",
         ...params,
       }),
@@ -1006,6 +1014,22 @@ export class Endpoints<
         path: `/gym/exercise/link`,
         method: "DELETE",
         query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name DeleteExercise
+     * @summary Delete exercise by exercise_id
+     * @request DELETE:/gym/exercise/{exercise_id}
+     */
+    deleteExercise: (exerciseId: number, params: RequestParams = {}) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/exercise/${exerciseId}`,
+        method: "DELETE",
+        format: "json",
         ...params,
       }),
   };
