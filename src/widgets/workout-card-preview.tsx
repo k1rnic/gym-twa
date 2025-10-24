@@ -22,7 +22,13 @@ export type WorkoutCardPreviewProps = {
 } & Pick<CardProps, 'style' | 'onClick'>;
 
 export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
-  const { workout: w, extraBefore, extraAfter, ...cardProps } = props;
+  const {
+    workout: w,
+    extraBefore,
+    extraAfter,
+    titleExtraBefore,
+    ...cardProps
+  } = props;
 
   const exerciseMeta = useMemo(
     () =>
@@ -47,7 +53,7 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
           gap={8}
           style={{ whiteSpace: 'break-spaces' }}
         >
-          {props.titleExtraBefore}
+          {titleExtraBefore}
           <Typography.Text ellipsis>
             {w.title ?? 'Без названия'}
           </Typography.Text>
