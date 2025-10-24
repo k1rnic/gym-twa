@@ -57,9 +57,10 @@ const SortableExerciseCard = ({
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition,
-    cursor: 'grab',
-    opacity: isDragging ? 0.9 : 1,
+    cursor: isDragging ? 'grabbing' : 'grab',
+    opacity: isDragging ? 0.95 : 1,
     touchAction: 'none',
+    zIndex: isDragging ? 1000 : 'auto',
   };
 
   return (

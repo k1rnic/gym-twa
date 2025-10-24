@@ -27,7 +27,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button, Segmented, Space } from 'antd';
+import { Button, Segmented } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
 import { FloatButton } from 'antd/lib';
 import { useEffect, useState } from 'react';
@@ -63,6 +63,8 @@ const SortableWorkout = ({
     transition,
     touchAction: 'none',
     cursor: isDragging ? 'grabbing' : 'grab',
+    opacity: isDragging ? 0.95 : 1,
+    zIndex: isDragging ? 1000 : 'auto',
   };
 
   const extraBefore = (
@@ -191,10 +193,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
           items={innerWorkouts.map((i) => i.task_group_id)}
           strategy={verticalListSortingStrategy}
         >
-          <Space
-            direction="vertical"
-            style={{ overflowY: 'auto', height: '110%' }}
-          >
+          <Flex height="100%" gap={8} style={{ overflowY: 'auto' }}>
             {innerWorkouts.map((w, idx, { length }) => (
               <SortableWorkout
                 key={w.task_group_id}
@@ -204,7 +203,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
                 onClick={() => goToWorkoutDetails(w)}
               />
             ))}
-          </Space>
+          </Flex>
         </SortableContext>
       </DndContext>
 

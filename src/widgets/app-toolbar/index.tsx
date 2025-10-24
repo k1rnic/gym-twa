@@ -35,6 +35,7 @@ export const AppToolbar = () => {
         width: 'max-content',
         position: 'absolute',
         bottom: 4,
+        zIndex: 1000,
         left: '50%',
         transform: 'translate(-50%, -50%)',
         border: `4px solid ${token.colorBgContainer}`,
