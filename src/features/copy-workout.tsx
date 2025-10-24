@@ -19,7 +19,7 @@ export const CopyWorkoutButton = (props: CopyWorkoutButtonProps) => {
     <Button
       icon={<CopyOutlined />}
       onClick={copyWorkout}
-      type="text"
+      type="dashed"
       size="small"
     />
   );

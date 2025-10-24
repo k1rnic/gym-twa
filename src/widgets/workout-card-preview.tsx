@@ -2,12 +2,21 @@ import { workoutModel } from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
 import { plural } from '@/shared/lib/plural';
 
-import { Card, CardProps, Descriptions, Empty, Space, Typography } from 'antd';
+import {
+  Card,
+  CardProps,
+  Descriptions,
+  Empty,
+  Flex,
+  Space,
+  Typography,
+} from 'antd';
 import { DescriptionsItemType } from 'antd/lib/descriptions';
 import { ReactNode, useMemo } from 'react';
 
 export type WorkoutCardPreviewProps = {
   workout: workoutModel.Workout;
+  titleExtraBefore?: ReactNode;
   extraBefore?: ReactNode;
   extraAfter?: ReactNode;
 } & Pick<CardProps, 'style' | 'onClick'>;
@@ -31,7 +40,19 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
   return (
     <Card
       {...cardProps}
-      title={w.title ?? 'Без названия'}
+      title={
+        <Flex
+          vertical={false}
+          align="center"
+          gap={8}
+          style={{ whiteSpace: 'break-spaces' }}
+        >
+          {props.titleExtraBefore}
+          <Typography.Text ellipsis>
+            {w.title ?? 'Без названия'}
+          </Typography.Text>
+        </Flex>
+      }
       styles={{ body: { padding: exerciseMeta?.length ? 0 : undefined } }}
       extra={
         <Space onClick={(e) => e.stopPropagation()}>

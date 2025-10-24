@@ -7,11 +7,31 @@ import {
   WorkoutCardPreview,
   WorkoutCardPreviewProps,
 } from '@/widgets/workout-card-preview';
-import { PlusOutlined } from '@ant-design/icons';
+import { HolderOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  restrictToFirstScrollableAncestor,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Button, Segmented, Space } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
 import { FloatButton } from 'antd/lib';
-import { Outlet, useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Outlet, useNavigate, useRevalidator } from 'react-router';
 import { Route } from './+types/workouts';
 
 const FILTERS: SegmentedOptions<TaskGroupStatus> = [
@@ -20,7 +40,7 @@ const FILTERS: SegmentedOptions<TaskGroupStatus> = [
   { label: 'завершенные', value: TaskGroupStatus.Finished },
 ];
 
-const WorkoutComponent = ({
+const SortableWorkout = ({
   status,
   ...props
 }: WorkoutCardPreviewProps & { status: TaskGroupStatus }) => {
@@ -29,31 +49,52 @@ const WorkoutComponent = ({
   const isMineWorkout = props.workout.gymer_id === viewer.gymer?.gymer_id;
   const hasExercises = Boolean(props.workout.tasks?.length);
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: props.workout.task_group_id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    touchAction: 'none',
+    cursor: isDragging ? 'grabbing' : 'grab',
+  };
+
+  const extraBefore = (
+    <HolderOutlined
+      style={{ cursor: 'grab', color: '#999' }}
+      {...listeners}
+      {...attributes}
+    />
+  );
+
   const goGym = () => {
     navigate(`${props.workout.task_group_id}/gym`);
   };
 
-  switch (status) {
-    case TaskGroupStatus.Planned:
-    case TaskGroupStatus.Running:
-      return (
-        <WorkoutCardPreview
-          {...props}
-          extraAfter={
-            <Button
-              hidden={!isMineWorkout || !hasExercises}
-              size="small"
-              type="primary"
-              onClick={goGym}
-            >
+  const canGym =
+    status !== TaskGroupStatus.Finished && isMineWorkout && hasExercises;
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <WorkoutCardPreview
+        {...props}
+        titleExtraBefore={extraBefore}
+        extraAfter={
+          canGym ? (
+            <Button size="small" type="primary" onClick={goGym}>
               GYM
             </Button>
-          }
-        />
-      );
-    case TaskGroupStatus.Finished:
-      return <WorkoutCardPreview {...props} />;
-  }
+          ) : undefined
+        }
+      />
+    </div>
+  );
 };
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
@@ -68,10 +109,41 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
   const navigate = useNavigate();
+  const { revalidate } = useRevalidator();
 
   const { token } = useTheme();
 
+  const [innerWorkouts, setInnerWorkouts] = useState(workouts);
+
   const status = params.status as TaskGroupStatus;
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = innerWorkouts.findIndex(
+      (i) => i.task_group_id === active.id,
+    );
+    const newIndex = innerWorkouts.findIndex(
+      (i) => i.task_group_id === over.id,
+    );
+
+    const reordered = arrayMove(innerWorkouts, oldIndex, newIndex);
+
+    setInnerWorkouts(reordered);
+
+    await Api.taskGroup.reorderTaskGroup(
+      reordered.map((w, idx) => ({
+        task_group_id: w.task_group_id,
+        order_idx: idx,
+      })),
+    );
+    revalidate();
+  };
 
   const createWorkout = async () => {
     const data = await Api.taskGroup.createTaskGroup({
@@ -93,6 +165,10 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
     navigate(`${w.task_group_id}/details`);
   };
 
+  useEffect(() => {
+    setInnerWorkouts(workouts);
+  }, [workouts]);
+
   return (
     <Flex height="100%" style={{ overflow: 'hidden' }}>
       <Outlet />
@@ -105,17 +181,32 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
         style={{ marginBottom: 8 }}
       />
 
-      <Space direction="vertical" style={{ overflowY: 'auto', height: '110%' }}>
-        {workouts.map((w, idx, { length }) => (
-          <WorkoutComponent
-            key={w.task_group_id}
-            workout={w}
-            status={status}
-            style={{ marginBottom: idx === length - 1 ? 64 : 0 }}
-            onClick={() => goToWorkoutDetails(w)}
-          />
-        ))}
-      </Space>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
+      >
+        <SortableContext
+          items={innerWorkouts.map((i) => i.task_group_id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <Space
+            direction="vertical"
+            style={{ overflowY: 'auto', height: '110%' }}
+          >
+            {innerWorkouts.map((w, idx, { length }) => (
+              <SortableWorkout
+                key={w.task_group_id}
+                workout={w}
+                status={status}
+                style={{ marginBottom: idx === length - 1 ? 72 : 0 }}
+                onClick={() => goToWorkoutDetails(w)}
+              />
+            ))}
+          </Space>
+        </SortableContext>
+      </DndContext>
 
       <FloatButton
         type="primary"

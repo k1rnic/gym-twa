@@ -4,14 +4,93 @@ import { Api, TaskGroupStatus } from '@/shared/api';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Descriptions, Form, Input } from 'antd';
+import { HolderOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  restrictToFirstScrollableAncestor,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Button, Card, Descriptions, Form, Input, Typography } from 'antd';
 import { DescriptionsItemType } from 'antd/lib/descriptions';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { Route } from './+types/workout-details';
 
 type FormValues = workoutModel.Workout;
+
+const SortableExerciseCard = ({
+  ex,
+  readonly,
+  getExerciseDescriptions,
+  onClick,
+}: {
+  ex: exerciseModel.ExerciseInstance;
+  readonly: boolean;
+  getExerciseDescriptions: (
+    ex: exerciseModel.ExerciseInstance,
+  ) => DescriptionsItemType[];
+  onClick: () => void;
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: ex.task_id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    cursor: 'grab',
+    opacity: isDragging ? 0.9 : 1,
+    touchAction: 'none',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <Card
+        size="small"
+        title={
+          <Flex
+            vertical={false}
+            align="center"
+            gap={8}
+            style={{ whiteSpace: 'break-spaces' }}
+          >
+            <HolderOutlined
+              hidden={readonly}
+              style={{ cursor: 'grab', color: '#999' }}
+              {...listeners}
+              {...attributes}
+            />
+            <Typography.Text ellipsis>
+              {ex.exercise?.exercise_name ?? 'Не выбрано'}
+            </Typography.Text>
+          </Flex>
+        }
+        onClick={onClick}
+      >
+        <Descriptions column={1} items={getExerciseDescriptions(ex)} />
+      </Card>
+    </div>
+  );
+};
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.taskGroup.taskGroupById(+params.wId);
@@ -22,9 +101,15 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
 
   const [form] = Form.useForm<FormValues>();
 
+  const [innerTasks, setInnerTasks] = useState(workout?.tasks ?? []);
+
   const initialData = useMemo<DeepPartial<FormValues>>(
     () => ({ ...workout }),
     [workout],
+  );
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
   const status = params.status as TaskGroupStatus;
@@ -81,6 +166,31 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
     }
   };
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = innerTasks.findIndex((t) => t.task_id === active.id);
+    const newIndex = innerTasks.findIndex((t) => t.task_id === over.id);
+    const reordered = arrayMove(innerTasks, oldIndex, newIndex);
+    setInnerTasks(reordered);
+
+    try {
+      await Api.task.reorderTask(
+        reordered.map((t, idx) => ({
+          task_id: t.task_id,
+          order_idx: idx,
+        })),
+      );
+    } catch (e) {
+      console.error('Failed to reorder tasks', e);
+    }
+  };
+
+  useEffect(() => {
+    setInnerTasks(workout?.tasks ?? []);
+  }, [workout]);
+
   return (
     <PageDrawer
       open
@@ -114,18 +224,32 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
           </Button>
         </Form.Item>
 
-        <Flex flex={1} gap={8} style={{ overflow: 'auto' }}>
-          {workout?.tasks?.map((ex) => (
-            <Card
-              key={ex.task_id}
-              size="small"
-              title={ex.exercise?.exercise_name ?? 'Не выбрано'}
-              onClick={() => goToExercise(ex.task_id)}
-            >
-              <Descriptions column={1} items={getExerciseDescriptions(ex)} />
-            </Card>
-          ))}
-        </Flex>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          modifiers={[
+            restrictToVerticalAxis,
+            restrictToFirstScrollableAncestor,
+          ]}
+        >
+          <SortableContext
+            items={innerTasks.map((t) => t.task_id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <Flex flex={1} gap={8} style={{ overflow: 'auto' }}>
+              {innerTasks.map((ex) => (
+                <SortableExerciseCard
+                  key={ex.task_id}
+                  ex={ex}
+                  readonly={readonly}
+                  getExerciseDescriptions={getExerciseDescriptions}
+                  onClick={() => goToExercise(ex.task_id)}
+                />
+              ))}
+            </Flex>
+          </SortableContext>
+        </DndContext>
 
         <DeleteButton hidden={readonly} onDelete={deleteWorkout} />
       </Flex>
