@@ -1,6 +1,12 @@
 [build]
-command = "bun run build"
-publish = "build"
+  command = "bun run build"
+  publish = "build/client"
 
 [build.environment]
-BUN_VERSION = "1.2.12"
+  BUN_VERSION = "1.2.12"
+
+# Redirect all routes to index.html for React Router (SPA)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
