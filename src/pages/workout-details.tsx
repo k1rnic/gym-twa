@@ -57,9 +57,7 @@ const SortableExerciseCard = ({
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition,
-    cursor: isDragging ? 'grabbing' : 'grab',
     opacity: isDragging ? 0.95 : 1,
-    touchAction: 'none',
     zIndex: isDragging ? 1000 : 'auto',
   };
 
@@ -76,7 +74,7 @@ const SortableExerciseCard = ({
           >
             <HolderOutlined
               hidden={readonly}
-              style={{ cursor: 'grab', color: '#999' }}
+              style={{ color: '#999', touchAction: 'none' }}
               {...listeners}
               {...attributes}
             />

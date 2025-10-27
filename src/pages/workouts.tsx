@@ -61,15 +61,13 @@ const SortableWorkout = ({
   const style: React.CSSProperties = {
     transform: CSS.Translate.toString(transform),
     transition,
-    touchAction: 'none',
-    cursor: isDragging ? 'grabbing' : 'grab',
     opacity: isDragging ? 0.95 : 1,
     zIndex: isDragging ? 1000 : 'auto',
   };
 
   const extraBefore = (
     <HolderOutlined
-      style={{ cursor: 'grab', color: '#999' }}
+      style={{ color: '#999', touchAction: 'none' }}
       {...listeners}
       {...attributes}
     />
@@ -103,7 +101,6 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.taskGroup
     .listTaskGroup({
       gymer_id: +params.gId,
-      // master_id: +params.mId,
       status: params.status as TaskGroupStatus,
     })
     .catch(() => []);
