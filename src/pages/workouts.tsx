@@ -103,7 +103,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.taskGroup
     .listTaskGroup({
       gymer_id: +params.gId,
-      master_id: +params.mId,
+      // master_id: +params.mId,
       status: params.status as TaskGroupStatus,
     })
     .catch(() => []);
