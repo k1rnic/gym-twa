@@ -1,13 +1,14 @@
 import { viewerModel } from '@/entities/viewer';
 import { workoutModel } from '@/entities/workout';
 import { Api, TaskGroupStatus } from '@/shared/api';
+import { useSortableList } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import {
   WorkoutCardPreview,
   WorkoutCardPreviewProps,
 } from '@/widgets/workout-card-preview';
-import { HolderOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import {
   closestCenter,
   DndContext,
@@ -23,10 +24,8 @@ import {
 import {
   arrayMove,
   SortableContext,
-  useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { Button, Segmented } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
 import { FloatButton } from 'antd/lib';
@@ -49,28 +48,8 @@ const SortableWorkout = ({
   const isMineWorkout = props.workout.gymer_id === viewer.gymer?.gymer_id;
   const hasExercises = Boolean(props.workout.tasks?.length);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: props.workout.task_group_id });
-
-  const style: React.CSSProperties = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-    opacity: isDragging ? 0.95 : 1,
-    zIndex: isDragging ? 1000 : 'auto',
-  };
-
-  const extraBefore = (
-    <HolderOutlined
-      style={{ color: '#999', touchAction: 'none' }}
-      {...listeners}
-      {...attributes}
-    />
+  const { setNodeRef, style, handler } = useSortableList(
+    props.workout.task_group_id,
   );
 
   const goGym = () => {
@@ -84,7 +63,7 @@ const SortableWorkout = ({
     <div ref={setNodeRef} style={style}>
       <WorkoutCardPreview
         {...props}
-        titleExtraBefore={extraBefore}
+        titleExtraBefore={handler}
         extraAfter={
           canGym ? (
             <Button size="small" type="primary" onClick={goGym}>

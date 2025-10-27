@@ -61,7 +61,8 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
     <PageDrawer
       open
       title={canEdit ? 'Редактирование упражнения' : 'Просмотр упражнения'}
-      width="100%"
+      height="100%"
+      placement="bottom"
       onClose={saveChanges}
     >
       <Flex height="100%" style={{ overflow: 'hidden' }}>

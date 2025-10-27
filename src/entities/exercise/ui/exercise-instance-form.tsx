@@ -1,5 +1,4 @@
 import { Set, TaskGroupStatus, TaskPropertiesAggregate } from '@/shared/api';
-import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import {
   CloseOutlined,
@@ -7,7 +6,7 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 import { Button, Form, InputNumber, Tooltip } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ExerciseInstance } from '../model';
 import { ExerciseSelector } from './exercise-selector';
 
@@ -29,7 +28,17 @@ export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
   const [form] = Form.useForm<FormValues>();
   const formValues = Form.useWatch([], form) as FormValues | undefined;
 
-  const { values: initialValues } = props;
+  const { values } = props;
+  const initialValues = useMemo<FormValues>(
+    () => ({
+      ...values,
+      task_properties: {
+        ...values.task_properties!,
+        rest: values.task_properties?.rest ?? 120,
+      },
+    }),
+    [values],
+  );
 
   const getLastSetPlan = (): Pick<Set, `${T}_value` | `${T}_rep`> => {
     const last = (
@@ -50,7 +59,7 @@ export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
         ...(formValues?.task_properties as TaskPropertiesAggregate),
       },
     });
-  }, [formValues]);
+  }, [formValues, initialValues, formValues]);
 
   return (
     <Form<FormValues>

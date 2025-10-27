@@ -1,9 +1,10 @@
 import { exerciseModel } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { Api, TaskGroupStatus } from '@/shared/api';
+import { useSortableList } from '@/shared/lib/hooks';
 import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
-import { HolderOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import {
   closestCenter,
   DndContext,
@@ -19,10 +20,8 @@ import {
 import {
   arrayMove,
   SortableContext,
-  useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { Button, Card, Descriptions, Form, Input, Typography } from 'antd';
 import { DescriptionsItemType } from 'antd/lib/descriptions';
 import { useCallback, useMemo, useState } from 'react';
@@ -44,21 +43,7 @@ const SortableExerciseCard = ({
   ) => DescriptionsItemType[];
   onClick: () => void;
 }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: ex.task_id });
-
-  const style: React.CSSProperties = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-    opacity: isDragging ? 0.95 : 1,
-    zIndex: isDragging ? 1000 : 'auto',
-  };
+  const { setNodeRef, style, handler } = useSortableList(ex.task_id);
 
   return (
     <div ref={setNodeRef} style={style}>
@@ -71,12 +56,7 @@ const SortableExerciseCard = ({
             gap={8}
             style={{ whiteSpace: 'break-spaces' }}
           >
-            <HolderOutlined
-              hidden={readonly}
-              style={{ color: '#999', touchAction: 'none' }}
-              {...listeners}
-              {...attributes}
-            />
+            {handler}
             <Typography.Text ellipsis>
               {ex.exercise?.exercise_name ?? 'Не выбрано'}
             </Typography.Text>
