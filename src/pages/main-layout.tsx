@@ -1,6 +1,7 @@
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { AppToolbar } from '@/widgets/app-toolbar';
+import { disableVerticalSwipes } from '@telegram-apps/sdk-react';
 import { useEffect } from 'react';
 
 import { Outlet } from 'react-router';
@@ -15,10 +16,16 @@ export default function Page() {
       }
     };
 
+    const preserveVerticalSwipes = () => {
+      disableVerticalSwipes();
+    };
+
     document.addEventListener('wheel', handleWheel, { passive: false });
+    document.addEventListener('DOMContentLoaded', preserveVerticalSwipes);
 
     return () => {
       document.removeEventListener('wheel', handleWheel);
+      document.removeEventListener('DOMContentLoaded', preserveVerticalSwipes);
     };
   }, []);
 
