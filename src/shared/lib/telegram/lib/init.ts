@@ -4,6 +4,7 @@ import {
   init as initSDK,
   mountBackButton,
   mountMiniAppSync,
+  mountSwipeBehavior,
   mountViewport,
   restoreInitData,
   setDebug,
@@ -18,6 +19,8 @@ export async function init(): Promise<void> {
   initSDK();
 
   mountBackButton.ifAvailable();
+  mountSwipeBehavior.ifAvailable();
+
   restoreInitData();
 
   if (mountMiniAppSync.isAvailable()) {
