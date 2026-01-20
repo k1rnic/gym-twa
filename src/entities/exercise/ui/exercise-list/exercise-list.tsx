@@ -1,6 +1,6 @@
 import { Flex } from '@/shared/ui/flex';
 import { Empty, Input, Typography } from 'antd';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useExerciseFilter } from '../../lib/use-exercise-filter';
 import { Exercise } from '../../model';
 import { ExerciseGroup } from './exercise-group';
@@ -13,6 +13,7 @@ export interface ExerciseListProps {
   masterId: number;
   onSelect?: (exercise: Exercise) => void;
   searchPlaceholder?: string;
+  extra?: ReactNode;
 }
 
 export const ExerciseList = ({
@@ -20,6 +21,7 @@ export const ExerciseList = ({
   masterId,
   onSelect,
   searchPlaceholder = 'Поиск упражнений',
+  extra,
 }: ExerciseListProps) => {
   const [query, setQuery] = useState('');
   const grouped = useExerciseFilter(exercises, masterId, query);
@@ -34,7 +36,7 @@ export const ExerciseList = ({
         placeholder={searchPlaceholder}
         onChange={(e) => setQuery(e.target.value)}
       />
-
+      {extra}
       {hasData ? (
         <Flex height="100%" style={{ overflow: 'auto' }}>
           <ExerciseGroup

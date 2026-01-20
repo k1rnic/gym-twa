@@ -7,7 +7,7 @@ import {
   Typography,
 } from 'antd';
 import { forwardRef } from 'react';
-import classes from './styles.module.css';
+import classes from './avatar-styles.module.css';
 
 const BORDER_WIDTH = 3;
 const BORDER_OFFSET = 1;
@@ -21,12 +21,13 @@ export type AvatarProps = {
   name?: string;
   active?: boolean;
   size?: number;
+  src?: string;
   disableFallback?: boolean;
   onItemClick?: () => void;
 } & Pick<AntdAvatarProps, 'icon'>;
 
 export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>((props, ref) => {
-  const { name = '', active, size = 64, onItemClick } = props;
+  const { name = '', active, size = 64, src, onItemClick } = props;
   const { token } = useTheme();
 
   const containerSize = size + (BORDER_WIDTH + BORDER_OFFSET) * 2;
@@ -46,7 +47,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>((props, ref) => {
         <AvatarAntd
           ref={ref}
           size={size}
-          icon={props.icon}
+          src={src}
           className={classes.avatar}
           style={{ backgroundColor: avatarFallback.color }}
           onClick={() => onItemClick?.()}

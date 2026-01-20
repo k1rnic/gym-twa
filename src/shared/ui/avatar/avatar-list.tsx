@@ -3,7 +3,7 @@ import { Flex } from '@/shared/ui/flex';
 import { Divider, Space } from 'antd';
 import { useEffect, useRef } from 'react';
 
-export type AvatarListItem = Pick<AvatarProps, 'name' | 'icon'> & {
+export type AvatarListItem = Pick<AvatarProps, 'name' | 'src'> & {
   id: number;
 };
 
@@ -45,6 +45,7 @@ export const AvatarList = (props: AvatarListProps) => {
         <>
           <Avatar
             name={pinned.name}
+            src={pinned.src}
             active={pinned.id === props.selected}
             onItemClick={() => props.onClick?.(pinned)}
           />
@@ -58,6 +59,7 @@ export const AvatarList = (props: AvatarListProps) => {
             key={idx}
             ref={(el) => (avatarRefs.current[idx] = el!)}
             name={av.name}
+            src={av.src}
             active={av.id === props.selected}
             onItemClick={() => props.onClick?.(av)}
           />

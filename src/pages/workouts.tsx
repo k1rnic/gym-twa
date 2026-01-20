@@ -28,7 +28,6 @@ import {
 } from '@dnd-kit/sortable';
 import { Button, Segmented } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
-import { FloatButton } from 'antd/lib';
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useRevalidator } from 'react-router';
 import { Route } from './+types/workouts';
@@ -148,7 +147,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
   }, [workouts]);
 
   return (
-    <Flex height="100%" style={{ overflow: 'hidden' }}>
+    <Flex height="100%" style={{ overflow: 'hidden' }} gap={8}>
       <Outlet />
 
       <Segmented
@@ -156,8 +155,17 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
         options={FILTERS}
         value={status}
         onChange={filterWorkouts}
-        style={{ marginBottom: 8 }}
       />
+
+      <Button
+        block
+        type="primary"
+        size="middle"
+        icon={<PlusOutlined />}
+        onClick={createWorkout}
+      >
+        Добавить тренировку
+      </Button>
 
       <DndContext
         sensors={sensors}
@@ -182,13 +190,6 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
           </Flex>
         </SortableContext>
       </DndContext>
-
-      <FloatButton
-        type="primary"
-        icon={<PlusOutlined />}
-        style={{ bottom: token.paddingLG }}
-        onClick={createWorkout}
-      />
     </Flex>
   );
 };

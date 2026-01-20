@@ -1,14 +1,12 @@
 import { ExerciseList, exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
-import { useTheme } from '@/shared/lib/theme';
 import { PlusOutlined } from '@ant-design/icons';
-import { FloatButton } from 'antd';
+import { Button } from 'antd';
 import { useNavigate } from 'react-router';
 
 const Page = () => {
   const navigate = useNavigate();
-  const { token } = useTheme();
 
   const viewer = viewerModel.useViewer();
   const masterId = viewer.master!.master_id!;
@@ -29,19 +27,22 @@ const Page = () => {
   };
 
   return (
-    <>
-      <ExerciseList
-        exercises={exercises}
-        masterId={masterId}
-        onSelect={goToExercise}
-      />
-      <FloatButton
-        type="primary"
-        icon={<PlusOutlined />}
-        style={{ bottom: token.paddingLG }}
-        onClick={createExercise}
-      />
-    </>
+    <ExerciseList
+      exercises={exercises}
+      masterId={masterId}
+      extra={
+        <Button
+          block
+          type="primary"
+          size="middle"
+          icon={<PlusOutlined />}
+          onClick={createExercise}
+        >
+          Добавить упражнение
+        </Button>
+      }
+      onSelect={goToExercise}
+    />
   );
 };
 

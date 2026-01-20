@@ -25,5 +25,11 @@ export default [
       route('', '../pages/exercises.tsx'),
       route(':exId', '../pages/exercise-details.tsx'),
     ]),
+    ...prefix('profile', [
+      index('../pages/profile.tsx'),
+      route('masters', '../pages/profile-masters.tsx'),
+      route('masters/:masterId', '../pages/master-details.tsx'),
+      route('requests', '../pages/profile-requests.tsx'),
+    ]),
   ]),
 ] satisfies RouteConfig;

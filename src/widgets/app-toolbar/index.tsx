@@ -11,6 +11,7 @@ interface Item {
 const items: Item[] = [
   { label: 'Тренировки', value: '/workouts' },
   { label: 'Упражнения', value: '/exercises' },
+  { label: 'Профиль', value: '/profile' },
 ];
 
 export const AppToolbar = () => {

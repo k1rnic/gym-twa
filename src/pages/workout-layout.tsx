@@ -1,7 +1,7 @@
 import { Route } from '.react-router/types/src/pages/+types/workout-layout';
 import { viewerModel } from '@/entities/viewer';
 import { Api, TaskGroupStatus } from '@/shared/api';
-import { AvatarList, AvatarListItem } from '@/shared/ui/avatar-list';
+import { AvatarList, AvatarListItem } from '@/shared/ui/avatar';
 import { Flex } from '@/shared/ui/flex';
 import { Divider } from 'antd';
 import { useMemo } from 'react';
@@ -22,6 +22,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
       loaderData.map<AvatarListItem>((gymmer) => ({
         id: gymmer.gymer_id,
         name: gymmer.username,
+        src: gymmer.photo!,
       })),
     [loaderData],
   );
