@@ -1,9 +1,10 @@
 import { masterModel } from '@/entities/master';
+import { formatUserDisplayName } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
-import { Api, NotificationResponse } from '@/shared/api';
+import { Api, NotificationUserResponse } from '@/shared/api';
 import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
 import { Flex } from '@/shared/ui/flex';
-import { Button, List, Space, Typography, message } from 'antd';
+import { Avatar, Button, List, Space, Typography, message } from 'antd';
 import { useEffect, useState } from 'react';
 
 const { Paragraph } = Typography;
@@ -15,7 +16,7 @@ export default function Page() {
     viewer.gymer?.gymer_id,
   );
 
-  const [requests, setRequests] = useState<NotificationResponse[]>([]);
+  const [requests, setRequests] = useState<NotificationUserResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [actionId, setActionId] = useState<number | null>(null);
 
@@ -24,9 +25,7 @@ export default function Page() {
     try {
       const data = await Api.notification.recipientNotification(
         viewer.user_id,
-        {
-          is_read: false,
-        },
+        { is_read: false },
       );
       setRequests(data ?? []);
     } finally {
@@ -95,12 +94,24 @@ export default function Page() {
               ]}
             >
               <List.Item.Meta
+                avatar={
+                  <Avatar
+                    size={64}
+                    style={{ backgroundColor: '#f0f0f0' }}
+                    src={item.sender_user?.photos?.[0]}
+                  />
+                }
                 title="Заявка на прикрепление"
                 description={
                   <Space direction="vertical">
                     <Paragraph style={{ margin: 0 }}>
-                      {item.message ||
-                        `Пользователь ${item.sender} хочет прикрепиться к вам`}
+                      Пользователь{' '}
+                      <b>
+                        {item.sender_user
+                          ? formatUserDisplayName(item.sender_user)
+                          : item.sender}
+                      </b>{' '}
+                      хочет прикрепиться к вам
                     </Paragraph>
                   </Space>
                 }

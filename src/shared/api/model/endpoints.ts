@@ -200,6 +200,8 @@ export interface MastersGymer {
   photo?: string | null;
   /** Gymer Id */
   gymer_id: number;
+  /** User Id */
+  user_id: number;
 }
 
 /** NotificationResponse */
@@ -215,11 +217,32 @@ export interface NotificationResponse {
   /** Is Read */
   is_read: boolean;
   /**
-   * Create Dttm
+   * Created Dttm
    * @format date-time
    */
-  create_dttm: string;
+  created_dttm: string;
   notification_type: NotificationType;
+}
+
+/** NotificationUserResponse */
+export interface NotificationUserResponse {
+  /** Notification Id */
+  notification_id: number;
+  /** Recipient */
+  recipient: number;
+  /** Sender */
+  sender: number;
+  /** Message */
+  message?: string | null;
+  /** Is Read */
+  is_read: boolean;
+  /**
+   * Created Dttm
+   * @format date-time
+   */
+  created_dttm: string;
+  notification_type: NotificationType;
+  sender_user?: User | null;
 }
 
 /** Set */
@@ -1466,7 +1489,7 @@ export class Endpoints<
       },
       params: RequestParams = {},
     ) =>
-      this.request<NotificationResponse[], HTTPValidationError>({
+      this.request<NotificationUserResponse[], HTTPValidationError>({
         path: `/gym/notification/recipient/${userId}`,
         method: "GET",
         query: query,
