@@ -1,30 +1,108 @@
-# React + TypeScript + Vite
+# 🏋️ Gym Telegram Mini App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Telegram Mini App для управления тренировками в спортзале. Приложение позволяет тренерам (masters) создавать программы тренировок для своих подопечных (gymers), управлять упражнениями, отслеживать прогресс и взаимодействовать через систему уведомлений.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Локальная разработка
 
-## Expanding the ESLint configuration
+### 1. Установка зависимостей
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### 2. Настройка переменных окружения
+
+Создайте файл `.env` в корне проекта со следующими переменными:
+
+```env
+APP_API_BASE_URL=https://your-api-url.com
+APP_LOCAL_STORAGE_KEY=gym-app
+```
+
+> **Примечание**: В проекте используется префикс `APP_` для переменных окружения (настраивается в `vite.config.ts`)
+
+### 3. Запуск dev-сервера
+
+```bash
+npm run dev
+```
+
+Приложение будет доступно по адресу `http://localhost:3000`
+
+> **Важно**: Приложение является Telegram Mini App и предназначено для работы внутри Telegram. Для локальной разработки используется mock-режим Telegram SDK.
+
+### 4. Доступные скрипты
+
+```bash
+# Запуск dev-сервера
+npm run dev
+
+# Production сборка
+npm run build
+
+# Запуск production сборки локально
+npm run start
+
+# Линтинг кода
+npm run lint
+
+# Проверка типов
+npm run type-check
+
+# Генерация API типов из Swagger
+npm run api:extract
+```
+
+## 📦 Сборка проекта
+
+Для создания production сборки выполните:
+
+```bash
+npm run build
+```
+
+Собранные файлы (статика) будут находиться в директории `build/client`.
+
+Для проверки production сборки локально:
+
+```bash
+npm run start
+```
+
+Это запустит статический сервер с собранными файлами.
+
+
+## 📁 Структура проекта
+
+```
+src/
+├── app/              # Конфигурация приложения и роутинг
+├── entities/         # Бизнес-сущности (exercise, workout, user, etc.)
+├── features/         # Переиспользуемые фичи
+├── pages/            # Страницы приложения
+├── shared/           # Общие компоненты, утилиты, API
+└── widgets/          # Композитные виджеты
+```
+
+## 🔧 Дополнительная информация
+
+### Генерация API типов
+
+API типы генерируются автоматически из Swagger спецификации:
+
+```bash
+npm run api:extract
+```
+
+Этот скрипт обращается к `/openapi.json` эндпоинту вашего API и генерирует TypeScript типы в `src/shared/api/model/endpoints.ts`.
+
+### Проверка кода
+
+```bash
+# Линтинг
+npm run lint
+
+# Проверка типов TypeScript
+npm run type-check
+```
