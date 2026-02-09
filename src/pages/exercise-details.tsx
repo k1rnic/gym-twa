@@ -6,7 +6,6 @@ import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { Descriptions, DescriptionsProps, Form } from 'antd';
-import Input from 'antd/es/input/Input';
 import TextArea from 'antd/es/input/TextArea';
 import { useNavigate } from 'react-router';
 
@@ -46,7 +45,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
       await Api.exercise.updateExercise({
         ...initialValues,
         ...formValues,
-        exercise_name: formValues?.exercise_name || 'Без названия',
+        exercise_name: formValues?.exercise_name ?? '',
       });
     }
     goBack();
@@ -72,7 +71,11 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
               size="middle"
             >
               <Form.Item<exerciseModel.ExerciseDetailed> name="exercise_name">
-                <Input placeholder="Название" style={{ width: '100%' }} />
+                <TextArea
+                  autoSize
+                  placeholder="Название"
+                  style={{ width: '100%' }}
+                />
               </Form.Item>
 
               <Form.Item<exerciseModel.ExerciseDetailed> name="description">

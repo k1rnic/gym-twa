@@ -1,5 +1,9 @@
-import { ExerciseInstanceForm, exerciseModel } from '@/entities/exercise';
-import { Api, TaskGroupStatus, UpdateTask } from '@/shared/api';
+import {
+  ExerciseInstanceForm,
+  exerciseModel,
+  normalizeSetValues,
+} from '@/entities/exercise';
+import { Api, TaskGroupStatus } from '@/shared/api';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -20,7 +24,7 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   const goBack = () => navigate('../');
 
   const saveChanges = async () => {
-    await Api.task.updateTask(formValues as UpdateTask);
+    await Api.task.updateTask(normalizeSetValues(formValues));
     goBack();
   };
 

@@ -1,5 +1,9 @@
-import { ExerciseInstanceForm, exerciseModel } from '@/entities/exercise';
-import { Api, TaskGroupStatus, UpdateTask } from '@/shared/api';
+import {
+  ExerciseInstanceForm,
+  exerciseModel,
+  normalizeSetValues,
+} from '@/entities/exercise';
+import { Api, TaskGroupStatus } from '@/shared/api';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
@@ -28,7 +32,7 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   };
 
   const saveChanges = async () => {
-    await Api.task.updateTask(formValues as UpdateTask);
+    await Api.task.updateTask(normalizeSetValues(formValues));
     goBack();
   };
 

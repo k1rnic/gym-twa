@@ -19,7 +19,7 @@ const Page = () => {
   const createExercise = async () => {
     const ex = await Api.exercise.createExercise({
       master_id: masterId,
-      exercise_name: 'Новое упражнение',
+      exercise_name: '',
       description: '',
       link_ids: [],
     });

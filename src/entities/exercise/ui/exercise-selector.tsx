@@ -5,7 +5,10 @@ import { useExercises } from '../model';
 
 type Props = {
   masterId: number;
-} & Pick<SelectProps<number>, 'value' | 'onChange' | 'style' | 'styles'>;
+} & Pick<
+  SelectProps<number>,
+  'value' | 'onChange' | 'style' | 'styles' | 'disabled'
+>;
 
 export const ExerciseSelector = ({ masterId, ...selectProps }: Props) => {
   const exercises = useExercises(masterId);

@@ -5,14 +5,17 @@ import {
   FieldTimeOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { Button, Form, InputNumber, Tooltip } from 'antd';
+import { AutoComplete, Button, Form, InputNumber } from 'antd';
+import { NamePath } from 'antd/es/form/interface';
 import { useEffect, useMemo } from 'react';
+import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
 import { ExerciseInstance } from '../model';
 import { ExerciseSelector } from './exercise-selector';
 
 type FormValues = ExerciseInstance;
+type ExerciseValuesType = 'fact' | 'plan';
 
-export type ExerciseInstanceFormProps<T extends 'fact' | 'plan'> = {
+export type ExerciseInstanceFormProps<T extends ExerciseValuesType> = {
   masterId: number;
   values: FormValues;
   status?: TaskGroupStatus | null;
@@ -22,7 +25,7 @@ export type ExerciseInstanceFormProps<T extends 'fact' | 'plan'> = {
   readonly?: boolean;
 };
 
-export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
+export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
   props: ExerciseInstanceFormProps<T>,
 ) => {
   const [form] = Form.useForm<FormValues>();
@@ -39,6 +42,28 @@ export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
     }),
     [values],
   );
+
+  const getFieldPath = (
+    type: ExerciseValuesType,
+    fieldType: 'value' | 'rep',
+    index: number,
+  ) => {
+    const name = `${type}_${fieldType}` as const;
+    return ['task_properties', 'sets', index, name] as NamePath<FormValues>;
+  };
+
+  const getFieldValue = (
+    type: ExerciseValuesType,
+    fieldType: 'value' | 'rep',
+    index: number,
+  ) => form.getFieldValue(getFieldPath(type, fieldType, index)) ?? 0;
+
+  const getFieldPlaceholder = (fieldType: 'value' | 'rep', index: number) => {
+    if (props.type === 'fact') {
+      return getFieldValue('plan', fieldType, index);
+    }
+    return fieldType === 'value' ? 'Вес' : 'Количество';
+  };
 
   const getLastSetPlan = (): Pick<Set, `${T}_value` | `${T}_rep`> => {
     const last = (
@@ -61,6 +86,15 @@ export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
     });
   }, [formValues, initialValues, formValues]);
 
+  const getAutoCompleteOptions = (field: SuggestionField, index: number) => {
+    return getFieldSuggestions({
+      mode: props.type,
+      field,
+      index,
+      sets: formValues?.task_properties?.sets ?? [],
+    }).map((value) => ({ value }));
+  };
+
   return (
     <Form<FormValues>
       form={form}
@@ -71,7 +105,10 @@ export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
     >
       <Flex height="100%">
         <Form.Item<FormValues> name="exercise_id">
-          <ExerciseSelector masterId={props.masterId} />
+          <ExerciseSelector
+            disabled={props.type === 'fact'}
+            masterId={props.masterId}
+          />
         </Form.Item>
 
         <Form.Item<FormValues> name={['task_properties', 'rest']}>
@@ -102,67 +139,27 @@ export const ExerciseInstanceForm = <T extends 'fact' | 'plan'>(
                 {fields.map(({ key, ...field }) => (
                   <Flex key={key} vertical={false} align="start">
                     <Flex vertical={false} gap={8} flex={1}>
-                      <Tooltip
-                        title={
-                          props.type === 'fact'
-                            ? `Вес (план): ${
-                                form.getFieldValue([
-                                  'task_properties',
-                                  'sets',
-                                  0,
-                                  'plan_value',
-                                ]) ?? 0
-                              } кг`
-                            : ''
-                        }
-                        placement="bottom"
+                      <Form.Item
+                        {...field}
+                        name={[field.name, `${props.type}_value`]}
+                        style={{ flex: 1 }}
                       >
-                        <Form.Item
-                          {...field}
-                          name={[field.name, `${props.type}_value`]}
-                          style={{ flex: 1 }}
-                        >
-                          <InputNumber
-                            controls={false}
-                            placeholder="Вес"
-                            suffix="кг"
-                            type="number"
-                            min={1}
-                            style={{ width: '100%' }}
-                          />
-                        </Form.Item>
-                      </Tooltip>
+                        <AutoComplete
+                          options={getAutoCompleteOptions('value', key)}
+                          placeholder={getFieldPlaceholder('value', key)}
+                        />
+                      </Form.Item>
 
-                      <Tooltip
-                        title={
-                          props.type === 'fact'
-                            ? `Количество (план): ${
-                                form.getFieldValue([
-                                  'task_properties',
-                                  'sets',
-                                  0,
-                                  'plan_value',
-                                ]) ?? 0
-                              }`
-                            : ''
-                        }
-                        placement="bottom"
+                      <Form.Item
+                        {...field}
+                        name={[field.name, `${props.type}_rep`]}
+                        style={{ flex: 1 }}
                       >
-                        <Form.Item
-                          {...field}
-                          name={[field.name, `${props.type}_rep`]}
-                          style={{ flex: 1 }}
-                        >
-                          <InputNumber
-                            controls={false}
-                            placeholder="Количество"
-                            suffix="раз"
-                            type="number"
-                            min={1}
-                            style={{ width: '100%' }}
-                          />
-                        </Form.Item>
-                      </Tooltip>
+                        <AutoComplete
+                          options={getAutoCompleteOptions('rep', key)}
+                          placeholder={getFieldPlaceholder('rep', key)}
+                        />
+                      </Form.Item>
                     </Flex>
 
                     <Button
