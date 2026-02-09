@@ -43,18 +43,17 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
       style={{ overflow: 'hidden' }}
       styles={{ body: { overflow: 'hidden' } }}
       onClose={saveChanges}
+      extra={<DeleteButton hidden={readonly} onDelete={deleteExercise} />}
     >
       <Flex height="100%">
         <ExerciseInstanceForm
           readonly={readonly}
-          type={status === TaskGroupStatus.Planned ? 'plan' : 'fact'}
+          type="plan"
           masterId={+params.mId}
           values={initialValues!}
           status={status}
           onChange={setFormValues}
         />
-
-        <DeleteButton hidden={readonly} onDelete={deleteExercise} />
       </Flex>
     </PageDrawer>
   );

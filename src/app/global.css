@@ -16,3 +16,7 @@
 .ant-flex:empty {
   display: unset;
 }
+
+.ant-select-item-option-content {
+  white-space: normal !important;
+}

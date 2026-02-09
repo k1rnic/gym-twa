@@ -3,6 +3,7 @@ import { Flex } from '@/shared/ui/flex';
 import {
   CloseOutlined,
   FieldTimeOutlined,
+  FormOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
 import { AutoComplete, Button, Form, InputNumber } from 'antd';
@@ -95,6 +96,17 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
     }).map((value) => ({ value }));
   };
 
+  const fillFromPlan = (index: number) => {
+    form.setFieldValue(
+      ['task_properties', 'sets', index, 'fact_rep'],
+      form.getFieldValue(['task_properties', 'sets', index, 'plan_rep']) ?? 0,
+    );
+    form.setFieldValue(
+      ['task_properties', 'sets', index, 'fact_value'],
+      form.getFieldValue(['task_properties', 'sets', index, 'plan_value']) ?? 0,
+    );
+  };
+
   return (
     <Form<FormValues>
       form={form}
@@ -111,33 +123,12 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
           />
         </Form.Item>
 
-        <Form.Item<FormValues> name={['task_properties', 'rest']}>
-          <InputNumber
-            controls={false}
-            placeholder="Отдых"
-            suffix="сек"
-            prefix={<FieldTimeOutlined />}
-            style={{ width: '100%' }}
-          />
-        </Form.Item>
-
         <Form.List name={['task_properties', 'sets']}>
           {(fields, { add, remove }) => (
             <Flex height="100%" style={{ overflow: 'hidden' }}>
-              <Form.Item hidden={props.readonly}>
-                <Button
-                  block
-                  type="dashed"
-                  icon={<PlusOutlined />}
-                  onClick={() => add(getLastSetPlan())}
-                >
-                  Добавить подход
-                </Button>
-              </Form.Item>
-
-              <Flex style={{ overflow: 'auto' }}>
+              <Flex flex={1} style={{ overflow: 'auto' }}>
                 {fields.map(({ key, ...field }) => (
-                  <Flex key={key} vertical={false} align="start">
+                  <Flex key={key} vertical={false} align="start" gap={8}>
                     <Flex vertical={false} gap={8} flex={1}>
                       <Form.Item
                         {...field}
@@ -162,18 +153,48 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                       </Form.Item>
                     </Flex>
 
-                    <Button
-                      type="text"
-                      hidden={props.readonly}
-                      icon={<CloseOutlined />}
-                      onClick={() => remove(field.name)}
-                    />
+                    <Flex vertical={false}>
+                      <Button
+                        variant="filled"
+                        type="primary"
+                        hidden={props.type !== 'fact'}
+                        icon={<FormOutlined />}
+                        onClick={() => fillFromPlan(key)}
+                      />
+                      <Button
+                        type="text"
+                        hidden={props.readonly}
+                        icon={<CloseOutlined />}
+                        onClick={() => remove(field.name)}
+                      />
+                    </Flex>
                   </Flex>
                 ))}
               </Flex>
+
+              <Form.Item hidden={props.readonly}>
+                <Button
+                  block
+                  type="dashed"
+                  icon={<PlusOutlined />}
+                  onClick={() => add(getLastSetPlan())}
+                >
+                  Добавить подход
+                </Button>
+              </Form.Item>
             </Flex>
           )}
         </Form.List>
+
+        <Form.Item<FormValues> name={['task_properties', 'rest']}>
+          <InputNumber
+            controls={false}
+            placeholder="Отдых"
+            suffix="сек"
+            prefix={<FieldTimeOutlined />}
+            style={{ width: '100%' }}
+          />
+        </Form.Item>
       </Flex>
     </Form>
   );

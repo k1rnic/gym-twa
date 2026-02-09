@@ -38,7 +38,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   const isMine = viewer.master?.master_id === initialValues.master_id;
   const canEdit = isMine && initialValues.status === ExerciseStatus.Active;
 
-  const goBack = () => navigate('/exercises');
+  const goBack = () => navigate(-1);
 
   const saveChanges = async () => {
     if (canEdit) {
@@ -61,6 +61,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
       open
       title={canEdit ? 'Редактирование упражнения' : 'Просмотр упражнения'}
       onClose={saveChanges}
+      extra={canEdit && <DeleteButton onDelete={deleteExercise} />}
     >
       <Flex height="100%" style={{ overflow: 'hidden' }}>
         <Flex flex={1}>
@@ -90,7 +91,6 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
             <Descriptions items={descriptions} />
           )}
         </Flex>
-        {canEdit && <DeleteButton onDelete={deleteExercise} />}
       </Flex>
     </PageDrawer>
   );

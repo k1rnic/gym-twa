@@ -12,14 +12,7 @@ export const DeleteButton = ({
   ...buttonProps
 }: PropsWithChildren<DeleteButtonProps>) => {
   return (
-    <Button
-      block
-      size="middle"
-      danger
-      type="primary"
-      onClick={onDelete}
-      {...buttonProps}
-    >
+    <Button danger type="primary" onClick={onDelete} {...buttonProps}>
       {children || 'Удалить'}
     </Button>
   );

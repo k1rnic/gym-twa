@@ -1,7 +1,8 @@
 import { exerciseModel } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
-import { Api, TaskGroupStatus } from '@/shared/api';
+import { Api, Set, TaskGroupStatus } from '@/shared/api';
 import { useSortableList } from '@/shared/lib/hooks';
+import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { PlusOutlined } from '@ant-design/icons';
@@ -76,6 +77,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const [form] = Form.useForm<FormValues>();
 
@@ -93,20 +95,37 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   const status = params.status as TaskGroupStatus;
   const readonly = status === TaskGroupStatus.Finished;
 
+  const hasFinishedExercises = useCallback(
+    (set: Set) => set.fact_value !== null && set.fact_rep !== null,
+    [],
+  );
+
   const getExerciseDescriptions = useCallback(
     (ex: exerciseModel.ExerciseInstance): DescriptionsItemType[] => [
+      ...(ex.task_properties?.sets?.map((s, idx) => ({
+        key: s.set_id,
+        label: `${idx + 1}`,
+        children: (
+          <Flex vertical={false} width="100%">
+            <Flex
+              flex={1}
+              align="flex-start"
+              style={{ color: theme.token.colorSuccess }}
+              hidden={!hasFinishedExercises(s)}
+            >{`${s.fact_value ?? 0} кг x ${s.fact_rep ?? 0} раз`}</Flex>
+            <Flex flex={1} align="flex-end">{`${s.plan_value ?? 0} кг x ${
+              s.plan_rep ?? 0
+            } раз`}</Flex>
+          </Flex>
+        ),
+      })) ?? []),
       {
         key: 'rest',
         label: 'Отдых',
         children: `${ex.task_properties?.rest || 0} сек`,
       },
-      ...(ex.task_properties?.sets?.map((s, idx) => ({
-        key: s.set_id,
-        label: `${idx + 1} Подход`,
-        children: `${s.plan_value ?? 0} кг x ${s.plan_rep ?? 0} раз`,
-      })) ?? []),
     ],
-    [],
+    [theme.token.colorSuccess, hasFinishedExercises],
   );
 
   const goToExercise = (id: exerciseModel.ExerciseInstance['task_id']) => {
@@ -179,11 +198,20 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   };
 
   return (
-    <PageDrawer open title="Тренировка" onClose={submitChanges}>
+    <PageDrawer
+      open
+      title="Тренировка"
+      onClose={submitChanges}
+      extra={
+        <Button type="primary" onClick={finishWorkout}>
+          Завершить
+        </Button>
+      }
+    >
       <Flex height="100%" style={{ overflow: 'hidden' }}>
         <Form<FormValues> form={form} initialValues={initialData} size="middle">
           <Form.Item<FormValues> name="title">
-            <Input style={{ width: '100%' }} placeholder="Название" />
+            <Input style={{ width: '100%' }} placeholder="Название" disabled />
           </Form.Item>
         </Form>
 
@@ -226,10 +254,6 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
             </Flex>
           </SortableContext>
         </DndContext>
-
-        <Button block type="primary" size="middle" onClick={finishWorkout}>
-          Завершить
-        </Button>
       </Flex>
 
       <Outlet />
