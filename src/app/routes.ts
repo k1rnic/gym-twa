@@ -21,14 +21,16 @@ export default [
         ]),
       ]),
     ]),
-    route('exercises', '../pages/exercise-layout.tsx', [
-      route('', '../pages/exercises.tsx'),
+    ...prefix('exercises', [
+      index('../pages/exercises.tsx'),
       route(':exId', '../pages/exercise-details.tsx'),
     ]),
     ...prefix('profile', [
       index('../pages/profile.tsx'),
-      route('masters', '../pages/profile-masters.tsx'),
-      route('masters/:masterId', '../pages/master-details.tsx'),
+      ...prefix('masters', [
+        index('../pages/profile-masters.tsx'),
+        route(':masterId', '../pages/master-details.tsx'),
+      ]),
       route('requests', '../pages/profile-requests.tsx'),
     ]),
   ]),

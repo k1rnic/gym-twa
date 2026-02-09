@@ -22,9 +22,12 @@ export const PageDrawer = ({
 
   return (
     <Drawer
+      closable={false}
       open={opened}
       onClose={handleClose}
       classNames={{ header: classes.header }}
+      width="100%"
+      placement="right"
       {...drawerProps}
     >
       {children}

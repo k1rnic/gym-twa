@@ -4,6 +4,7 @@ import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
 import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
 import { Flex } from '@/shared/ui/flex';
+import { APP_TOOLBAR_HEIGHT } from '@/widgets/app-toolbar';
 import { Avatar, Button, List, Space, Typography, message } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -70,7 +71,8 @@ export default function Page() {
             <List.Item
               styles={{ actions: { marginLeft: 0 } }}
               style={{
-                marginBottom: idx === requests.length - 1 ? 64 : 0,
+                marginBottom:
+                  idx === requests.length - 1 ? APP_TOOLBAR_HEIGHT : 0,
               }}
               actions={[
                 <Button

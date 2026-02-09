@@ -171,13 +171,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   }, [workout]);
 
   return (
-    <PageDrawer
-      open
-      placement="bottom"
-      title="Тренировка"
-      height="100%"
-      onClose={submitChanges}
-    >
+    <PageDrawer open title="Тренировка" onClose={submitChanges}>
       <Flex height="100%" style={{ overflow: 'hidden' }}>
         <Form<FormValues>
           form={form}

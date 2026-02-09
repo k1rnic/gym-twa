@@ -39,7 +39,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   const isMine = viewer.master?.master_id === initialValues.master_id;
   const canEdit = isMine && initialValues.status === ExerciseStatus.Active;
 
-  const goBack = () => navigate('../');
+  const goBack = () => navigate('/exercises');
 
   const saveChanges = async () => {
     if (canEdit) {
@@ -61,8 +61,6 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
     <PageDrawer
       open
       title={canEdit ? 'Редактирование упражнения' : 'Просмотр упражнения'}
-      height="100%"
-      placement="bottom"
       onClose={saveChanges}
     >
       <Flex height="100%" style={{ overflow: 'hidden' }}>

@@ -28,8 +28,6 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
     <PageDrawer
       open
       title="Упражнение"
-      placement="bottom"
-      height="100%"
       style={{ overflow: 'hidden' }}
       styles={{ body: { overflow: 'hidden' } }}
       onClose={saveChanges}
