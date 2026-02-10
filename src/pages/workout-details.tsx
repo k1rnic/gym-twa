@@ -94,7 +94,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   );
 
   const status = params.status as TaskGroupStatus;
-  const readonly = status === TaskGroupStatus.Finished;
+  const readonly = status !== TaskGroupStatus.Planned;
 
   const hasFinishedExercises = useCallback(
     (set: Set) => set.fact_value !== null && set.fact_rep !== null,

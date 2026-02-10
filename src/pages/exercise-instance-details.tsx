@@ -22,7 +22,7 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   );
 
   const status = params.status as TaskGroupStatus;
-  const readonly = status === TaskGroupStatus.Finished;
+  const readonly = status !== TaskGroupStatus.Planned;
 
   const goBack = () => navigate('../');
 

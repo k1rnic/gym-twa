@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { AutoComplete, Button, Form, InputNumber } from 'antd';
 import { NamePath } from 'antd/es/form/interface';
+import { DefaultOptionType } from 'antd/es/select';
 import { useEffect, useMemo } from 'react';
 import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
 import { ExerciseInstance } from '../model';
@@ -85,7 +86,7 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
         ...(formValues?.task_properties as TaskPropertiesAggregate),
       },
     });
-  }, [formValues, initialValues, formValues]);
+  }, [formValues, initialValues]);
 
   const getAutoCompleteOptions = (field: SuggestionField, index: number) => {
     return getFieldSuggestions({
@@ -93,7 +94,9 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
       field,
       index,
       sets: formValues?.task_properties?.sets ?? [],
-    }).map((value) => ({ value }));
+    })
+      .map<DefaultOptionType>((value) => ({ value: `${value}`, label: value }))
+      .concat({ value: 'max', label: 'max' });
   };
 
   const fillFromPlan = (index: number) => {
@@ -118,7 +121,7 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
       <Flex height="100%">
         <Form.Item<FormValues> name="exercise_id">
           <ExerciseSelector
-            disabled={props.type === 'fact'}
+            disabled={props.readonly}
             masterId={props.masterId}
           />
         </Form.Item>
@@ -136,6 +139,7 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                         style={{ flex: 1 }}
                       >
                         <AutoComplete
+                          suffixIcon="кг"
                           options={getAutoCompleteOptions('value', key)}
                           placeholder={getFieldPlaceholder('value', key)}
                         />
@@ -147,6 +151,7 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                         style={{ flex: 1 }}
                       >
                         <AutoComplete
+                          suffixIcon="раз"
                           options={getAutoCompleteOptions('rep', key)}
                           placeholder={getFieldPlaceholder('rep', key)}
                         />
