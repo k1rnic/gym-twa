@@ -125,7 +125,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
     const data = await Api.taskGroup.createTaskGroup({
       master_id: viewer.master!.master_id!,
       gymer_id: +params.gId,
-      title: 'Новая тренировка',
+      title: '',
     });
 
     navigate(`../${TaskGroupStatus.Planned}/${data.task_group_id}/details`, {

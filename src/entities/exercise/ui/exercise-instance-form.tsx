@@ -126,8 +126,8 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
           {(fields, { add, remove }) => (
             <Flex style={{ overflow: 'hidden' }}>
               <Flex flex={1} style={{ overflow: 'auto' }}>
-                {fields.map(({ key, ...field }) => (
-                  <Flex key={key} vertical={false} align="start" gap={8}>
+                {fields.map((field) => (
+                  <Flex key={field.key} vertical={false} align="start" gap={8}>
                     <Flex vertical={false} gap={8} flex={1}>
                       <Form.Item
                         {...field}
@@ -135,8 +135,8 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                         style={{ flex: 1 }}
                       >
                         <AutoComplete
-                          options={getAutoCompleteOptions('value', key)}
-                          placeholder={getFieldPlaceholder('value', key)}
+                          options={getAutoCompleteOptions('value', field.name)}
+                          placeholder={getFieldPlaceholder('value', field.name)}
                         >
                           <Input suffix="кг" inputMode="decimal" />
                         </AutoComplete>
@@ -148,8 +148,8 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                         style={{ flex: 1 }}
                       >
                         <AutoComplete
-                          options={getAutoCompleteOptions('rep', key)}
-                          placeholder={getFieldPlaceholder('rep', key)}
+                          options={getAutoCompleteOptions('rep', field.name)}
+                          placeholder={getFieldPlaceholder('rep', field.name)}
                         >
                           <Input suffix="раз" inputMode="decimal" />
                         </AutoComplete>
@@ -162,7 +162,7 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                         type="primary"
                         hidden={props.type !== 'fact'}
                         icon={<FormOutlined />}
-                        onClick={() => fillFromPlan(key)}
+                        onClick={() => fillFromPlan(field.name)}
                       />
                       <Button
                         type="text"

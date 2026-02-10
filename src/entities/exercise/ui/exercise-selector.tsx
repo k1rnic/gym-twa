@@ -1,4 +1,5 @@
 import { Api } from '@/shared/api';
+import { Flex } from '@/shared/ui/flex';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, Select, SelectProps } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
@@ -44,12 +45,16 @@ export const ExerciseSelector = ({ masterId, ...selectProps }: Props) => {
   return (
     <Select
       showSearch
+      virtual={false}
       placeholder="Упражнение"
       optionFilterProp="label"
       options={options}
       popupRender={(menu) => (
-        <>
-          {menu}
+        <Flex style={{ maxHeight: '40vh' }}>
+          <Flex flex={1} style={{ overflowY: 'auto' }}>
+            {menu}
+          </Flex>
+
           <Divider style={{ margin: '8px 0' }} />
           <Button
             block
@@ -57,10 +62,11 @@ export const ExerciseSelector = ({ masterId, ...selectProps }: Props) => {
             color="primary"
             icon={<PlusOutlined />}
             onClick={createExercise}
+            style={{ flexShrink: 0 }}
           >
             Добавить шаблон
           </Button>
-        </>
+        </Flex>
       )}
       {...selectProps}
     />

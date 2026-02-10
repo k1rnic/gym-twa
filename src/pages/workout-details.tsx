@@ -29,9 +29,11 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   );
 
   const status = params.status as TaskGroupStatus;
-  const isMine = workout?.gymer_id === viewer.gymer?.gymer_id;
+  const canAccess =
+    workout?.gymer_id === viewer.gymer?.gymer_id &&
+    status !== TaskGroupStatus.Finished;
 
-  const readonly = !(status === TaskGroupStatus.Planned || isMine);
+  const readonly = !(status === TaskGroupStatus.Planned || canAccess);
 
   const deleteWorkout = async () => {
     try {

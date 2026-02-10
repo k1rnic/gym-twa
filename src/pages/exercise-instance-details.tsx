@@ -24,9 +24,11 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   );
 
   const status = params.status as TaskGroupStatus;
-  const isMine = +params.gId === viewer.gymer?.gymer_id;
+  const canAccess =
+    +params.gId === viewer.gymer?.gymer_id &&
+    status !== TaskGroupStatus.Finished;
 
-  const readonly = !(status === TaskGroupStatus.Planned || isMine);
+  const readonly = !(status === TaskGroupStatus.Planned || canAccess);
 
   const goBack = () => navigate('../');
 
