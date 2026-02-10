@@ -3,7 +3,6 @@ import { exerciseModel } from '@/entities/exercise';
 import { useViewer } from '@/entities/viewer/model';
 import { Api, ExerciseStatus } from '@/shared/api';
 import { DeleteButton } from '@/shared/ui/delete-button';
-import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { Descriptions, DescriptionsProps, Form } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -63,35 +62,26 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
       onClose={saveChanges}
       extra={canEdit && <DeleteButton onDelete={deleteExercise} />}
     >
-      <Flex height="100%" style={{ overflow: 'hidden' }}>
-        <Flex flex={1}>
-          {canEdit ? (
-            <Form<exerciseModel.ExerciseDetailed>
-              form={form}
-              initialValues={initialValues}
-              size="middle"
-            >
-              <Form.Item<exerciseModel.ExerciseDetailed> name="exercise_name">
-                <TextArea
-                  autoSize
-                  placeholder="Название"
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
+      {canEdit ? (
+        <Form<exerciseModel.ExerciseDetailed>
+          form={form}
+          initialValues={initialValues}
+          size="middle"
+        >
+          <Form.Item<exerciseModel.ExerciseDetailed> name="exercise_name">
+            <TextArea autoSize placeholder="Название" />
+          </Form.Item>
 
-              <Form.Item<exerciseModel.ExerciseDetailed> name="description">
-                <TextArea
-                  placeholder="Описание"
-                  autoSize={{ minRows: 3, maxRows: 6 }}
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-            </Form>
-          ) : (
-            <Descriptions items={descriptions} />
-          )}
-        </Flex>
-      </Flex>
+          <Form.Item<exerciseModel.ExerciseDetailed> name="description">
+            <TextArea
+              placeholder="Описание"
+              autoSize={{ minRows: 3, maxRows: 6 }}
+            />
+          </Form.Item>
+        </Form>
+      ) : (
+        <Descriptions items={descriptions} />
+      )}
     </PageDrawer>
   );
 };

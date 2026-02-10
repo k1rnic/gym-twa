@@ -3,6 +3,7 @@ import {
   exerciseModel,
   normalizeSetValues,
 } from '@/entities/exercise';
+import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { useState } from 'react';
@@ -13,7 +14,9 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.task.getTaskByTaskId(+params.exId);
 };
 
-const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
+const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
+  const viewer = viewerModel.useViewer();
+
   const navigate = useNavigate();
   const [formValues, setFormValues] = useState<exerciseModel.ExerciseInstance>(
     initialValues!,
@@ -27,16 +30,10 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   };
 
   return (
-    <PageDrawer
-      open
-      title="Упражнение"
-      style={{ overflow: 'hidden' }}
-      styles={{ body: { overflow: 'hidden' } }}
-      onClose={saveChanges}
-    >
+    <PageDrawer open title="Упражнение" onClose={saveChanges}>
       <ExerciseInstanceForm
         type="fact"
-        masterId={+params.mId}
+        masterId={viewer.master!.master_id!}
         values={initialValues!}
         onChange={setFormValues}
       />

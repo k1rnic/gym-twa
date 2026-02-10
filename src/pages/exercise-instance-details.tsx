@@ -6,7 +6,6 @@ import {
 import { viewerModel } from '@/entities/viewer';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { DeleteButton } from '@/shared/ui/delete-button';
-import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -45,20 +44,16 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
     <PageDrawer
       open
       title="Упражнение"
-      style={{ overflow: 'hidden' }}
-      styles={{ body: { overflow: 'hidden' } }}
       onClose={saveChanges}
       extra={<DeleteButton hidden={readonly} onDelete={deleteExercise} />}
     >
-      <Flex height="100%">
-        <ExerciseInstanceForm
-          readonly={readonly}
-          type="plan"
-          masterId={+params.mId}
-          values={initialValues!}
-          onChange={setFormValues}
-        />
-      </Flex>
+      <ExerciseInstanceForm
+        readonly={readonly}
+        type="plan"
+        masterId={viewer.master!.master_id!}
+        values={initialValues!}
+        onChange={setFormValues}
+      />
     </PageDrawer>
   );
 };

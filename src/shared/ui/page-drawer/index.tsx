@@ -1,5 +1,6 @@
 import { useToggle } from '@/shared/lib/hooks';
-import { Button, Drawer, DrawerProps, Flex } from 'antd';
+import { Flex } from '@/shared/ui/flex';
+import { Button, Drawer, DrawerProps } from 'antd';
 import { PropsWithChildren, ReactNode } from 'react';
 
 export type PageDrawerProps = {
@@ -24,13 +25,10 @@ export const PageDrawer = ({
 
   return (
     <Drawer
-      motion={{ visible: false }}
-      maskMotion={{ visible: false }}
+      push={false}
       closable={false}
       open={opened}
-      onClose={handleClose}
       width="100%"
-      placement="right"
       title={
         <Flex
           align="center"

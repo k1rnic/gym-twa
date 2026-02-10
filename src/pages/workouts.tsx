@@ -87,6 +87,8 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
   const navigate = useNavigate();
   const { revalidate } = useRevalidator();
 
+  const viewer = viewerModel.useViewer();
+
   const [innerWorkouts, setInnerWorkouts] = useState(workouts);
 
   const status = params.status as TaskGroupStatus;
@@ -121,7 +123,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
 
   const createWorkout = async () => {
     const data = await Api.taskGroup.createTaskGroup({
-      master_id: +params.mId,
+      master_id: viewer.master!.master_id!,
       gymer_id: +params.gId,
       title: 'Новая тренировка',
     });

@@ -6,7 +6,7 @@ import {
   FormOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { AutoComplete, Button, Form, InputNumber } from 'antd';
+import { AutoComplete, Button, Form, Input, InputNumber } from 'antd';
 import { NamePath } from 'antd/es/form/interface';
 import { DefaultOptionType } from 'antd/es/select';
 import { useEffect, useMemo } from 'react';
@@ -124,7 +124,7 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
 
         <Form.List name={['task_properties', 'sets']}>
           {(fields, { add, remove }) => (
-            <Flex height="100%" style={{ overflow: 'hidden' }}>
+            <Flex style={{ overflow: 'hidden' }}>
               <Flex flex={1} style={{ overflow: 'auto' }}>
                 {fields.map(({ key, ...field }) => (
                   <Flex key={key} vertical={false} align="start" gap={8}>
@@ -135,10 +135,11 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                         style={{ flex: 1 }}
                       >
                         <AutoComplete
-                          suffixIcon="кг"
                           options={getAutoCompleteOptions('value', key)}
                           placeholder={getFieldPlaceholder('value', key)}
-                        />
+                        >
+                          <Input suffix="кг" inputMode="decimal" />
+                        </AutoComplete>
                       </Form.Item>
 
                       <Form.Item
@@ -147,10 +148,11 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                         style={{ flex: 1 }}
                       >
                         <AutoComplete
-                          suffixIcon="раз"
                           options={getAutoCompleteOptions('rep', key)}
                           placeholder={getFieldPlaceholder('rep', key)}
-                        />
+                        >
+                          <Input suffix="раз" inputMode="decimal" />
+                        </AutoComplete>
                       </Form.Item>
                     </Flex>
 
