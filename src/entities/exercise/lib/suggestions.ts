@@ -18,21 +18,13 @@ export const getFieldSuggestions = (options: {
   const isValueField = field === 'value';
 
   const getNumeric = (val: unknown): number | null => {
-    return typeof val === 'number' ? val : null;
+    return Number.isFinite(Number(val)) ? Number(val) : null;
   };
 
   const current = sets[index];
   const prev = index > 0 ? sets[index - 1] : null;
 
   const planKey: keyof Set = isValueField ? 'plan_value' : 'plan_rep';
-  // const factKey: keyof Set = isValueField ? 'fact_value' : 'fact_rep';
-
-  // Если предыдущее значение равно 'max', предлагаем только 'max'
-  // const prevForModeKey =
-  //   mode === 'plan' ? planKey : mode === 'fact' ? factKey : planKey;
-  // if (prev && prev[prevForModeKey] === ('max' as unknown)) {
-  //   return ['max'];
-  // }
 
   let base: number | null = null;
 

@@ -3,6 +3,7 @@ import {
   exerciseModel,
   normalizeSetValues,
 } from '@/entities/exercise';
+import { viewerModel } from '@/entities/viewer';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
@@ -17,12 +18,16 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   const navigate = useNavigate();
+  const viewer = viewerModel.useViewer();
+
   const [formValues, setFormValues] = useState<exerciseModel.ExerciseInstance>(
     initialValues!,
   );
 
   const status = params.status as TaskGroupStatus;
-  const readonly = status !== TaskGroupStatus.Planned;
+  const isMine = +params.gId === viewer.gymer?.gymer_id;
+
+  const readonly = !(status === TaskGroupStatus.Planned || isMine);
 
   const goBack = () => navigate('../');
 
@@ -51,7 +56,6 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
           type="plan"
           masterId={+params.mId}
           values={initialValues!}
-          status={status}
           onChange={setFormValues}
         />
       </Flex>

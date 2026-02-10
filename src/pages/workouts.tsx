@@ -2,7 +2,6 @@ import { viewerModel } from '@/entities/viewer';
 import { workoutModel } from '@/entities/workout';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { useSortableList } from '@/shared/lib/hooks';
-import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import {
   WorkoutCardPreview,
@@ -87,8 +86,6 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
   const navigate = useNavigate();
   const { revalidate } = useRevalidator();
-
-  const { token } = useTheme();
 
   const [innerWorkouts, setInnerWorkouts] = useState(workouts);
 

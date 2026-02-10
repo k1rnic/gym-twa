@@ -1,4 +1,4 @@
-import { Set, TaskGroupStatus, TaskPropertiesAggregate } from '@/shared/api';
+import { Set, TaskPropertiesAggregate } from '@/shared/api';
 import { Flex } from '@/shared/ui/flex';
 import {
   CloseOutlined,
@@ -20,7 +20,6 @@ type ExerciseValuesType = 'fact' | 'plan';
 export type ExerciseInstanceFormProps<T extends ExerciseValuesType> = {
   masterId: number;
   values: FormValues;
-  status?: TaskGroupStatus | null;
   type: T;
   onSubmit?: (values: FormValues) => void;
   onChange?: (values: FormValues) => void;
@@ -120,10 +119,7 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
     >
       <Flex height="100%">
         <Form.Item<FormValues> name="exercise_id">
-          <ExerciseSelector
-            disabled={props.readonly}
-            masterId={props.masterId}
-          />
+          <ExerciseSelector masterId={props.masterId} />
         </Form.Item>
 
         <Form.List name={['task_properties', 'sets']}>

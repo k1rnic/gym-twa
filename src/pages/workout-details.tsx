@@ -1,76 +1,17 @@
-import { exerciseModel } from '@/entities/exercise';
+import { viewerModel } from '@/entities/viewer';
 import { workoutModel } from '@/entities/workout';
-import { Api, Set, TaskGroupStatus } from '@/shared/api';
-import { useSortableList } from '@/shared/lib/hooks';
-import { useTheme } from '@/shared/lib/theme';
+import { CreateExerciseInstanceButton } from '@/features/create-exercise-instance';
+import { Api, TaskGroupStatus } from '@/shared/api';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { PageDrawer } from '@/shared/ui/page-drawer';
-import { PlusOutlined } from '@ant-design/icons';
-import {
-  closestCenter,
-  DndContext,
-  DragEndEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  restrictToFirstScrollableAncestor,
-  restrictToVerticalAxis,
-} from '@dnd-kit/modifiers';
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { Button, Card, Descriptions, Form, Input, Typography } from 'antd';
-import { DescriptionsItemType } from 'antd/lib/descriptions';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { WorkoutExercises } from '@/widgets/workout-exercises';
+import { Form, Input } from 'antd';
+import { useMemo } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { Route } from './+types/workout-details';
 
 type FormValues = workoutModel.Workout;
-
-const SortableExerciseCard = ({
-  ex,
-  readonly,
-  getExerciseDescriptions,
-  onClick,
-}: {
-  ex: exerciseModel.ExerciseInstance;
-  readonly: boolean;
-  getExerciseDescriptions: (
-    ex: exerciseModel.ExerciseInstance,
-  ) => DescriptionsItemType[];
-  onClick: () => void;
-}) => {
-  const { setNodeRef, style, handler } = useSortableList(ex.task_id);
-
-  return (
-    <div ref={setNodeRef} style={style}>
-      <Card
-        size="small"
-        title={
-          <Flex
-            vertical={false}
-            align="center"
-            gap={8}
-            style={{ whiteSpace: 'break-spaces' }}
-          >
-            {handler}
-            <Typography.Text ellipsis>
-              {ex.exercise?.exercise_name ?? 'Не выбрано'}
-            </Typography.Text>
-          </Flex>
-        }
-        onClick={onClick}
-      >
-        <Descriptions column={1} items={getExerciseDescriptions(ex)} />
-      </Card>
-    </div>
-  );
-};
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.taskGroup.taskGroupById(+params.wId);
@@ -78,71 +19,19 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   const navigate = useNavigate();
-  const theme = useTheme();
+  const viewer = viewerModel.useViewer();
 
   const [form] = Form.useForm<FormValues>();
-
-  const [innerTasks, setInnerTasks] = useState(workout?.tasks ?? []);
 
   const initialData = useMemo<DeepPartial<FormValues>>(
     () => ({ ...workout }),
     [workout],
   );
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-  );
-
   const status = params.status as TaskGroupStatus;
-  const readonly = status !== TaskGroupStatus.Planned;
+  const isMine = workout?.gymer_id === viewer.gymer?.gymer_id;
 
-  const hasFinishedExercises = useCallback(
-    (set: Set) => set.fact_value !== null && set.fact_rep !== null,
-    [],
-  );
-
-  const getExerciseDescriptions = useCallback(
-    (ex: exerciseModel.ExerciseInstance): DescriptionsItemType[] => [
-      ...(ex.task_properties?.sets?.map((s, idx) => ({
-        key: s.set_id,
-        label: `${idx + 1}`,
-        children: (
-          <Flex vertical={false} width="100%">
-            <Flex
-              flex={1}
-              align="flex-start"
-              style={{ color: theme.token.colorSuccess }}
-              hidden={!hasFinishedExercises(s)}
-            >{`${s.fact_value ?? 0} кг x ${s.fact_rep ?? 0} раз`}</Flex>
-            <Flex flex={1} align="flex-end">{`${s.plan_value ?? 0} кг x ${
-              s.plan_rep ?? 0
-            } раз`}</Flex>
-          </Flex>
-        ),
-      })) ?? []),
-      {
-        key: 'rest',
-        label: 'Отдых',
-        children: `${ex.task_properties?.rest || 0} сек`,
-      },
-    ],
-    [theme.token.colorSuccess, hasFinishedExercises],
-  );
-
-  const goToExercise = (id: exerciseModel.ExerciseInstance['task_id']) => {
-    navigate(`${id}`);
-  };
-
-  const createExerciseInstance = async () => {
-    try {
-      const instance = await Api.task.createTask({
-        task_group_id: workout!.task_group_id,
-      });
-      navigate(`${instance?.task_id}`);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const readonly = !(status === TaskGroupStatus.Planned || isMine);
 
   const deleteWorkout = async () => {
     try {
@@ -164,90 +53,36 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
     }
   };
 
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = innerTasks.findIndex((t) => t.task_id === active.id);
-    const newIndex = innerTasks.findIndex((t) => t.task_id === over.id);
-    const reordered = arrayMove(innerTasks, oldIndex, newIndex);
-    setInnerTasks(reordered);
-
-    try {
-      await Api.task.reorderTask(
-        reordered.map((t, idx) => ({
-          task_id: t.task_id,
-          order_idx: idx,
-        })),
-      );
-    } catch (e) {
-      console.error('Failed to reorder tasks', e);
-    }
-  };
-
-  useEffect(() => {
-    setInnerTasks(workout?.tasks ?? []);
-  }, [workout]);
-
   return (
     <PageDrawer
-      open
+      open={Boolean(workout)}
       title="Тренировка"
       onClose={submitChanges}
       extra={<DeleteButton hidden={readonly} onDelete={deleteWorkout} />}
     >
-      <Flex height="100%" style={{ overflow: 'hidden' }}>
-        <Form<FormValues>
-          form={form}
-          initialValues={initialData}
-          size="middle"
-          disabled={readonly}
-        >
-          <Form.Item<FormValues> name="title">
-            <Input style={{ width: '100%' }} placeholder="Название" />
-          </Form.Item>
-        </Form>
-
-        <Form.Item hidden={status !== TaskGroupStatus.Planned}>
-          <Button
-            block
+      {workout && (
+        <Flex height="100%" style={{ overflow: 'hidden' }}>
+          <Form<FormValues>
+            form={form}
+            initialValues={initialData}
             size="middle"
-            type="dashed"
-            className="m-5"
-            onClick={createExerciseInstance}
-            icon={<PlusOutlined />}
+            disabled={readonly}
           >
-            Добавить упражнение
-          </Button>
-        </Form.Item>
+            <Form.Item<FormValues> name="title">
+              <Input style={{ width: '100%' }} placeholder="Название" />
+            </Form.Item>
+          </Form>
 
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[
-            restrictToVerticalAxis,
-            restrictToFirstScrollableAncestor,
-          ]}
-        >
-          <SortableContext
-            items={innerTasks.map((t) => t.task_id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <Flex flex={1} gap={8} style={{ overflow: 'auto' }}>
-              {innerTasks.map((ex) => (
-                <SortableExerciseCard
-                  key={ex.task_id}
-                  ex={ex}
-                  readonly={readonly}
-                  getExerciseDescriptions={getExerciseDescriptions}
-                  onClick={() => goToExercise(ex.task_id)}
-                />
-              ))}
-            </Flex>
-          </SortableContext>
-        </DndContext>
-      </Flex>
+          <Form.Item hidden={readonly}>
+            <CreateExerciseInstanceButton workoutId={workout.task_group_id} />
+          </Form.Item>
+
+          <WorkoutExercises
+            exercises={workout.tasks ?? []}
+            readonly={readonly}
+          />
+        </Flex>
+      )}
 
       <Outlet />
     </PageDrawer>
