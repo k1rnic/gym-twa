@@ -27,12 +27,12 @@ export type AvatarProps = {
 } & Pick<AntdAvatarProps, 'icon'>;
 
 export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>((props, ref) => {
-  const { name = '', active, size = 64, src, onItemClick } = props;
+  const { name, active, size = 64, src, onItemClick } = props;
   const { token } = useTheme();
 
   const containerSize = size + (BORDER_WIDTH + BORDER_OFFSET) * 2;
 
-  const avatarFallback = stringAvatar(name);
+  const avatarFallback = stringAvatar(name || '');
 
   return (
     <Flex className={classes.root} width={containerSize}>

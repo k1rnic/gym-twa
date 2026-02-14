@@ -64,8 +64,8 @@ if (import.meta.env.DEV) {
               'user',
               JSON.stringify({
                 id: 297913083,
-                first_name: 'nik',
-                username: 'k1r',
+                first_name: '',
+                username: '',
               }),
             ],
           ]).toString(),

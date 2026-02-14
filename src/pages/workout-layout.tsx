@@ -1,3 +1,4 @@
+import { formatUserDisplayName } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, MastersGymer, TaskGroupStatus } from '@/shared/api';
 import { useMatchExact } from '@/shared/lib/router';
@@ -21,7 +22,7 @@ const Page = () => {
     () =>
       masterGymmers.map<AvatarListItem>((gymmer) => ({
         id: gymmer.gymer_id,
-        name: gymmer.username,
+        name: gymmer.username || formatUserDisplayName(gymmer),
         src: gymmer.photo!,
       })),
     [masterGymmers],
