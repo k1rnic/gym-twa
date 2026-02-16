@@ -66,6 +66,7 @@ export default function Page() {
 
   const uploadProps: UploadProps = {
     multiple: false,
+    accept: 'image/*',
     showUploadList: false,
     beforeUpload: async (file) => {
       await uploadFile(file as RcFile);

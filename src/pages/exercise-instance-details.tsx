@@ -45,7 +45,7 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   return (
     <PageDrawer
       open
-      title="Упражнение"
+      title={readonly ? 'Просмотр упражнения' : 'Редактирование упражнения'}
       onClose={saveChanges}
       extra={<DeleteButton hidden={readonly} onDelete={deleteExercise} />}
     >

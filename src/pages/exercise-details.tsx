@@ -58,7 +58,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   return (
     <PageDrawer
       open
-      title={canEdit ? 'Редактирование упражнения' : 'Просмотр упражнения'}
+      title={canEdit ? 'Редактирование шаблона' : 'Просмотр шаблона'}
       onClose={saveChanges}
       extra={canEdit && <DeleteButton onDelete={deleteExercise} />}
     >

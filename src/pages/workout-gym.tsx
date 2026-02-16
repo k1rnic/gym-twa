@@ -64,7 +64,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   return (
     <PageDrawer
       open={Boolean(workout)}
-      title="Тренировка"
+      title="Выполняется тренировка"
       onClose={submitChanges}
       extra={
         <Button type="primary" onClick={finishWorkout}>

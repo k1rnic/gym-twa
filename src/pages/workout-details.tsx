@@ -58,7 +58,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   return (
     <PageDrawer
       open={Boolean(workout)}
-      title="Тренировка"
+      title="Создание тренировки"
       onClose={submitChanges}
       extra={<DeleteButton hidden={readonly} onDelete={deleteWorkout} />}
     >
