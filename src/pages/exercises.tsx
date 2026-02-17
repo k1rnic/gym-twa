@@ -1,8 +1,9 @@
 import { ExerciseList, exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
+import { Flex } from '@/shared/ui/flex';
+import { FloatButton } from '@/shared/ui/float-button';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
 import { useNavigate } from 'react-router';
 
 const Page = () => {
@@ -27,22 +28,14 @@ const Page = () => {
   };
 
   return (
-    <ExerciseList
-      exercises={exercises}
-      masterId={masterId}
-      extra={
-        <Button
-          block
-          type="primary"
-          size="middle"
-          icon={<PlusOutlined />}
-          onClick={createExercise}
-        >
-          Добавить упражнение
-        </Button>
-      }
-      onSelect={goToExercise}
-    />
+    <Flex height="100%" style={{ overflow: 'hidden', position: 'relative' }}>
+      <ExerciseList
+        exercises={exercises}
+        masterId={masterId}
+        onSelect={goToExercise}
+      />
+      <FloatButton icon={<PlusOutlined />} onClick={createExercise} />
+    </Flex>
   );
 };
 

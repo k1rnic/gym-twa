@@ -1,6 +1,6 @@
 import { Api } from '@/shared/api';
+import { FloatButton } from '@/shared/ui/float-button';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
 import { useNavigate } from 'react-router';
 
 type Props = {
@@ -22,15 +22,6 @@ export const CreateExerciseInstanceButton = (props: Props) => {
   };
 
   return (
-    <Button
-      block
-      size="middle"
-      type="dashed"
-      className="m-5"
-      onClick={createExerciseInstance}
-      icon={<PlusOutlined />}
-    >
-      Добавить упражнение
-    </Button>
+    <FloatButton onClick={createExerciseInstance} icon={<PlusOutlined />} />
   );
 };

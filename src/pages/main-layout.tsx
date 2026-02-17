@@ -25,7 +25,6 @@ export default function Page() {
     <Flex
       height="100%"
       width="100%"
-      gap="small"
       p={token.padding}
       style={{ backgroundColor: token.colorBgContainer, paddingBottom: 0 }}
     >

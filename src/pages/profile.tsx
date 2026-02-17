@@ -21,7 +21,6 @@ import { useNavigate } from 'react-router';
 import { formatUserDisplayName } from '@/entities/user';
 import { AvatarPreview } from '@/shared/ui/avatar';
 import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
-import { APP_TOOLBAR_HEIGHT } from '@/widgets/app-toolbar';
 
 const { Title, Text } = Typography;
 
@@ -130,7 +129,7 @@ export default function Page() {
         </Space>
       </Card>
 
-      <Card style={{ marginBottom: APP_TOOLBAR_HEIGHT }}>
+      <Card>
         <Space direction="vertical" style={{ width: '100%' }}>
           <Title level={4} style={{ margin: 0 }}>
             Действия

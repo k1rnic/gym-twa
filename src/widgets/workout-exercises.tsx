@@ -3,6 +3,7 @@ import { Api, Set } from '@/shared/api';
 import { useSortableList } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
+import { FLOAT_BUTTON_SIZE } from '@/shared/ui/float-button';
 import {
   closestCenter,
   DndContext,
@@ -21,6 +22,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { Card, Descriptions, Typography } from 'antd';
+import { CardProps } from 'antd/lib';
 import { DescriptionsItemType } from 'antd/lib/descriptions';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -30,6 +32,7 @@ const SortableExerciseCard = ({
   readonly,
   getExerciseDescriptions,
   onClick,
+  style,
 }: {
   ex: exerciseModel.ExerciseInstance;
   readonly: boolean;
@@ -37,13 +40,18 @@ const SortableExerciseCard = ({
     ex: exerciseModel.ExerciseInstance,
   ) => DescriptionsItemType[];
   onClick: () => void;
-}) => {
-  const { setNodeRef, style, handler } = useSortableList(ex.task_id);
+} & Pick<CardProps, 'style'>) => {
+  const {
+    setNodeRef,
+    style: sortableStyle,
+    handler,
+  } = useSortableList(ex.task_id);
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <div ref={setNodeRef} style={sortableStyle}>
       <Card
         size="small"
+        style={style}
         title={
           <Flex
             vertical={false}
@@ -158,12 +166,15 @@ export const WorkoutExercises = ({
         strategy={verticalListSortingStrategy}
       >
         <Flex flex={1} gap={8} style={{ overflow: 'auto' }}>
-          {innerTasks.map((ex) => (
+          {innerTasks.map((ex, idx, { length }) => (
             <SortableExerciseCard
               key={ex.task_id}
               ex={ex}
               readonly={readonly}
               getExerciseDescriptions={getExerciseDescriptions}
+              style={{
+                marginBottom: idx === length - 1 ? FLOAT_BUTTON_SIZE : 0,
+              }}
               onClick={() => goToExercise(ex.task_id)}
             />
           ))}

@@ -1,5 +1,5 @@
 import { Flex } from '@/shared/ui/flex';
-import { APP_TOOLBAR_HEIGHT } from '@/widgets/app-toolbar';
+import { FLOAT_BUTTON_SIZE } from '@/shared/ui/float-button';
 import { Empty, Input, Typography } from 'antd';
 import { ReactNode, useState } from 'react';
 import { useExerciseFilter } from '../../lib/use-exercise-filter';
@@ -51,7 +51,7 @@ export const ExerciseList = ({
             onSelect={(ex) => onSelect?.(ex)}
             listItemStyle={(_, idx) => ({
               marginBottom:
-                idx === grouped.basic.length - 1 ? APP_TOOLBAR_HEIGHT : 0,
+                idx === grouped.basic.length - 1 ? FLOAT_BUTTON_SIZE : 0,
             })}
           />
         </Flex>

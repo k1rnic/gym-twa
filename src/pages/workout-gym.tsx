@@ -73,7 +73,10 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
       }
     >
       {workout && (
-        <Flex height="100%" style={{ overflow: 'hidden' }}>
+        <Flex
+          height="100%"
+          style={{ overflow: 'hidden', position: 'relative' }}
+        >
           <Form<FormValues>
             form={form}
             initialValues={initialData}
@@ -85,9 +88,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
             </Form.Item>
           </Form>
 
-          <Form.Item>
-            <CreateExerciseInstanceButton workoutId={workout.task_group_id} />
-          </Form.Item>
+          <CreateExerciseInstanceButton workoutId={workout.task_group_id} />
 
           <WorkoutExercises
             exercises={workout.tasks ?? []}

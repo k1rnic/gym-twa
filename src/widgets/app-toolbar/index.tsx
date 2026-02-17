@@ -1,4 +1,5 @@
 import { useTheme } from '@/shared/lib/theme';
+import { Flex } from '@/shared/ui/flex';
 import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib';
 import { useLocation, useNavigate } from 'react-router';
@@ -24,33 +25,32 @@ export const AppToolbar = () => {
 
   const navigate = useNavigate();
 
-  const handleRadioChange = (e: RadioChangeEvent) => {
+  const handleChange = (e: RadioChangeEvent) => {
     navigate(e.target.value);
   };
 
   return (
-    <Radio.Group
-      value={activeItem?.value}
-      size="middle"
-      optionType="button"
-      buttonStyle="solid"
-      style={{
-        width: 'max-content',
-        position: 'absolute',
-        bottom: 4,
-        zIndex: 1000,
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        border: `4px solid ${token.colorBgContainer}`,
-        borderRadius: token.borderRadiusLG,
-      }}
-      onChange={handleRadioChange}
+    <Flex
+      height={APP_TOOLBAR_HEIGHT}
+      align="center"
+      justify="center"
+      width="100%"
     >
-      {items.map((item) => (
-        <Radio.Button key={item.value} value={item.value}>
-          {item.label}
-        </Radio.Button>
-      ))}
-    </Radio.Group>
+      <Radio.Group
+        block
+        value={activeItem?.value}
+        size="middle"
+        optionType="button"
+        buttonStyle="solid"
+        style={{ width: '100%', borderRadius: token.borderRadiusLG }}
+        onChange={handleChange}
+      >
+        {items.map((item) => (
+          <Radio.Button key={item.value} value={item.value}>
+            {item.label}
+          </Radio.Button>
+        ))}
+      </Radio.Group>
+    </Flex>
   );
 };

@@ -3,6 +3,7 @@ import { workoutModel } from '@/entities/workout';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { useSortableList } from '@/shared/lib/hooks';
 import { Flex } from '@/shared/ui/flex';
+import { FLOAT_BUTTON_SIZE, FloatButton } from '@/shared/ui/float-button';
 import {
   WorkoutCardPreview,
   WorkoutCardPreviewProps,
@@ -146,7 +147,11 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
   }, [workouts]);
 
   return (
-    <Flex height="100%" style={{ overflow: 'hidden' }} gap={8}>
+    <Flex
+      height="100%"
+      gap={8}
+      style={{ overflowY: 'auto', position: 'relative' }}
+    >
       <Outlet />
 
       <Segmented
@@ -155,16 +160,6 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
         value={status}
         onChange={filterWorkouts}
       />
-
-      <Button
-        block
-        type="primary"
-        size="middle"
-        icon={<PlusOutlined />}
-        onClick={createWorkout}
-      >
-        Добавить тренировку
-      </Button>
 
       <DndContext
         sensors={sensors}
@@ -182,13 +177,17 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
                 key={w.task_group_id}
                 workout={w}
                 status={status}
-                style={{ marginBottom: idx === length - 1 ? 72 : 0 }}
+                style={{
+                  marginBottom: idx === length - 1 ? FLOAT_BUTTON_SIZE : 0,
+                }}
                 onClick={() => goToWorkoutDetails(w)}
               />
             ))}
           </Flex>
         </SortableContext>
       </DndContext>
+
+      <FloatButton icon={<PlusOutlined />} onClick={createWorkout} />
     </Flex>
   );
 };

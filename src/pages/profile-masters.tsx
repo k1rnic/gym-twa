@@ -2,7 +2,6 @@ import { masterModel, MasterStatus } from '@/entities/master';
 import { viewerModel } from '@/entities/viewer';
 import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
 import { Flex } from '@/shared/ui/flex';
-import { APP_TOOLBAR_HEIGHT } from '@/widgets/app-toolbar';
 import { RightOutlined } from '@ant-design/icons';
 import { Avatar, List, Typography } from 'antd';
 import { useMemo } from 'react';
@@ -46,12 +45,9 @@ export default function Page() {
           loading={loading}
           dataSource={data}
           locale={{ emptyText: 'Тренеров пока нет' }}
-          renderItem={(item, idx) => (
+          renderItem={(item) => (
             <List.Item
-              style={{
-                cursor: 'pointer',
-                marginBottom: idx === data.length - 1 ? APP_TOOLBAR_HEIGHT : 0,
-              }}
+              style={{ cursor: 'pointer' }}
               onClick={() => navigate(`/profile/masters/${item.master_id}`)}
             >
               <Flex vertical={false} width="100%">

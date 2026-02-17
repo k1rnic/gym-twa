@@ -1,5 +1,6 @@
 import { Set, TaskPropertiesAggregate } from '@/shared/api';
 import { Flex } from '@/shared/ui/flex';
+import { FloatButton } from '@/shared/ui/float-button';
 import {
   CloseOutlined,
   FieldTimeOutlined,
@@ -117,7 +118,7 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
       disabled={props.readonly}
       style={{ overflow: 'hidden', height: '100%' }}
     >
-      <Flex height="100%">
+      <Flex height="100%" style={{ position: 'relative' }}>
         <Form.Item<FormValues> name="exercise_id">
           <ExerciseSelector masterId={props.masterId} />
         </Form.Item>
@@ -175,16 +176,12 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                 ))}
               </Flex>
 
-              <Form.Item hidden={props.readonly}>
-                <Button
-                  block
-                  type="dashed"
+              {!props.readonly && (
+                <FloatButton
                   icon={<PlusOutlined />}
                   onClick={() => add(getLastSetPlan())}
-                >
-                  Добавить подход
-                </Button>
-              </Form.Item>
+                />
+              )}
             </Flex>
           )}
         </Form.List>
