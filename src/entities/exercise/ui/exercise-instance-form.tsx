@@ -1,13 +1,9 @@
 import { Set, TaskPropertiesAggregate } from '@/shared/api';
+import { CountDown } from '@/shared/ui/countdown';
 import { Flex } from '@/shared/ui/flex';
-import { FloatButton } from '@/shared/ui/float-button';
-import {
-  CloseOutlined,
-  FieldTimeOutlined,
-  FormOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
-import { AutoComplete, Button, Form, Input, InputNumber } from 'antd';
+import { FLOAT_BUTTON_SIZE, FloatButton } from '@/shared/ui/float-button';
+import { CloseOutlined, FormOutlined, PlusOutlined } from '@ant-design/icons';
+import { AutoComplete, Button, Form, Input } from 'antd';
 import { NamePath } from 'antd/es/form/interface';
 import { DefaultOptionType } from 'antd/es/select';
 import { useEffect, useMemo } from 'react';
@@ -125,56 +121,54 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
 
         <Form.List name={['task_properties', 'sets']}>
           {(fields, { add, remove }) => (
-            <Flex style={{ overflow: 'hidden' }}>
-              <Flex flex={1} style={{ overflow: 'auto' }}>
-                {fields.map((field) => (
-                  <Flex key={field.key} vertical={false} align="start" gap={8}>
-                    <Flex vertical={false} gap={8} flex={1}>
-                      <Form.Item
-                        {...field}
-                        name={[field.name, `${props.type}_value`]}
-                        style={{ flex: 1 }}
+            <Flex flex={1} style={{ overflow: 'auto' }}>
+              {fields.map(({ key, ...field }) => (
+                <Flex key={key} vertical={false} align="start" gap={8}>
+                  <Flex vertical={false} gap={8} flex={1}>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, `${props.type}_value`]}
+                      style={{ flex: 1 }}
+                    >
+                      <AutoComplete
+                        options={getAutoCompleteOptions('value', field.name)}
+                        placeholder={getFieldPlaceholder('value', field.name)}
                       >
-                        <AutoComplete
-                          options={getAutoCompleteOptions('value', field.name)}
-                          placeholder={getFieldPlaceholder('value', field.name)}
-                        >
-                          <Input suffix="кг" inputMode="decimal" />
-                        </AutoComplete>
-                      </Form.Item>
+                        <Input suffix="кг" inputMode="decimal" />
+                      </AutoComplete>
+                    </Form.Item>
 
-                      <Form.Item
-                        {...field}
-                        name={[field.name, `${props.type}_rep`]}
-                        style={{ flex: 1 }}
+                    <Form.Item
+                      {...field}
+                      name={[field.name, `${props.type}_rep`]}
+                      style={{ flex: 1 }}
+                    >
+                      <AutoComplete
+                        options={getAutoCompleteOptions('rep', field.name)}
+                        placeholder={getFieldPlaceholder('rep', field.name)}
                       >
-                        <AutoComplete
-                          options={getAutoCompleteOptions('rep', field.name)}
-                          placeholder={getFieldPlaceholder('rep', field.name)}
-                        >
-                          <Input suffix="раз" inputMode="decimal" />
-                        </AutoComplete>
-                      </Form.Item>
-                    </Flex>
-
-                    <Flex vertical={false}>
-                      <Button
-                        variant="filled"
-                        type="primary"
-                        hidden={props.type !== 'fact'}
-                        icon={<FormOutlined />}
-                        onClick={() => fillFromPlan(field.name)}
-                      />
-                      <Button
-                        type="text"
-                        hidden={props.readonly}
-                        icon={<CloseOutlined />}
-                        onClick={() => remove(field.name)}
-                      />
-                    </Flex>
+                        <Input suffix="раз" inputMode="decimal" />
+                      </AutoComplete>
+                    </Form.Item>
                   </Flex>
-                ))}
-              </Flex>
+
+                  <Flex vertical={false}>
+                    <Button
+                      variant="filled"
+                      type="primary"
+                      hidden={props.type !== 'fact'}
+                      icon={<FormOutlined />}
+                      onClick={() => fillFromPlan(field.name)}
+                    />
+                    <Button
+                      type="text"
+                      hidden={props.readonly}
+                      icon={<CloseOutlined />}
+                      onClick={() => remove(field.name)}
+                    />
+                  </Flex>
+                </Flex>
+              ))}
 
               {!props.readonly && (
                 <FloatButton
@@ -186,14 +180,16 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
           )}
         </Form.List>
 
-        <Form.Item<FormValues> name={['task_properties', 'rest']}>
-          <InputNumber
-            controls={false}
-            placeholder="Отдых"
-            suffix="сек"
-            prefix={<FieldTimeOutlined />}
-            style={{ width: '100%' }}
-          />
+        <Form.Item<FormValues>
+          name={['task_properties', 'rest']}
+          style={{
+            marginBottom: 8,
+            width: props.readonly
+              ? '100%'
+              : `calc(100% - ${FLOAT_BUTTON_SIZE}px)`,
+          }}
+        >
+          <CountDown runEnabled={props.type === 'fact'} placeholder="Отдых" />
         </Form.Item>
       </Flex>
     </Form>
