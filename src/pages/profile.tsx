@@ -9,20 +9,20 @@ import {
   Checkbox,
   Form,
   Input,
+  message,
   Space,
   Typography,
   Upload,
-  message,
 } from 'antd';
 import { RcFile, UploadProps } from 'antd/es/upload';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { formatUserDisplayName } from '@/entities/user';
+import { formatUserDisplayName, UserTgLink } from '@/entities/user';
 import { AvatarPreview } from '@/shared/ui/avatar';
 import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const mapInitialValues = (
   viewer: ReturnType<typeof viewerModel.useViewer>,
@@ -106,7 +106,8 @@ export default function Page() {
               <Title level={5} style={{ margin: 0 }}>
                 {formatUserDisplayName(viewer)}
               </Title>
-              <Text type="secondary">@{viewer.username}</Text>
+
+              <UserTgLink readonly user={viewer} />
             </Space>
           </Space>
 

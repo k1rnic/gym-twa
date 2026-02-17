@@ -7,7 +7,7 @@ import { Button, Card, Empty, message, Space, Typography } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { formatUserDisplayName } from '@/entities/user';
+import { formatUserDisplayName, UserTgLink } from '@/entities/user';
 
 import { AvatarPreview } from '@/shared/ui/avatar';
 
@@ -117,7 +117,7 @@ export default function Page() {
                     {formatUserDisplayName(master)}
                   </Title>
 
-                  <Text type="secondary">@{master.username}</Text>
+                  <UserTgLink user={master} />
                 </Space>
               )}
 
