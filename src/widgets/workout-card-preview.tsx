@@ -1,3 +1,4 @@
+import { ExerciseAvatar } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
 import { Flex } from '@/shared/ui/flex';
@@ -53,6 +54,7 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
             <List.Item style={{ cursor: 'pointer' }}>
               <Flex vertical={false} width="100%">
                 <List.Item.Meta
+                  avatar={<ExerciseAvatar />}
                   title={
                     <Typography.Text type="secondary">
                       {item.exercise?.exercise_name}
