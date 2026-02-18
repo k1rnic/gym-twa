@@ -1,18 +1,9 @@
 import { workoutModel } from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
-import { plural } from '@/shared/lib/plural';
+import { Flex } from '@/shared/ui/flex';
 
-import {
-  Card,
-  CardProps,
-  Descriptions,
-  Empty,
-  Flex,
-  Space,
-  Typography,
-} from 'antd';
-import { DescriptionsItemType } from 'antd/lib/descriptions';
-import { ReactNode, useMemo } from 'react';
+import { Card, CardProps, Empty, List, Space, Typography } from 'antd';
+import { ReactNode } from 'react';
 
 export type WorkoutCardPreviewProps = {
   workout: workoutModel.Workout;
@@ -30,19 +21,6 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
     ...cardProps
   } = props;
 
-  const exerciseMeta = useMemo(
-    () =>
-      w.tasks?.map<DescriptionsItemType>((t) => ({
-        key: t.task_id,
-        label: t.exercise?.exercise_name,
-        children: `${t.task_properties?.sets?.length ?? 0} ${plural(
-          ['подход', 'подхода', 'подходов'],
-          t.task_properties?.sets?.length ?? 0,
-        )}`,
-      })),
-    [w.tasks],
-  );
-
   return (
     <Card
       {...cardProps}
@@ -59,7 +37,7 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
           </Typography.Text>
         </Flex>
       }
-      styles={{ body: { padding: exerciseMeta?.length ? 0 : undefined } }}
+      styles={{ body: { padding: w.tasks?.length ? 0 : undefined } }}
       extra={
         <Space onClick={(e) => e.stopPropagation()}>
           {extraBefore}
@@ -68,15 +46,22 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
         </Space>
       }
     >
-      {exerciseMeta?.length ? (
-        <Descriptions
-          bordered
-          column={1}
-          items={exerciseMeta}
-          styles={{
-            label: { whiteSpace: 'normal', width: '100%' },
-            content: { whiteSpace: 'nowrap' },
-          }}
+      {w.tasks?.length ? (
+        <List
+          dataSource={w.tasks}
+          renderItem={(item) => (
+            <List.Item style={{ cursor: 'pointer' }}>
+              <Flex vertical={false} width="100%">
+                <List.Item.Meta
+                  title={
+                    <Typography.Text type="secondary">
+                      {item.exercise?.exercise_name}
+                    </Typography.Text>
+                  }
+                />
+              </Flex>
+            </List.Item>
+          )}
         />
       ) : (
         <Empty
