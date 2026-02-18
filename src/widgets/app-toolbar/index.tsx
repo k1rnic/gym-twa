@@ -4,7 +4,7 @@ import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib';
 import { useLocation, useNavigate } from 'react-router';
 
-export const APP_TOOLBAR_HEIGHT = 64;
+export const APP_TOOLBAR_HEIGHT = 72;
 
 interface Item {
   label: string;
@@ -33,8 +33,9 @@ export const AppToolbar = () => {
     <Flex
       height={APP_TOOLBAR_HEIGHT}
       align="center"
-      justify="center"
+      justify="flex-start"
       width="100%"
+      style={{ paddingTop: 8 }}
     >
       <Radio.Group
         block
