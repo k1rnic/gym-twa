@@ -137,7 +137,10 @@ export default function Page() {
           </Title>
           <Space direction="vertical" style={{ width: '100%' }}>
             <Button block onClick={() => navigate('/profile/masters')}>
-              Управление тренерами
+              Мои тренера
+            </Button>
+            <Button block onClick={() => navigate('/profile/gymmers')}>
+              Мои ученики
             </Button>
             <Button block onClick={() => navigate('/profile/requests')}>
               Заявки на прикрепление

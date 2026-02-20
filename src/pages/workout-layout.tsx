@@ -1,11 +1,12 @@
+import { gymmerModel } from '@/entities/gymmer';
 import { formatUserDisplayName } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
-import { Api, MastersGymer, TaskGroupStatus } from '@/shared/api';
+import { TaskGroupStatus } from '@/shared/api';
 import { useMatchExact } from '@/shared/lib/router';
 import { AvatarList, AvatarListItem } from '@/shared/ui/avatar';
 import { Flex } from '@/shared/ui/flex';
 import { Divider } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
 const Page = () => {
@@ -14,7 +15,9 @@ const Page = () => {
 
   const isIndex = useMatchExact();
 
-  const [masterGymmers, setMasterGymmers] = useState<MastersGymer[]>([]);
+  const { gymmers: masterGymmers } = gymmerModel.useGymmers(
+    Number(master?.master_id),
+  );
 
   const navigate = useNavigate();
 
@@ -36,12 +39,6 @@ const Page = () => {
   const navigateToGymmer = (g: AvatarListItem) => {
     navigate(`${g.id}/${TaskGroupStatus.Planned}`);
   };
-
-  useEffect(() => {
-    Api.user
-      .getListOfMastersGymer(Number(master?.master_id))
-      .then(setMasterGymmers);
-  }, [master?.master_id]);
 
   useEffect(() => {
     if (isIndex) {
