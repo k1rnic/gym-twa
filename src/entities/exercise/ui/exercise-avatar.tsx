@@ -11,6 +11,7 @@ export const ExerciseAvatar = ({ size = 40, icon }: ExerciseAvatarProps) => {
     <Avatar
       size={size}
       style={{
+        flexShrink: 0,
         backgroundColor: '#f0f0f0',
         color: '#888',
         display: 'flex',

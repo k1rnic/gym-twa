@@ -80,7 +80,9 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
   };
 
   const handleInputFocusChange = (e: FocusEvent<HTMLFormElement, Element>) => {
-    if (e.target.id.endsWith('_rep') || e.target.id.endsWith('_value')) {
+    const id = e.target.id;
+
+    if (id.endsWith('_rep') || id.endsWith('_value') || id === 'exercise_id') {
       toggleToolbar();
     }
   };

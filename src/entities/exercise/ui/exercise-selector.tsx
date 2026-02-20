@@ -1,11 +1,13 @@
 import { Api } from '@/shared/api';
+import { useSelectKeyboardDistance, useToggle } from '@/shared/lib/hooks';
 import { Flex } from '@/shared/ui/flex';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Select, SelectProps } from 'antd';
-import { DefaultOptionType } from 'antd/es/select';
-import { useMemo } from 'react';
+import { Button, Divider, Select, SelectProps, Typography } from 'antd';
+import { DefaultOptionType, RefSelectProps } from 'antd/es/select';
+import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { Exercise, useExercises } from '../model';
+import { ExerciseAvatar } from './exercise-avatar';
 
 type Props = {
   masterId: number;
@@ -16,6 +18,11 @@ type Props = {
 
 export const ExerciseSelector = ({ masterId, ...selectProps }: Props) => {
   const exercises = useExercises(masterId);
+
+  const selectRef = useRef<RefSelectProps>(null);
+  const distance = useSelectKeyboardDistance(selectRef);
+
+  const [searchFocused, toggleSearch] = useToggle();
 
   const navigate = useNavigate();
 
@@ -45,12 +52,34 @@ export const ExerciseSelector = ({ masterId, ...selectProps }: Props) => {
   return (
     <Select
       showSearch
+      ref={selectRef}
       virtual={false}
       placeholder="Упражнение"
       optionFilterProp="label"
       options={options}
+      style={{ height: 'max-content' }}
+      onFocus={toggleSearch}
+      onBlur={toggleSearch}
+      labelRender={({ label }) =>
+        searchFocused ? (
+          label
+        ) : (
+          <Flex vertical={false} gap={8} align="center" py={4}>
+            <ExerciseAvatar />
+            <Typography.Text style={{ whiteSpace: 'normal' }}>
+              {label}
+            </Typography.Text>
+          </Flex>
+        )
+      }
+      optionRender={({ label }) => (
+        <Flex vertical={false} gap={8} align="center">
+          <ExerciseAvatar />
+          <Typography.Text>{label}</Typography.Text>
+        </Flex>
+      )}
       popupRender={(menu) => (
-        <Flex style={{ maxHeight: '40vh' }}>
+        <Flex style={{ maxHeight: distance - 16 }}>
           <Flex flex={1} style={{ overflowY: 'auto' }}>
             {menu}
           </Flex>
