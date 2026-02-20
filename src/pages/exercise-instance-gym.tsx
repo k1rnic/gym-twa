@@ -30,7 +30,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   };
 
   return (
-    <PageDrawer open title="Выполняется упражнение" onClose={saveChanges}>
+    <PageDrawer open title="Выполнение упражнения" onClose={saveChanges}>
       <ExerciseInstanceForm
         type="fact"
         masterId={viewer.master!.master_id!}

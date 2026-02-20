@@ -9,6 +9,7 @@ import { NamePath } from 'antd/es/form/interface';
 import { DefaultOptionType } from 'antd/es/select';
 import { FormListOperation } from 'antd/lib';
 import { FocusEvent, useEffect, useMemo, useRef } from 'react';
+import { Link } from 'react-router';
 import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
 import { ExerciseInstance } from '../model';
 import { ExerciseSelector } from './exercise-selector';
@@ -131,9 +132,20 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
       onBlur={handleInputFocusChange}
     >
       <Flex height="100%" style={{ position: 'relative' }}>
-        <Form.Item<FormValues> name="exercise_id">
-          <ExerciseSelector masterId={props.masterId} />
-        </Form.Item>
+        <Flex gap={8} align="flex-start" style={{ marginBottom: 8 }}>
+          <Form.Item<FormValues>
+            name="exercise_id"
+            style={{ margin: 0, width: '100%' }}
+          >
+            <ExerciseSelector masterId={props.masterId} />
+          </Form.Item>
+          <Link
+            to={`/exercises/${formValues?.exercise_id}`}
+            hidden={!formValues?.exercise_id}
+          >
+            К упражнению
+          </Link>
+        </Flex>
 
         <Form.List name={['task_properties', 'sets']}>
           {(fields, listActions) => {

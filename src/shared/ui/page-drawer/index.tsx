@@ -27,6 +27,8 @@ export const PageDrawer = ({
     <Drawer
       push={false}
       closable={false}
+      motion={{ visible: false }}
+      maskMotion={{ visible: false }}
       open={opened}
       width="100%"
       title={
