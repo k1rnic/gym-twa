@@ -28,6 +28,7 @@ export default [
         route(':masterId', '../pages/master-details.tsx'),
       ]),
       route('requests', '../pages/profile-requests.tsx'),
+      route('gymmers', '../pages/profile-gymmers.tsx'),
     ]),
   ]),
 ] satisfies RouteConfig;
