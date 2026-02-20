@@ -47,6 +47,16 @@ export enum ExerciseStatus {
   Archive = "archive",
 }
 
+/** Body_add_exercise_image_gym_exercise__exercise_id__image_post */
+export interface BodyAddExerciseImageGymExerciseExerciseIdImagePost {
+  /**
+   * Image
+   * image
+   * @format binary
+   */
+  image: File;
+}
+
 /** Body_add_user_image_gym_user__user_id__image_post */
 export interface BodyAddUserImageGymUserUserIdImagePost {
   /**
@@ -82,6 +92,11 @@ export interface CreateLink {
    * @default 1
    */
   master_id?: number;
+  /**
+   * Link Type
+   * @default "video"
+   */
+  link_type?: string;
 }
 
 /** Exercise */
@@ -96,6 +111,8 @@ export interface Exercise {
   description: string | null;
   /** @default "active" */
   status?: ExerciseStatus;
+  /** Photos */
+  photos?: string[];
 }
 
 /** ExerciseAggregate */
@@ -110,6 +127,8 @@ export interface ExerciseAggregate {
   description: string | null;
   /** @default "active" */
   status?: ExerciseStatus;
+  /** Photos */
+  photos?: string[];
   /** Links */
   links?: Link[];
 }
@@ -145,6 +164,8 @@ export interface Link {
   title: string | null;
   /** Master Id */
   master_id: number;
+  /** Link Type */
+  link_type: string | null;
 }
 
 /** Master */
@@ -195,7 +216,7 @@ export interface MastersGymer {
   /** Last Name */
   last_name?: string | null;
   /** Username */
-  username: string;
+  username?: string | null;
   /** Photo */
   photo?: string | null;
   /** Gymer Id */
@@ -630,7 +651,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.3.0
+ * @version 2.4.0
  */
 export class Endpoints<
   SecurityDataType extends unknown,
@@ -742,6 +763,34 @@ export class Endpoints<
         secure: true,
         type: ContentType.FormData,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name DeleteUserImage
+     * @summary Delete user image
+     * @request DELETE:/gym/user/{user_id}/image
+     * @secure
+     */
+    deleteUserImage: (
+      userId: number,
+      query: {
+        /**
+         * Image Url
+         * image url
+         */
+        image_url: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, HTTPValidationError>({
+        path: `/gym/user/${userId}/image`,
+        method: "DELETE",
+        query: query,
+        secure: true,
         ...params,
       }),
 
@@ -1241,6 +1290,58 @@ export class Endpoints<
         path: `/gym/exercise/id/${exerciseId}`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name DeleteExerciseImage
+     * @summary Delete image from exercise
+     * @request DELETE:/gym/exercise/{exercise_id}/image
+     * @secure
+     */
+    deleteExerciseImage: (
+      exerciseId: number,
+      query: {
+        /**
+         * Image Url
+         * image url
+         */
+        image_url: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, HTTPValidationError>({
+        path: `/gym/exercise/${exerciseId}/image`,
+        method: "DELETE",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name AddExerciseImage
+     * @summary Adding exercise image
+     * @request POST:/gym/exercise/{exercise_id}/image
+     * @secure
+     */
+    addExerciseImage: (
+      exerciseId: number,
+      data: BodyAddExerciseImageGymExerciseExerciseIdImagePost,
+      params: RequestParams = {},
+    ) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/exercise/${exerciseId}/image`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
         format: "json",
         ...params,
       }),
