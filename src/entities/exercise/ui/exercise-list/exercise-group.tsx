@@ -40,7 +40,7 @@ export const ExerciseGroup: React.FC<ExerciseGroupProps> = ({
           >
             <Flex vertical={false} width="100%">
               <List.Item.Meta
-                avatar={<ExerciseAvatar />}
+                avatar={<ExerciseAvatar exercise={item} />}
                 title={<Text strong>{item.exercise_name}</Text>}
                 description={
                   <Paragraph

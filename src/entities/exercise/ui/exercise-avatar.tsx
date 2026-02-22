@@ -1,14 +1,26 @@
+import { exerciseModel } from '@/entities/exercise';
 import { Avatar } from 'antd';
-import { ReactNode } from 'react';
+import { useMemo } from 'react';
 
 type ExerciseAvatarProps = {
   size?: number;
-  icon?: ReactNode;
+  exercise?: exerciseModel.Exercise;
 };
 
-export const ExerciseAvatar = ({ size = 40, icon }: ExerciseAvatarProps) => {
+export const ExerciseAvatar = ({
+  size = 50,
+  exercise,
+}: ExerciseAvatarProps) => {
+  const src = useMemo(
+    () =>
+      exercise?.url_path_list?.find((e) => e.url_path_type === 'image')
+        ?.url_path,
+    [exercise],
+  );
+
   return (
     <Avatar
+      shape="square"
       size={size}
       style={{
         flexShrink: 0,
@@ -18,7 +30,7 @@ export const ExerciseAvatar = ({ size = 40, icon }: ExerciseAvatarProps) => {
         alignItems: 'center',
         justifyContent: 'center',
       }}
-      icon={icon}
+      src={src}
     />
   );
 };

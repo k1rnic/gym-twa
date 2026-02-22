@@ -19,11 +19,12 @@ export const UserTgLink = ({ user, readonly }: Props) => {
   return (
     <>
       <Typography.Link
+        hidden={!user.username}
         target="_blank"
         disabled={!user.username || readonly}
         onClick={toggle}
       >
-        @{user.username || user.telegram_id}
+        @{user.username}
       </Typography.Link>
 
       <Modal

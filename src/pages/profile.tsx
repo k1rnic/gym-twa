@@ -92,7 +92,7 @@ export default function Page() {
             <Space direction="vertical" align="center">
               <AvatarPreview
                 photos={viewer.photos ?? []}
-                preview={{ toolbarRender: () => <></> }}
+                preview={{ movable: false, toolbarRender: () => <></> }}
               />
 
               <Upload {...uploadProps}>

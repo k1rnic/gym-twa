@@ -1,5 +1,5 @@
 import {
-  ExerciseAggregate,
+  ExerciseAggregateOutput,
   Exercise as ExerciseApi,
   TaskAggregate,
   TaskPropertiesAggregate,
@@ -8,4 +8,4 @@ import {
 export type ExerciseInstance = TaskAggregate;
 export type ExerciseInstanceProps = TaskPropertiesAggregate;
 export type Exercise = ExerciseApi;
-export type ExerciseDetailed = ExerciseAggregate;
+export type ExerciseDetailed = ExerciseAggregateOutput;

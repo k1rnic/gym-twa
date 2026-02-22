@@ -10,6 +10,12 @@
  * ---------------------------------------------------------------
  */
 
+/** UrlPathType */
+export enum UrlPathType {
+  Image = "image",
+  Video = "video",
+}
+
 /** TaskStatus */
 export enum TaskStatus {
   Planned = "planned",
@@ -111,12 +117,12 @@ export interface Exercise {
   description: string | null;
   /** @default "active" */
   status?: ExerciseStatus;
-  /** Photos */
-  photos?: string[];
+  /** Url Path List */
+  url_path_list?: UrlPath[];
 }
 
 /** ExerciseAggregate */
-export interface ExerciseAggregate {
+export interface ExerciseAggregateInput {
   /** Exercise Id */
   exercise_id: number | null;
   /** Master Id */
@@ -127,8 +133,26 @@ export interface ExerciseAggregate {
   description: string | null;
   /** @default "active" */
   status?: ExerciseStatus;
-  /** Photos */
-  photos?: string[];
+  /** Url Path List */
+  url_path_list?: UrlPath[];
+  /** Links */
+  links?: Link[];
+}
+
+/** ExerciseAggregate */
+export interface ExerciseAggregateOutput {
+  /** Exercise Id */
+  exercise_id: number | null;
+  /** Master Id */
+  master_id: number;
+  /** Exercise Name */
+  exercise_name: string | null;
+  /** Description */
+  description: string | null;
+  /** @default "active" */
+  status?: ExerciseStatus;
+  /** Url Path List */
+  url_path_list?: UrlPath[];
   /** Links */
   links?: Link[];
 }
@@ -314,7 +338,7 @@ export interface TaskAggregate {
   update_dttm: string | null;
   /** Order Idx */
   order_idx: number | null;
-  exercise?: ExerciseAggregate | null;
+  exercise?: ExerciseAggregateOutput | null;
   task_properties?: TaskPropertiesAggregate | null;
 }
 
@@ -420,6 +444,29 @@ export interface UpdateTask {
   exercise_id: number;
   status: TaskStatus | null;
   task_properties?: TaskPropertiesAggregateUpdate | null;
+}
+
+/** UrlPath */
+export interface UrlPath {
+  /** Url Path Id */
+  url_path_id: number;
+  /** Exercise Id */
+  exercise_id: number;
+  /** Url Path */
+  url_path: string;
+  /**
+   * Moderation Flg
+   * @default false
+   */
+  moderation_flg?: boolean;
+  /**
+   * Available Flg
+   * @default false
+   */
+  available_flg?: boolean;
+  url_path_type?: UrlPathType | null;
+  /** Create Dttm */
+  create_dttm?: string | null;
 }
 
 /** User */
@@ -1286,7 +1333,7 @@ export class Endpoints<
      * @secure
      */
     getExercise: (exerciseId: number, params: RequestParams = {}) =>
-      this.request<ExerciseAggregate, HTTPValidationError>({
+      this.request<ExerciseAggregateOutput, HTTPValidationError>({
         path: `/gym/exercise/id/${exerciseId}`,
         method: "GET",
         secure: true,
@@ -1299,26 +1346,58 @@ export class Endpoints<
      *
      * @tags exercise
      * @name DeleteExerciseImage
-     * @summary Delete image from exercise
-     * @request DELETE:/gym/exercise/{exercise_id}/image
+     * @summary Delete url_path
+     * @request DELETE:/gym/exercise/url_path/{url_path_id}
      * @secure
      */
-    deleteExerciseImage: (
-      exerciseId: number,
-      query: {
-        /**
-         * Image Url
-         * image url
-         */
-        image_url: string;
-      },
+    deleteExerciseImage: (urlPathId: number, params: RequestParams = {}) =>
+      this.request<void, HTTPValidationError>({
+        path: `/gym/exercise/url_path/${urlPathId}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name UpdateExercise
+     * @summary Update exercise
+     * @request PUT:/gym/exercise
+     * @secure
+     */
+    updateExercise: (
+      data: ExerciseAggregateInput,
       params: RequestParams = {},
     ) =>
-      this.request<void, HTTPValidationError>({
-        path: `/gym/exercise/${exerciseId}/image`,
-        method: "DELETE",
-        query: query,
+      this.request<ExerciseAggregateOutput, HTTPValidationError>({
+        path: `/gym/exercise`,
+        method: "PUT",
+        body: data,
         secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name CreateExercise
+     * @summary Create exercise
+     * @request POST:/gym/exercise
+     * @secure
+     */
+    createExercise: (data: CreateExercise, params: RequestParams = {}) =>
+      this.request<ExerciseAggregateOutput, HTTPValidationError>({
+        path: `/gym/exercise`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
         ...params,
       }),
 
@@ -1350,38 +1429,32 @@ export class Endpoints<
      * No description
      *
      * @tags exercise
-     * @name UpdateExercise
-     * @summary Update exercise
-     * @request PUT:/gym/exercise
+     * @name AddExerciseLink
+     * @summary Adding link to exercise
+     * @request POST:/gym/exercise/{exercise_id}/link
      * @secure
      */
-    updateExercise: (data: ExerciseAggregate, params: RequestParams = {}) =>
-      this.request<ExerciseAggregate, HTTPValidationError>({
-        path: `/gym/exercise`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags exercise
-     * @name CreateExercise
-     * @summary Create exercise
-     * @request POST:/gym/exercise
-     * @secure
-     */
-    createExercise: (data: CreateExercise, params: RequestParams = {}) =>
-      this.request<ExerciseAggregate, HTTPValidationError>({
-        path: `/gym/exercise`,
+    addExerciseLink: (
+      exerciseId: number,
+      query: {
+        /**
+         * Link
+         * link
+         */
+        link: string;
+        /**
+         * link type
+         * @default "video"
+         */
+        type_link?: UrlPathType;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/exercise/${exerciseId}/link`,
         method: "POST",
-        body: data,
+        query: query,
         secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -1396,76 +1469,11 @@ export class Endpoints<
      * @secure
      */
     copyExercise: (exerciseId: number, params: RequestParams = {}) =>
-      this.request<ExerciseAggregate, HTTPValidationError>({
+      this.request<ExerciseAggregateOutput, HTTPValidationError>({
         path: `/gym/exercise/copy/${exerciseId}`,
         method: "POST",
         secure: true,
         format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags exercise
-     * @name AddLinkToExercise
-     * @summary Add link to exercise
-     * @request POST:/gym/exercise/link
-     * @secure
-     */
-    addLinkToExercise: (
-      query: {
-        /**
-         * Exercise Id
-         * exercise id
-         */
-        exercise_id: number;
-        /**
-         * Link Id
-         * link id
-         */
-        link_id: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<any, HTTPValidationError>({
-        path: `/gym/exercise/link`,
-        method: "POST",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags exercise
-     * @name DeleteLinkFromExercise
-     * @summary Delete link from exercise
-     * @request DELETE:/gym/exercise/link
-     * @secure
-     */
-    deleteLinkFromExercise: (
-      query: {
-        /**
-         * Exercise Id
-         * exercise id
-         */
-        exercise_id: number;
-        /**
-         * Link Id
-         * link id
-         */
-        link_id: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<void, HTTPValidationError>({
-        path: `/gym/exercise/link`,
-        method: "DELETE",
-        query: query,
-        secure: true,
         ...params,
       }),
 

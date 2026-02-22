@@ -6,6 +6,7 @@ import { PropsWithChildren, ReactNode } from 'react';
 export type PageDrawerProps = {
   onClose?: () => void;
   extra?: ReactNode;
+  loading?: boolean;
 } & Omit<DrawerProps, 'onClose'>;
 
 export const PageDrawer = ({

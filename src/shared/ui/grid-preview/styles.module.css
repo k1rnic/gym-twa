@@ -1,0 +1,15 @@
+.filePickerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filePicker {
+  height: 40px;
+  width: 40px;
+
+  & > * {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}

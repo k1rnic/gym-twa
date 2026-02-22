@@ -54,12 +54,8 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
             <List.Item style={{ cursor: 'pointer' }}>
               <Flex vertical={false} width="100%">
                 <List.Item.Meta
-                  avatar={<ExerciseAvatar />}
-                  title={
-                    <Typography.Text type="secondary">
-                      {item.exercise?.exercise_name}
-                    </Typography.Text>
-                  }
+                  avatar={<ExerciseAvatar exercise={item.exercise!} />}
+                  description={item.exercise?.exercise_name}
                 />
               </Flex>
             </List.Item>
