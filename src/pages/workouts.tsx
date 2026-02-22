@@ -38,10 +38,11 @@ const FILTERS: SegmentedOptions<TaskGroupStatus> = [
   { label: 'завершенные', value: TaskGroupStatus.Finished },
 ];
 
-const SortableWorkout = ({
-  status,
-  ...props
-}: WorkoutCardPreviewProps & { status: TaskGroupStatus }) => {
+type WorkoutCardProps = {
+  status: TaskGroupStatus;
+} & WorkoutCardPreviewProps;
+
+const SortableWorkout = ({ status, ...props }: WorkoutCardProps) => {
   const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
   const isMineWorkout = props.workout.gymer_id === viewer.gymer?.gymer_id;
@@ -179,6 +180,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
               {innerWorkouts.map((w, idx, { length }) => (
                 <SortableWorkout
                   key={w.task_group_id}
+                  collapsible={w.status !== TaskGroupStatus.Running}
                   workout={w}
                   status={status}
                   style={{
