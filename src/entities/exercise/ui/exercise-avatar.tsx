@@ -1,6 +1,7 @@
 import { exerciseModel } from '@/entities/exercise';
 import { Avatar } from 'antd';
-import { useMemo } from 'react';
+import { MouseEvent, useMemo } from 'react';
+import { useNavigate } from 'react-router';
 
 type ExerciseAvatarProps = {
   size?: number;
@@ -11,12 +12,19 @@ export const ExerciseAvatar = ({
   size = 50,
   exercise,
 }: ExerciseAvatarProps) => {
+  const navigate = useNavigate();
+
   const src = useMemo(
     () =>
       exercise?.url_path_list?.find((e) => e.url_path_type === 'image')
         ?.url_path,
     [exercise],
   );
+
+  const goToExercise = (e?: MouseEvent<HTMLElement>) => {
+    e?.stopPropagation();
+    navigate(`/exercises/${exercise?.exercise_id}`);
+  };
 
   return (
     <Avatar
@@ -31,6 +39,7 @@ export const ExerciseAvatar = ({
         justifyContent: 'center',
       }}
       src={src}
+      onClick={goToExercise}
     />
   );
 };
