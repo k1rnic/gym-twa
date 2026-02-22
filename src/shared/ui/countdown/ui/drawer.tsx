@@ -21,6 +21,11 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
     countdown.stop();
   };
 
+  const restart = () => {
+    countdown.reset();
+    countdown.start();
+  };
+
   useEffect(() => {
     setCountDownValue(props.value);
   }, [props.value]);
@@ -68,10 +73,14 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
       >
         <Flex height="100%" align="center" justify="center">
           <Typography.Text
-            style={{ fontSize: 'clamp(96px, 10vw, 200px)', margin: 0 }}
+            style={{ fontSize: 'clamp(96px, 10vw, 200px)', margin: 0, flex: 1 }}
           >
             {countdown.formatted}
           </Typography.Text>
+
+          <Button block type="primary" onClick={restart}>
+            Перезапуск
+          </Button>
         </Flex>
       </Drawer>
     </>
