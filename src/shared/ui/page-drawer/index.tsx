@@ -1,5 +1,6 @@
 import { useToggle } from '@/shared/lib/hooks';
 import { Flex } from '@/shared/ui/flex';
+import { useLaunchParams } from '@telegram-apps/sdk-react';
 import { Button, Drawer, DrawerProps } from 'antd';
 import { PropsWithChildren, ReactNode } from 'react';
 
@@ -18,6 +19,7 @@ export const PageDrawer = ({
   ...drawerProps
 }: PropsWithChildren<PageDrawerProps>) => {
   const [opened, toggle] = useToggle(open);
+  const { tgWebAppFullscreen: isFullscreen } = useLaunchParams();
 
   const handleClose = () => {
     toggle();
@@ -37,7 +39,7 @@ export const PageDrawer = ({
           align="center"
           justify="space-between"
           vertical={false}
-          style={{ width: '100%' }}
+          style={{ width: '100%', paddingTop: isFullscreen ? 96 : undefined }}
         >
           <Button type="link" onClick={handleClose}>
             Назад

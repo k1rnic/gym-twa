@@ -3,12 +3,17 @@ import { useToggle } from '@/shared/lib/hooks';
 import { CountDown } from '@/shared/ui/countdown';
 import { Flex } from '@/shared/ui/flex';
 import { FLOAT_BUTTON_SIZE, FloatButton } from '@/shared/ui/float-button';
-import { CloseOutlined, FormOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  FormOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import { AutoComplete, Button, Form, Input } from 'antd';
 import { NamePath } from 'antd/es/form/interface';
 import { DefaultOptionType } from 'antd/es/select';
 import { FormListOperation } from 'antd/lib';
-import { FocusEvent, useEffect, useMemo, useRef } from 'react';
+import { FocusEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
 import { ExerciseInstance } from '../model';
@@ -80,11 +85,16 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
     } as Pick<Set, `${T}_value` | `${T}_rep`>;
   };
 
+  const [inputToolbarFocused, setInputToolbarFocused] = useState(false);
+
   const handleInputFocusChange = (e: FocusEvent<HTMLFormElement, Element>) => {
     const id = e.target.id;
 
     if (id.endsWith('_rep') || id.endsWith('_value') || id === 'exercise_id') {
       toggleToolbar();
+      setInputToolbarFocused(e.type === 'focus');
+    } else {
+      setInputToolbarFocused(false);
     }
   };
 
@@ -227,6 +237,14 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
             />
           )}
         </Flex>
+
+        <Button
+          type="primary"
+          hidden={!inputToolbarFocused}
+          style={{ position: 'fixed', bottom: 8, zIndex: 9999 }}
+          icon={<CheckOutlined />}
+          shape="round"
+        />
       </Flex>
     </Form>
   );

@@ -35,7 +35,7 @@ import { Route } from './+types/workouts';
 const FILTERS: SegmentedOptions<TaskGroupStatus> = [
   { label: 'новые', value: TaskGroupStatus.Planned },
   { label: 'текущие', value: TaskGroupStatus.Running },
-  { label: 'завершенные', value: TaskGroupStatus.Finished },
+  { label: 'архив', value: TaskGroupStatus.Finished },
 ];
 
 type WorkoutCardProps = {
