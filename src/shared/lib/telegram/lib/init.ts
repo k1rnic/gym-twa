@@ -1,11 +1,13 @@
 import {
   bindThemeParamsCssVars,
   bindViewportCssVars,
+  closingBehavior,
   init as initSDK,
   mountBackButton,
   mountMiniAppSync,
   mountSwipeBehavior,
   mountViewport,
+  requestFullscreen,
   restoreInitData,
   setDebug,
 } from '@telegram-apps/sdk-react';
@@ -28,8 +30,11 @@ export async function init(): Promise<void> {
     bindThemeParamsCssVars();
   }
   if (mountViewport.isAvailable()) {
-    mountViewport().then(() => {
-      bindViewportCssVars();
-    });
+    await mountViewport();
+    bindViewportCssVars();
+    await requestFullscreen();
   }
+
+  closingBehavior.mount();
+  closingBehavior.enableConfirmation();
 }
