@@ -32,7 +32,7 @@ export async function init(): Promise<void> {
   if (mountViewport.isAvailable()) {
     await mountViewport();
     bindViewportCssVars();
-    await requestFullscreen();
+    await requestFullscreen.ifAvailable();
   }
 
   closingBehavior.mount();

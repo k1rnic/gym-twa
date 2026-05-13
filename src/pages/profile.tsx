@@ -73,14 +73,11 @@ export default function Page() {
     },
   };
 
-  const saveProfile = async () => {
-    const values = form.getFieldsValue();
-    await Api.user.updateMasterProfile(viewer.master!.master_id!, {
-      description: values.description ?? '',
-      is_private: !!values.is_private,
-    });
+  const updateProfileField = async (
+    payload: Parameters<typeof Api.user.updateMasterProfile>[1],
+  ) => {
+    await Api.user.updateMasterProfile(viewer.master!.master_id!, payload);
     await refreshViewer();
-    message.success('Профиль обновлён');
   };
 
   return (
@@ -116,16 +113,21 @@ export default function Page() {
               <Input.TextArea
                 placeholder="Расскажите о себе"
                 autoSize={{ minRows: 3, maxRows: 6 }}
+                onBlur={(e) =>
+                  updateProfileField({ description: e.target.value })
+                }
               />
             </Form.Item>
 
             <Form.Item name="is_private" valuePropName="checked">
-              <Checkbox>Скрыть профиль</Checkbox>
+              <Checkbox
+                onChange={(e) =>
+                  updateProfileField({ is_private: e.target.checked })
+                }
+              >
+                Скрыть профиль
+              </Checkbox>
             </Form.Item>
-
-            <Button block size="large" type="primary" onClick={saveProfile}>
-              Сохранить изменения
-            </Button>
           </Form>
         </Space>
       </Card>
