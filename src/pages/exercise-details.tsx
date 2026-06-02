@@ -1,4 +1,3 @@
-import { Route } from '.react-router/types/src/pages/+types/exercise-details';
 import { exerciseModel } from '@/entities/exercise';
 import { useViewer } from '@/entities/viewer/model';
 import { useDeleteExerciseResource } from '@/features/exercise/delete-resource';
@@ -16,6 +15,7 @@ import TextArea from 'antd/es/input/TextArea';
 import Title from 'antd/lib/typography/Title';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
+import { Route } from './+types/exercise-details';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.exercise.getExercise(+params.exId);
