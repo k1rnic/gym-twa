@@ -1,20 +1,21 @@
 import { masterModel, MasterStatus } from '@/entities/master';
 import { viewerModel } from '@/entities/viewer';
 import { Api, GymerMasterStatus } from '@/shared/api';
-import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
 import { Flex } from '@/shared/ui/flex';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { Button, Card, Empty, message, Space, Typography } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { formatUserDisplayName, UserTgLink } from '@/entities/user';
 
 import { AvatarPreview } from '@/shared/ui/avatar';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph } = Typography;
 
 export default function Page() {
   const { masterId } = useParams();
+  const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
 
   const { masters, refresh, loading } = masterModel.useMasters(
@@ -83,26 +84,27 @@ export default function Page() {
 
   if (!master && !loading) {
     return (
-      <Flex height="100%" width="100%" align="center" justify="center">
-        <Empty
-          description="Тренер не найден"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-        />
-      </Flex>
+      <PageLayout
+        title="Информация"
+        onBackClick={() => navigate('/profile/masters')}
+      >
+        <Flex height="100%" width="100%" align="center" justify="center">
+          <Empty
+            description="Тренер не найден"
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+          />
+        </Flex>
+      </PageLayout>
     );
   }
 
   return (
-    <Flex gap="small" style={{ overflow: 'auto', height: '100%' }}>
+    <PageLayout
+      title="Информация"
+      onBackClick={() => navigate('/profile/masters')}
+    >
+      <Flex gap="small" style={{ overflow: 'auto', height: '100%' }}>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Breadcrumbs
-          items={[
-            { path: '/profile', title: 'Профиль' },
-            { path: '/masters', title: 'Тренеры' },
-            { title: 'Информация' },
-          ]}
-        />
-
         <Card loading={loading}>
           <Space align="start" size="large">
             <AvatarPreview
@@ -132,6 +134,7 @@ export default function Page() {
 
         {renderActions()}
       </Space>
-    </Flex>
+      </Flex>
+    </PageLayout>
   );
 }

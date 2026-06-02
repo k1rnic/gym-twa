@@ -4,11 +4,11 @@ import { CreateExerciseInstanceButton } from '@/features/create-exercise-instanc
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
-import { PageDrawer } from '@/shared/ui/page-drawer';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExercises } from '@/widgets/workout-exercises';
 import { Form, Input } from 'antd';
 import { useMemo } from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Route } from './+types/workout-details';
 
 type FormValues = workoutModel.Workout;
@@ -56,10 +56,9 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   };
 
   return (
-    <PageDrawer
-      open={Boolean(workout)}
+    <PageLayout
       title="Создание тренировки"
-      onClose={submitChanges}
+      onBackClick={submitChanges}
       extra={<DeleteButton hidden={readonly} onDelete={deleteWorkout} />}
     >
       {workout && (
@@ -88,9 +87,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
           />
         </Flex>
       )}
-
-      <Outlet />
-    </PageDrawer>
+    </PageLayout>
   );
 };
 

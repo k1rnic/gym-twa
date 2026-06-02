@@ -6,7 +6,7 @@ import {
 import { viewerModel } from '@/entities/viewer';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { DeleteButton } from '@/shared/ui/delete-button';
-import { PageDrawer } from '@/shared/ui/page-drawer';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Route } from './+types/exercise-instance-details';
@@ -43,10 +43,9 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
   };
 
   return (
-    <PageDrawer
-      open
+    <PageLayout
       title={readonly ? 'Просмотр упражнения' : 'Редактирование упражнения'}
-      onClose={saveChanges}
+      onBackClick={saveChanges}
       extra={<DeleteButton hidden={readonly} onDelete={deleteExercise} />}
     >
       <ExerciseInstanceForm
@@ -56,7 +55,7 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
         values={initialValues!}
         onChange={setFormValues}
       />
-    </PageDrawer>
+    </PageLayout>
   );
 };
 

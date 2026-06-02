@@ -8,7 +8,7 @@ import { useToggle } from '@/shared/lib/hooks';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { GridPreview } from '@/shared/ui/grid-preview';
-import { PageDrawer } from '@/shared/ui/page-drawer';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Form, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -89,10 +89,9 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   };
 
   return (
-    <PageDrawer
-      open
+    <PageLayout
       title="Шаблон"
-      onClose={saveChanges}
+      onBackClick={saveChanges}
       extra={canEdit && <DeleteButton onDelete={deleteExercise} />}
     >
       <Flex height="100%" style={{ overflowY: 'auto' }}>
@@ -163,7 +162,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
         exerciseId={initialValues.exercise_id!}
         onClose={toggleVideoUpload}
       />
-    </PageDrawer>
+    </PageLayout>
   );
 };
 

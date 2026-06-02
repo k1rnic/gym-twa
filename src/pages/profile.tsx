@@ -2,6 +2,7 @@ import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
 
 import { Flex } from '@/shared/ui/flex';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   Button,
@@ -20,8 +21,6 @@ import { useNavigate } from 'react-router';
 
 import { formatUserDisplayName, UserTgLink } from '@/entities/user';
 import { AvatarPreview } from '@/shared/ui/avatar';
-import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
-
 const { Title } = Typography;
 
 const mapInitialValues = (
@@ -81,8 +80,8 @@ export default function Page() {
   };
 
   return (
-    <Flex gap="small" style={{ overflow: 'auto', width: '100%' }}>
-      <Breadcrumbs items={[{ title: 'Профиль' }]} />
+    <PageLayout title="Профиль">
+      <Flex gap="small" style={{ overflow: 'auto', width: '100%' }}>
       <Card>
         <Space direction="vertical" style={{ width: '100%' }}>
           <Space direction="vertical" align="center" style={{ width: '100%' }}>
@@ -150,6 +149,7 @@ export default function Page() {
           </Space>
         </Space>
       </Card>
-    </Flex>
+      </Flex>
+    </PageLayout>
   );
 }

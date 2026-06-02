@@ -8,14 +8,17 @@ import {
 export default [
   route('/', '../pages/main-layout.tsx', [
     route('workouts', '../pages/workout-layout.tsx', [
-      route(':gId/:status', '../pages/workouts.tsx', [
-        route(':wId/details', '../pages/workout-details.tsx', [
-          route(':exId', '../pages/exercise-instance-details.tsx'),
-        ]),
-        route(':wId/gym', '../pages/workout-gym.tsx', [
-          route(':exId', '../pages/exercise-instance-gym.tsx'),
-        ]),
-      ]),
+      route(':gId/:status', '../pages/workouts.tsx'),
+      route(':gId/:status/:wId/details', '../pages/workout-details.tsx'),
+      route(
+        ':gId/:status/:wId/details/:exId',
+        '../pages/exercise-instance-details.tsx',
+      ),
+      route(':gId/:status/:wId/gym', '../pages/workout-gym.tsx'),
+      route(
+        ':gId/:status/:wId/gym/:exId',
+        '../pages/exercise-instance-gym.tsx',
+      ),
     ]),
     ...prefix('exercises', [
       index('../pages/exercises.tsx'),

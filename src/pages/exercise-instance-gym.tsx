@@ -5,7 +5,7 @@ import {
 } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
-import { PageDrawer } from '@/shared/ui/page-drawer';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Route } from './+types/exercise-instance-gym';
@@ -30,14 +30,17 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   };
 
   return (
-    <PageDrawer open title="Выполнение упражнения" onClose={saveChanges}>
+    <PageLayout
+      title="Выполнение упражнения"
+      onBackClick={saveChanges}
+    >
       <ExerciseInstanceForm
         type="fact"
         masterId={viewer.master!.master_id!}
         values={initialValues!}
         onChange={setFormValues}
       />
-    </PageDrawer>
+    </PageLayout>
   );
 };
 

@@ -1,7 +1,7 @@
 import { masterModel, MasterStatus } from '@/entities/master';
 import { viewerModel } from '@/entities/viewer';
-import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
 import { Flex } from '@/shared/ui/flex';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { RightOutlined } from '@ant-design/icons';
 import { Avatar, List, Typography } from 'antd';
 import { useMemo } from 'react';
@@ -35,11 +35,10 @@ export default function Page() {
   );
 
   return (
-    <Flex gap={24} height="100%" style={{ overflow: 'hidden' }}>
-      <Breadcrumbs
-        items={[{ path: '/profile', title: 'Профиль' }, { title: 'Тренеры' }]}
-      />
-
+    <PageLayout
+      title="Тренеры"
+      onBackClick={() => navigate('/profile')}
+    >
       <Flex height="100%" style={{ overflow: 'auto' }}>
         <List
           loading={loading}
@@ -69,6 +68,6 @@ export default function Page() {
           )}
         />
       </Flex>
-    </Flex>
+    </PageLayout>
   );
 }

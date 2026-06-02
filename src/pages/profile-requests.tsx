@@ -2,14 +2,16 @@ import { masterModel } from '@/entities/master';
 import { formatUserDisplayName } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
-import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
 import { Flex } from '@/shared/ui/flex';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { Avatar, Button, List, Space, Typography, message } from 'antd';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 const { Paragraph } = Typography;
 
 export default function Page() {
+  const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
 
   const { refresh: refreshMasters } = masterModel.useMasters(
@@ -52,14 +54,10 @@ export default function Page() {
   };
 
   return (
-    <Flex gap="small" style={{ height: '100%', overflow: 'hidden' }}>
-      <Breadcrumbs
-        items={[
-          { path: '/profile', title: 'Профиль' },
-          { title: 'Заявки на прикрепление' },
-        ]}
-      />
-
+    <PageLayout
+      title="Заявки на прикрепление"
+      onBackClick={() => navigate('/profile')}
+    >
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
           loading={loading}
@@ -117,6 +115,6 @@ export default function Page() {
           )}
         />
       </Flex>
-    </Flex>
+    </PageLayout>
   );
 }
