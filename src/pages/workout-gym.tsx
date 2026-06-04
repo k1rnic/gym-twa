@@ -1,6 +1,7 @@
 import { workoutModel } from '@/entities/workout';
 import { CreateExerciseInstanceButton } from '@/features/create-exercise-instance';
 import { Api, TaskGroupStatus } from '@/shared/api';
+import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExercises } from '@/widgets/workout-exercises';
@@ -17,6 +18,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   const navigate = useNavigate();
+  const goBack = useNavigateBack();
 
   const [form] = Form.useForm<FormValues>();
 
@@ -46,7 +48,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
         goToWorkouts(TaskGroupStatus.Running);
       }
     } catch {
-      navigate('../');
+      goBack();
     }
   };
 
@@ -57,7 +59,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
       });
       goToWorkouts(TaskGroupStatus.Finished);
     } catch {
-      navigate('../');
+      goBack();
     }
   };
 

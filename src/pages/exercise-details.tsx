@@ -5,6 +5,7 @@ import { useExerciseImagePicker } from '@/features/exercise/upload-image';
 import { ExerciseVideoUploadModal } from '@/features/exercise/upload-video';
 import { Api, ExerciseStatus, UrlPathType } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
+import { useNavigateBack } from '@/shared/lib/router';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { GridPreview } from '@/shared/ui/grid-preview';
@@ -14,7 +15,6 @@ import { Form, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Title from 'antd/lib/typography/Title';
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router';
 import { Route } from './+types/exercise-details';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
@@ -22,7 +22,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 };
 
 const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
-  const navigate = useNavigate();
+  const goBack = useNavigateBack();
 
   const viewer = useViewer();
   const [form] = Form.useForm<exerciseModel.ExerciseDetailed>();
@@ -69,8 +69,6 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   const deleteExerciseResource = useDeleteExerciseResource(
     initialValues.exercise_id!,
   );
-
-  const goBack = () => navigate(-1);
 
   const saveChanges = async () => {
     if (canEdit) {

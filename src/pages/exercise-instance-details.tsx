@@ -5,10 +5,10 @@ import {
 } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { Api, TaskGroupStatus } from '@/shared/api';
+import { useNavigateBack } from '@/shared/lib/router';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { Route } from './+types/exercise-instance-details';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
@@ -16,7 +16,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 };
 
 const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
-  const navigate = useNavigate();
+  const goBack = useNavigateBack();
   const viewer = viewerModel.useViewer();
 
   const [formValues, setFormValues] = useState<exerciseModel.ExerciseInstance>(
@@ -29,8 +29,6 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
     status !== TaskGroupStatus.Finished;
 
   const readonly = !(status === TaskGroupStatus.Planned || canAccess);
-
-  const goBack = () => navigate('../');
 
   const deleteExercise = async () => {
     await Api.task.deleteTask(initialValues!.task_id);

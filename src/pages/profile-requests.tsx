@@ -2,16 +2,17 @@ import { masterModel } from '@/entities/master';
 import { formatUserDisplayName } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
+import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Avatar, Button, List, Space, Typography, message } from 'antd';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
 
 const { Paragraph } = Typography;
 
 export default function Page() {
-  const navigate = useNavigate();
+  const goBack = useNavigateBack();
+
   const viewer = viewerModel.useViewer();
 
   const { refresh: refreshMasters } = masterModel.useMasters(
@@ -54,10 +55,7 @@ export default function Page() {
   };
 
   return (
-    <PageLayout
-      title="Заявки на прикрепление"
-      onBackClick={() => navigate('/profile')}
-    >
+    <PageLayout title="Заявки на прикрепление" onBackClick={goBack}>
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
           loading={loading}

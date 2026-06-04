@@ -5,17 +5,19 @@ import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Button, Card, Empty, message, Space, Typography } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 
 import { formatUserDisplayName, UserTgLink } from '@/entities/user';
 
+import { useNavigateBack } from '@/shared/lib/router';
 import { AvatarPreview } from '@/shared/ui/avatar';
 
 const { Title, Paragraph } = Typography;
 
 export default function Page() {
   const { masterId } = useParams();
-  const navigate = useNavigate();
+  const goBack = useNavigateBack();
+
   const viewer = viewerModel.useViewer();
 
   const { masters, refresh, loading } = masterModel.useMasters(
@@ -84,10 +86,7 @@ export default function Page() {
 
   if (!master && !loading) {
     return (
-      <PageLayout
-        title="Информация"
-        onBackClick={() => navigate('/profile/masters')}
-      >
+      <PageLayout title="Информация" onBackClick={goBack}>
         <Flex height="100%" width="100%" align="center" justify="center">
           <Empty
             description="Тренер не найден"
@@ -99,41 +98,38 @@ export default function Page() {
   }
 
   return (
-    <PageLayout
-      title="Информация"
-      onBackClick={() => navigate('/profile/masters')}
-    >
+    <PageLayout title="Информация" onBackClick={goBack}>
       <Flex gap="small" style={{ overflow: 'auto', height: '100%' }}>
-      <Space direction="vertical" style={{ width: '100%' }}>
-        <Card loading={loading}>
-          <Space align="start" size="large">
-            <AvatarPreview
-              photos={master?.photos ?? []}
-              preview={{ toolbarRender: () => <></> }}
-            />
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Card loading={loading}>
+            <Space align="start" size="large">
+              <AvatarPreview
+                photos={master?.photos ?? []}
+                preview={{ toolbarRender: () => <></> }}
+              />
 
-            <Space direction="vertical">
-              {master && (
-                <Space direction="vertical">
-                  <Title level={3} style={{ margin: 0 }}>
-                    {formatUserDisplayName(master)}
-                  </Title>
+              <Space direction="vertical">
+                {master && (
+                  <Space direction="vertical">
+                    <Title level={3} style={{ margin: 0 }}>
+                      {formatUserDisplayName(master)}
+                    </Title>
 
-                  <UserTgLink user={master} />
-                </Space>
-              )}
+                    <UserTgLink user={master} />
+                  </Space>
+                )}
 
-              <MasterStatus status={master?.status} />
+                <MasterStatus status={master?.status} />
 
-              <Paragraph>
-                {master?.description || 'Описание отсутствует'}
-              </Paragraph>
+                <Paragraph>
+                  {master?.description || 'Описание отсутствует'}
+                </Paragraph>
+              </Space>
             </Space>
-          </Space>
-        </Card>
+          </Card>
 
-        {renderActions()}
-      </Space>
+          {renderActions()}
+        </Space>
       </Flex>
     </PageLayout>
   );

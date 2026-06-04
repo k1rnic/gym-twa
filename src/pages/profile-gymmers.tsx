@@ -2,14 +2,15 @@ import { gymmerModel } from '@/entities/gymmer';
 import { formatUserDisplayName } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, MastersGymer } from '@/shared/api';
+import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Avatar, Button, List, message } from 'antd';
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
 
 export default function Page() {
-  const navigate = useNavigate();
+  const goBack = useNavigateBack();
+
   const viewer = viewerModel.useViewer();
   const [isBreaking, setIsBreaking] = useState(false);
 
@@ -34,10 +35,7 @@ export default function Page() {
   };
 
   return (
-    <PageLayout
-      title="Мои ученики"
-      onBackClick={() => navigate('/profile')}
-    >
+    <PageLayout title="Мои ученики" onBackClick={goBack}>
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
           loading={gymmerApi.loading || isBreaking}

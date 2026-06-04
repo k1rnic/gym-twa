@@ -9,17 +9,30 @@ export default [
   route('/', '../pages/main-layout.tsx', [
     route('workouts', '../pages/workout-layout.tsx', [
       route(':gId/:status', '../pages/workouts.tsx'),
-      route(':gId/:status/:wId/details', '../pages/workout-details.tsx'),
-      route(
-        ':gId/:status/:wId/details/:exId',
-        '../pages/exercise-instance-details.tsx',
-      ),
-      route(':gId/:status/:wId/gym', '../pages/workout-gym.tsx'),
-      route(
-        ':gId/:status/:wId/gym/:exId',
-        '../pages/exercise-instance-gym.tsx',
-      ),
     ]),
+    ...prefix('workouts/:gId/:status/:wId', [
+      ...prefix('details', [
+        index('../pages/workout-details.tsx'),
+        route(':exId', '../pages/exercise-instance-details.tsx'),
+      ]),
+      ...prefix('gym', [
+        index('../pages/workout-gym.tsx'),
+        route(':exId', '../pages/exercise-instance-gym.tsx'),
+      ]),
+    ]),
+    // route('workouts', '../pages/workout-layout.tsx', [
+    //   route(':gId/:status', '../pages/workouts.tsx'),
+    // ]),
+    // ...prefix('workout/:wId', [
+    //   ...prefix('details', [
+    //     index('../pages/workout-details.tsx'),
+    //     route(':exId', '../pages/exercise-instance-details.tsx'),
+    //   ]),
+    //   ...prefix('gym', [
+    //     index('../pages/workout-gym.tsx'),
+    //     route(':exId', '../pages/exercise-instance-gym.tsx'),
+    //   ]),
+    // ]),
     ...prefix('exercises', [
       index('../pages/exercises.tsx'),
       route(':exId', '../pages/exercise-details.tsx'),

@@ -2,13 +2,13 @@ import { viewerModel } from '@/entities/viewer';
 import { workoutModel } from '@/entities/workout';
 import { CreateExerciseInstanceButton } from '@/features/create-exercise-instance';
 import { Api, TaskGroupStatus } from '@/shared/api';
+import { useNavigateBack } from '@/shared/lib/router';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExercises } from '@/widgets/workout-exercises';
 import { Form, Input } from 'antd';
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router';
 import { Route } from './+types/workout-details';
 
 type FormValues = workoutModel.Workout;
@@ -18,7 +18,8 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 };
 
 const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
-  const navigate = useNavigate();
+  const goBack = useNavigateBack();
+
   const viewer = viewerModel.useViewer();
 
   const [form] = Form.useForm<FormValues>();
@@ -39,7 +40,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
     try {
       await Api.taskGroup.deleteTaskGroup(workout!.task_group_id);
     } finally {
-      navigate('../');
+      goBack();
     }
   };
 
@@ -51,7 +52,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
         });
       }
     } finally {
-      navigate('../');
+      goBack();
     }
   };
 

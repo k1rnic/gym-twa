@@ -1,5 +1,6 @@
 import { masterModel, MasterStatus } from '@/entities/master';
 import { viewerModel } from '@/entities/viewer';
+import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { RightOutlined } from '@ant-design/icons';
@@ -21,6 +22,7 @@ const formatName = (
 export default function Page() {
   const viewer = viewerModel.useViewer();
   const navigate = useNavigate();
+  const goBack = useNavigateBack();
 
   const { masters, loading } = masterModel.useMasters(viewer.gymer?.gymer_id);
 
@@ -35,10 +37,7 @@ export default function Page() {
   );
 
   return (
-    <PageLayout
-      title="Тренеры"
-      onBackClick={() => navigate('/profile')}
-    >
+    <PageLayout title="Тренеры" onBackClick={goBack}>
       <Flex height="100%" style={{ overflow: 'auto' }}>
         <List
           loading={loading}

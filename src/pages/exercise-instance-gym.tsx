@@ -5,9 +5,9 @@ import {
 } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
+import { useNavigateBack } from '@/shared/lib/router';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { Route } from './+types/exercise-instance-gym';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
@@ -17,12 +17,11 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   const viewer = viewerModel.useViewer();
 
-  const navigate = useNavigate();
+  const goBack = useNavigateBack();
+
   const [formValues, setFormValues] = useState<exerciseModel.ExerciseInstance>(
     initialValues!,
   );
-
-  const goBack = () => navigate('../');
 
   const saveChanges = async () => {
     await Api.task.updateTask(normalizeSetValues(formValues));
@@ -30,10 +29,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   };
 
   return (
-    <PageLayout
-      title="Выполнение упражнения"
-      onBackClick={saveChanges}
-    >
+    <PageLayout title="Выполнение упражнения" onBackClick={saveChanges}>
       <ExerciseInstanceForm
         type="fact"
         masterId={viewer.master!.master_id!}
