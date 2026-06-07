@@ -292,32 +292,32 @@ export interface NotificationUserResponse {
 
 /** Set */
 export interface Set {
+  /** Fact Value */
+  fact_value?: number | "max" | null;
+  /** Fact Rep */
+  fact_rep?: number | "max" | null;
+  /** Plan Value */
+  plan_value?: number | "max" | null;
+  /** Plan Rep */
+  plan_rep?: number | "max" | null;
   /** Set Id */
   set_id: number;
   /** Task Properties Id */
   task_properties_id: number;
-  /** Fact Value */
-  fact_value: number | null;
-  /** Fact Rep */
-  fact_rep: number | null;
-  /** Plan Value */
-  plan_value: number | null;
-  /** Plan Rep */
-  plan_rep: number | null;
 }
 
 /** SetUpdate */
 export interface SetUpdate {
+  /** Fact Value */
+  fact_value?: number | "max" | null;
+  /** Fact Rep */
+  fact_rep?: number | "max" | null;
+  /** Plan Value */
+  plan_value?: number | "max" | null;
+  /** Plan Rep */
+  plan_rep?: number | "max" | null;
   /** Set Id */
   set_id?: number | null;
-  /** Fact Value */
-  fact_value?: number | null;
-  /** Fact Rep */
-  fact_rep?: number | null;
-  /** Plan Value */
-  plan_value?: number | null;
-  /** Plan Rep */
-  plan_rep?: number | null;
 }
 
 /** TaskAggregate */
@@ -338,32 +338,11 @@ export interface TaskAggregate {
   update_dttm: string | null;
   /** Order Idx */
   order_idx: number | null;
+  /** Owner Id */
+  owner_id: number | null;
   exercise?: ExerciseAggregateOutput | null;
   task_properties?: TaskPropertiesAggregate | null;
-}
-
-/** TaskGroup */
-export interface TaskGroup {
-  /** Task Group Id */
-  task_group_id: number;
-  /** Title */
-  title: string | null;
-  /** Master Id */
-  master_id: number;
-  /** Gymer Id */
-  gymer_id: number;
-  status: TaskGroupStatus;
-  /**
-   * Create Dttm
-   * @format date-time
-   */
-  create_dttm: string;
-  /** Update Dttm */
-  update_dttm: string | null;
-  /** Start Dttm */
-  start_dttm: string | null;
-  /** Order Idx */
-  order_idx: number | null;
+  owner?: UserBase | null;
 }
 
 /** TaskGroupAggregate */
@@ -388,8 +367,11 @@ export interface TaskGroupAggregate {
   start_dttm: string | null;
   /** Order Idx */
   order_idx: number | null;
+  /** Owner Id */
+  owner_id: number | null;
   /** Tasks */
   tasks?: TaskAggregate[];
+  owner?: UserBase | null;
 }
 
 /** TaskGroupOrderIndex */
@@ -491,6 +473,28 @@ export interface User {
   photos?: string[] | null;
   master?: Master | null;
   gymer?: Gymer | null;
+}
+
+/** UserBase */
+export interface UserBase {
+  /** User Id */
+  user_id: number;
+  /** Username */
+  username?: string | null;
+  /** Phone */
+  phone?: string | null;
+  /** First Name */
+  first_name?: string | null;
+  /** Last Name */
+  last_name?: string | null;
+  /** Email */
+  email?: string | null;
+  /** Telegram Id */
+  telegram_id?: number | null;
+  /** Photo */
+  photo?: string | null;
+  /** Photos */
+  photos?: string[] | null;
 }
 
 /** UserIn */
@@ -698,7 +702,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.4.0
+ * @version 2.6.0
  */
 export class Endpoints<
   SecurityDataType extends unknown,
@@ -977,6 +981,11 @@ export class Endpoints<
          * task_group_id
          */
         task_group_id: number;
+        /**
+         * Owner Id
+         * user_id создающего упражнение
+         */
+        owner_id?: number | null;
       },
       params: RequestParams = {},
     ) =>
@@ -1116,7 +1125,7 @@ export class Endpoints<
       },
       params: RequestParams = {},
     ) =>
-      this.request<TaskGroup, HTTPValidationError>({
+      this.request<TaskGroupAggregate, HTTPValidationError>({
         path: `/gym/task_group`,
         method: "POST",
         query: query,
