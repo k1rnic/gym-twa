@@ -178,7 +178,8 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
               {innerWorkouts.map((w, idx, { length }) => (
                 <SortableWorkout
                   key={w.task_group_id}
-                  collapsible={w.status !== TaskGroupStatus.Running}
+                  collapsible
+                  collapsed={w.status !== TaskGroupStatus.Running}
                   workout={w}
                   status={status}
                   style={{

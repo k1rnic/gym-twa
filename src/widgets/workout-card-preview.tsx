@@ -5,7 +5,7 @@ import { Flex } from '@/shared/ui/flex';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
 
 import { Card, CardProps, Empty, List, Space, Typography } from 'antd';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 
 export type WorkoutCardPreviewProps = {
   workout: workoutModel.Workout;
@@ -13,6 +13,7 @@ export type WorkoutCardPreviewProps = {
   extraBefore?: ReactNode;
   extraAfter?: ReactNode;
   collapsible?: boolean;
+  collapsed?: boolean;
 } & Pick<CardProps, 'style' | 'onClick'>;
 
 export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
@@ -22,21 +23,18 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
     extraAfter,
     titleExtraBefore,
     collapsible,
+    collapsed: collapsedDefault = true,
     ...cardProps
   } = props;
 
   const listRef = useRef<HTMLDivElement>(null);
 
-  const [collapsed, setCollapsed] = useState(collapsible);
+  const [collapsed, setCollapsed] = useState(collapsedDefault);
 
   const toggleClicked = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCollapsed((prev) => !prev);
   };
-
-  useEffect(() => {
-    setCollapsed(collapsible);
-  }, [collapsible]);
 
   return (
     <Card
@@ -75,8 +73,9 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
           style={{
             overflow: 'hidden',
             transition: 'max-height 0.3s ease, opacity 0.2s ease',
-            maxHeight: collapsed ? 0 : listRef.current?.scrollHeight,
-            opacity: collapsed ? 0 : 1,
+            maxHeight:
+              collapsible && collapsed ? 0 : listRef.current?.scrollHeight,
+            opacity: collapsible && collapsed ? 0 : 1,
           }}
           dataSource={w.tasks}
           renderItem={(item) => (
