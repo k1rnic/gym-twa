@@ -25,6 +25,7 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
     titleExtraBefore,
     collapsible,
     collapsed: collapsedDefault = true,
+    onClick,
     ...cardProps
   } = props;
 
@@ -48,14 +49,14 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
           style={{ whiteSpace: 'break-spaces' }}
         >
           {titleExtraBefore}
-          <Typography.Text ellipsis>
+          <Typography.Text ellipsis style={{ width: '100%' }} onClick={onClick}>
             {w.title ?? 'Без названия'}
           </Typography.Text>
         </Flex>
       }
       styles={{ body: { padding: w.tasks?.length ? 0 : undefined } }}
       extra={
-        <Space onClick={(e) => e.stopPropagation()}>
+        <Space>
           {extraBefore}
           {extraAfter}
           <DeleteWorkoutButton workoutId={w.task_group_id} />
