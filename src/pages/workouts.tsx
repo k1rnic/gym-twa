@@ -26,7 +26,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { Button, Empty, Segmented } from 'antd';
+import { Empty, Segmented } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
 import { useEffect, useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
@@ -38,40 +38,16 @@ const FILTERS: SegmentedOptions<TaskGroupStatus> = [
   { label: 'архив', value: TaskGroupStatus.Finished },
 ];
 
-type WorkoutCardProps = {
-  status: TaskGroupStatus;
-} & WorkoutCardPreviewProps;
+type WorkoutCardProps = WorkoutCardPreviewProps;
 
-const SortableWorkout = ({ status, ...props }: WorkoutCardProps) => {
-  const navigate = useNavigate();
-  const viewer = viewerModel.useViewer();
-  const isMineWorkout = props.workout.gymer_id === viewer.gymer?.gymer_id;
-  const hasExercises = Boolean(props.workout.tasks?.length);
-
+const SortableWorkout = (props: WorkoutCardProps) => {
   const { setNodeRef, style, handler } = useSortableList(
     props.workout.task_group_id,
   );
 
-  const goGym = () => {
-    navigate(`${props.workout.task_group_id}/gym`);
-  };
-
-  const canGym =
-    status !== TaskGroupStatus.Finished && isMineWorkout && hasExercises;
-
   return (
     <div ref={setNodeRef} style={style}>
-      <WorkoutCardPreview
-        {...props}
-        titleExtraBefore={handler}
-        extraAfter={
-          canGym ? (
-            <Button size="small" type="primary" onClick={goGym}>
-              GYM
-            </Button>
-          ) : undefined
-        }
-      />
+      <WorkoutCardPreview {...props} titleExtraBefore={handler} />
     </div>
   );
 };
@@ -181,7 +157,6 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
                   collapsible
                   collapsed={w.status !== TaskGroupStatus.Running}
                   workout={w}
-                  status={status}
                   style={{
                     marginBottom: idx === length - 1 ? FLOAT_BUTTON_SIZE : 0,
                   }}
