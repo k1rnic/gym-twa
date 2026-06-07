@@ -24,12 +24,16 @@ const Page = () => {
 
   const items = useMemo(
     () =>
-      masterGymmers.map<AvatarListItem>((gymmer) => ({
-        id: gymmer.gymer_id,
-        name: gymmer.username || formatUserDisplayName(gymmer),
-        src: gymmer.photo!,
-      })),
-    [masterGymmers],
+      masterGymmers
+        .map<AvatarListItem>((gymmer) => ({
+          id: gymmer.gymer_id,
+          name: gymmer.username || formatUserDisplayName(gymmer),
+          src: gymmer.photo!,
+        }))
+        .sort((a, b) =>
+          a.id === gymer?.gymer_id ? -1 : b.id === gymer?.gymer_id ? -1 : 1,
+        ),
+    [masterGymmers, gymer?.gymer_id],
   );
 
   const selectedItem = useMemo(
@@ -53,7 +57,6 @@ const Page = () => {
         <AvatarList
           items={items}
           selected={selectedItem}
-          pinned={gymer?.gymer_id}
           onClick={navigateToGymmer}
         />
         <Divider />
