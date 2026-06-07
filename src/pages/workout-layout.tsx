@@ -5,6 +5,7 @@ import { TaskGroupStatus } from '@/shared/api';
 import { useMatchExact } from '@/shared/lib/router';
 import { AvatarList, AvatarListItem } from '@/shared/ui/avatar';
 import { Flex } from '@/shared/ui/flex';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { Divider } from 'antd';
 import { useEffect, useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
@@ -47,17 +48,19 @@ const Page = () => {
   }, [isIndex, gymer]);
 
   return (
-    <Flex height="100%" gap="small" style={{ overflow: 'hidden' }}>
-      <AvatarList
-        items={items}
-        selected={selectedItem}
-        pinned={gymer?.gymer_id}
-        onClick={navigateToGymmer}
-      />
-      <Divider />
+    <PageLayout>
+      <Flex height="100%" gap="small" style={{ overflow: 'hidden' }}>
+        <AvatarList
+          items={items}
+          selected={selectedItem}
+          pinned={gymer?.gymer_id}
+          onClick={navigateToGymmer}
+        />
+        <Divider />
 
-      <Outlet />
-    </Flex>
+        <Outlet />
+      </Flex>
+    </PageLayout>
   );
 };
 

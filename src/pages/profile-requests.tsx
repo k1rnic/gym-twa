@@ -55,12 +55,15 @@ export default function Page() {
   };
 
   return (
-    <PageLayout title="Заявки на прикрепление" onBackClick={goBack}>
+    <PageLayout
+      title="Заявки на прикрепление"
+      onBackClick={goBack}
+      loading={loading}
+    >
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
-          loading={loading}
           dataSource={requests}
-          locale={{ emptyText: 'Заявок пока нет' }}
+          locale={{ emptyText: loading ? '' : 'Заявок пока нет' }}
           itemLayout="vertical"
           renderItem={(item) => (
             <List.Item

@@ -86,7 +86,7 @@ export default function Page() {
 
   if (!master && !loading) {
     return (
-      <PageLayout title="Информация" onBackClick={goBack}>
+      <PageLayout title="Информация" onBackClick={goBack} loading={loading}>
         <Flex height="100%" width="100%" align="center" justify="center">
           <Empty
             description="Тренер не найден"
@@ -98,7 +98,7 @@ export default function Page() {
   }
 
   return (
-    <PageLayout title="Информация" onBackClick={goBack}>
+    <PageLayout title="Информация" onBackClick={goBack} loading={loading}>
       <Flex gap="small" style={{ overflow: 'auto', height: '100%' }}>
         <Space direction="vertical" style={{ width: '100%' }}>
           <Card loading={loading}>

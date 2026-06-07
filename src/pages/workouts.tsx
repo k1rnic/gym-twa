@@ -3,7 +3,6 @@ import { workoutModel } from '@/entities/workout';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { useSortableList } from '@/shared/lib/hooks';
 import { Flex } from '@/shared/ui/flex';
-import { PageLayout } from '@/shared/ui/page-layout';
 import { FLOAT_BUTTON_SIZE, FloatButton } from '@/shared/ui/float-button';
 import {
   WorkoutCardPreview,
@@ -149,59 +148,57 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
   }, [workouts]);
 
   return (
-    <PageLayout>
-      <Flex
-        height="100%"
-        gap={8}
-        style={{ overflowY: 'auto', position: 'relative' }}
-      >
-        <Segmented
-          block
-          options={FILTERS}
-          value={status}
-          onChange={filterWorkouts}
-        />
+    <Flex
+      height="100%"
+      gap={8}
+      style={{ overflowY: 'auto', position: 'relative' }}
+    >
+      <Segmented
+        block
+        options={FILTERS}
+        value={status}
+        onChange={filterWorkouts}
+      />
 
-        {innerWorkouts.length ? (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-            modifiers={[
-              restrictToVerticalAxis,
-              restrictToFirstScrollableAncestor,
-            ]}
+      {innerWorkouts.length ? (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          modifiers={[
+            restrictToVerticalAxis,
+            restrictToFirstScrollableAncestor,
+          ]}
+        >
+          <SortableContext
+            items={innerWorkouts.map((i) => i.task_group_id)}
+            strategy={verticalListSortingStrategy}
           >
-            <SortableContext
-              items={innerWorkouts.map((i) => i.task_group_id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <Flex height="100%" gap={8} style={{ overflowY: 'auto' }}>
-                {innerWorkouts.map((w, idx, { length }) => (
-                  <SortableWorkout
-                    key={w.task_group_id}
-                    collapsible={w.status !== TaskGroupStatus.Running}
-                    workout={w}
-                    status={status}
-                    style={{
-                      marginBottom: idx === length - 1 ? FLOAT_BUTTON_SIZE : 0,
-                    }}
-                    onClick={() => goToWorkoutDetails(w)}
-                  />
-                ))}
-              </Flex>
-            </SortableContext>
-          </DndContext>
-        ) : (
-          <Empty
-            description="Нет тренировок"
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-          />
-        )}
+            <Flex height="100%" gap={8} style={{ overflowY: 'auto' }}>
+              {innerWorkouts.map((w, idx, { length }) => (
+                <SortableWorkout
+                  key={w.task_group_id}
+                  collapsible={w.status !== TaskGroupStatus.Running}
+                  workout={w}
+                  status={status}
+                  style={{
+                    marginBottom: idx === length - 1 ? FLOAT_BUTTON_SIZE : 0,
+                  }}
+                  onClick={() => goToWorkoutDetails(w)}
+                />
+              ))}
+            </Flex>
+          </SortableContext>
+        </DndContext>
+      ) : (
+        <Empty
+          description="Нет тренировок"
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+        />
+      )}
 
-        <FloatButton icon={<PlusOutlined />} onClick={createWorkout} />
-      </Flex>
-    </PageLayout>
+      <FloatButton icon={<PlusOutlined />} onClick={createWorkout} />
+    </Flex>
   );
 };
 

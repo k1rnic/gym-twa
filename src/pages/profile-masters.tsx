@@ -37,12 +37,11 @@ export default function Page() {
   );
 
   return (
-    <PageLayout title="Тренеры" onBackClick={goBack}>
+    <PageLayout title="Тренеры" onBackClick={goBack} loading={loading}>
       <Flex height="100%" style={{ overflow: 'auto' }}>
         <List
-          loading={loading}
           dataSource={data}
-          locale={{ emptyText: 'Тренеров пока нет' }}
+          locale={{ emptyText: loading ? '' : 'Тренеров пока нет' }}
           renderItem={(item) => (
             <List.Item
               style={{ cursor: 'pointer' }}

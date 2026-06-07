@@ -35,12 +35,15 @@ export default function Page() {
   };
 
   return (
-    <PageLayout title="Мои ученики" onBackClick={goBack}>
+    <PageLayout
+      title="Мои ученики"
+      onBackClick={goBack}
+      loading={gymmerApi.loading || isBreaking}
+    >
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
-          loading={gymmerApi.loading || isBreaking}
           dataSource={gymmers}
-          locale={{ emptyText: 'Учеников пока нет' }}
+          locale={{ emptyText: gymmerApi.loading ? '' : 'Учеников пока нет' }}
           renderItem={(gymmer) => (
             <List.Item
               style={{ alignItems: 'flex-start' }}

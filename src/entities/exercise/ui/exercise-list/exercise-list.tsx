@@ -1,6 +1,6 @@
 import { Flex } from '@/shared/ui/flex';
 import { FLOAT_BUTTON_SIZE } from '@/shared/ui/float-button';
-import { Empty, Input, Typography } from 'antd';
+import { Input, Typography } from 'antd';
 import { ReactNode, useState } from 'react';
 import { useExerciseFilter } from '../../lib/use-exercise-filter';
 import { Exercise } from '../../model';
@@ -38,26 +38,22 @@ export const ExerciseList = ({
         onChange={(e) => setQuery(e.target.value)}
       />
       {extra}
-      {hasData ? (
-        <Flex height="100%" style={{ overflow: 'auto' }}>
-          <ExerciseGroup
-            title="Мои"
-            data={grouped.yours}
-            onSelect={(ex) => onSelect?.(ex)}
-          />
-          <ExerciseGroup
-            title="Базовые"
-            data={grouped.basic}
-            onSelect={(ex) => onSelect?.(ex)}
-            listItemStyle={(_, idx) => ({
-              marginBottom:
-                idx === grouped.basic.length - 1 ? FLOAT_BUTTON_SIZE : 0,
-            })}
-          />
-        </Flex>
-      ) : (
-        <Empty description={<Text type="secondary">нет упражнений</Text>} />
-      )}
+      <Flex height="100%" style={{ overflow: 'auto' }}>
+        <ExerciseGroup
+          title="Мои"
+          data={grouped.yours}
+          onSelect={(ex) => onSelect?.(ex)}
+        />
+        <ExerciseGroup
+          title="Базовые"
+          data={grouped.basic}
+          onSelect={(ex) => onSelect?.(ex)}
+          listItemStyle={(_, idx) => ({
+            marginBottom:
+              idx === grouped.basic.length - 1 ? FLOAT_BUTTON_SIZE : 0,
+          })}
+        />
+      </Flex>
     </Flex>
   );
 };

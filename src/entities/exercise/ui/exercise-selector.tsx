@@ -17,7 +17,7 @@ type Props = {
 >;
 
 export const ExerciseSelector = ({ masterId, ...selectProps }: Props) => {
-  const exercises = useExercises(masterId);
+  const { data: exercises } = useExercises(masterId);
 
   const selectRef = useRef<RefSelectProps>(null);
   const distance = useSelectKeyboardDistance(selectRef);
