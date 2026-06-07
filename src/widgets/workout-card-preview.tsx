@@ -1,6 +1,7 @@
 import { ExerciseAvatar } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { CopyWorkoutButton } from '@/features/copy-workout';
+import { DeleteWorkoutButton } from '@/features/delete-workout';
 import { Flex } from '@/shared/ui/flex';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
 
@@ -57,6 +58,7 @@ export const WorkoutCardPreview = (props: WorkoutCardPreviewProps) => {
         <Space onClick={(e) => e.stopPropagation()}>
           {extraBefore}
           {extraAfter}
+          <DeleteWorkoutButton workoutId={w.task_group_id} />
           <CopyWorkoutButton workoutId={w.task_group_id} />
           {collapsible &&
             (collapsed ? (

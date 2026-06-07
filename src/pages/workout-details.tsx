@@ -3,7 +3,6 @@ import { workoutModel } from '@/entities/workout';
 import { CreateExerciseInstanceButton } from '@/features/create-exercise-instance';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
-import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExercises } from '@/widgets/workout-exercises';
@@ -57,11 +56,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
   };
 
   return (
-    <PageLayout
-      title="Создание тренировки"
-      onBackClick={submitChanges}
-      extra={<DeleteButton hidden={readonly} onDelete={deleteWorkout} />}
-    >
+    <PageLayout onBackClick={submitChanges}>
       {workout && (
         <Flex
           height="100%"

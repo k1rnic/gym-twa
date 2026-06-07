@@ -65,7 +65,6 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
 
   return (
     <PageLayout
-      title="Выполнение тренировки"
       onBackClick={submitChanges}
       extra={
         <Button type="primary" onClick={finishWorkout}>
