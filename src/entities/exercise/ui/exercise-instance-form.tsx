@@ -2,7 +2,6 @@ import { Set, TaskPropertiesAggregate } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
 import { CountDown } from '@/shared/ui/countdown';
 import { Flex } from '@/shared/ui/flex';
-import { FLOAT_BUTTON_SIZE, FloatButton } from '@/shared/ui/float-button';
 import {
   CheckOutlined,
   CloseOutlined,
@@ -14,7 +13,6 @@ import { NamePath } from 'antd/es/form/interface';
 import { DefaultOptionType } from 'antd/es/select';
 import { FormListOperation } from 'antd/lib';
 import { FocusEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router';
 import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
 import { ExerciseInstance } from '../model';
 import { ExerciseSelector } from './exercise-selector';
@@ -155,6 +153,17 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
 
             return (
               <Flex flex={1} style={{ overflow: 'auto' }}>
+                {!props.readonly && (
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() =>
+                      exerciseListOps.current!.add(getLastSetPlan())
+                    }
+                  >
+                    Добавить подход
+                  </Button>
+                )}
                 {fields.map(({ key, ...field }) => (
                   <Flex key={key} vertical={false} align="start" gap={8}>
                     <Flex vertical={false} gap={8} flex={1}>
@@ -209,26 +218,14 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
           }}
         </Form.List>
 
-        <Flex hidden={!showToolbar} height={FLOAT_BUTTON_SIZE} justify="center">
+        {showToolbar && (
           <Form.Item<FormValues>
             name={['task_properties', 'rest']}
-            style={{
-              margin: 0,
-              width: props.readonly
-                ? '100%'
-                : `calc(100% - ${FLOAT_BUTTON_SIZE}px - 8px)`,
-            }}
+            style={{ margin: 0, width: '100%' }}
           >
             <CountDown runEnabled={props.type === 'fact'} placeholder="Отдых" />
           </Form.Item>
-
-          {!props.readonly && (
-            <FloatButton
-              icon={<PlusOutlined />}
-              onClick={() => exerciseListOps.current!.add(getLastSetPlan())}
-            />
-          )}
-        </Flex>
+        )}
 
         <Button
           type="primary"
