@@ -142,20 +142,12 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
       onBlur={handleInputFocusChange}
     >
       <Flex height="100%" style={{ position: 'relative' }}>
-        <Flex gap={8} align="flex-start" style={{ marginBottom: 8 }}>
-          <Form.Item<FormValues>
-            name="exercise_id"
-            style={{ margin: 0, width: '100%' }}
-          >
-            <ExerciseSelector masterId={props.masterId} />
-          </Form.Item>
-          <Link
-            to={`/exercises/${formValues?.exercise_id}`}
-            hidden={!formValues?.exercise_id}
-          >
-            К упражнению
-          </Link>
-        </Flex>
+        <Form.Item<FormValues>
+          name="exercise_id"
+          style={{ margin: 0, width: '100%' }}
+        >
+          <ExerciseSelector masterId={props.masterId} />
+        </Form.Item>
 
         <Form.List name={['task_properties', 'sets']}>
           {(fields, listActions) => {
