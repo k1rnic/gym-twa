@@ -44,7 +44,7 @@ const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
     <PageLayout
       title={readonly ? 'Просмотр упражнения' : 'Редактирование упражнения'}
       onBackClick={saveChanges}
-      extra={<DeleteButton hidden={readonly} onDelete={deleteExercise} />}
+      extra={<DeleteButton onDelete={deleteExercise} />}
     >
       <ExerciseInstanceForm
         readonly={readonly}

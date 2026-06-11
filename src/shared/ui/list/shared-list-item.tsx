@@ -3,7 +3,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { Space, Typography } from 'antd';
 import { CSSProperties, KeyboardEvent, MouseEvent, useMemo } from 'react';
 
-export interface SharedListItemProps {
+export type SharedListItemProps = {
   avatar?: React.ReactNode;
   header: React.ReactNode;
   description?: React.ReactNode;
@@ -13,7 +13,7 @@ export interface SharedListItemProps {
   onClick?: (event: MouseEvent<HTMLDivElement>) => void;
   className?: string;
   style?: CSSProperties;
-}
+};
 
 export const SharedListItem = ({
   avatar,

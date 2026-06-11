@@ -1,18 +1,17 @@
 import { useTheme } from '@/shared/lib/theme';
 import { List, type ListProps } from 'antd';
-import { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 export type SharedListVariant = 'simple' | 'contained';
 
-export interface SharedListProps<T>
-  extends Omit<ListProps<T>, 'dataSource' | 'renderItem'> {
+export type SharedListProps<T> = {
   items: T[];
   variant?: SharedListVariant;
   compact?: boolean;
   renderItem: (item: T, index: number) => ReactNode;
   itemKey?: keyof T | ((item: T) => React.Key);
   emptyText?: ReactNode;
-}
+} & Omit<ListProps<T>, 'dataSource' | 'renderItem'>;
 
 export const SharedList = <T,>(props: SharedListProps<T>) => {
   const {
@@ -30,7 +29,7 @@ export const SharedList = <T,>(props: SharedListProps<T>) => {
 
   const rowKey = itemKey ?? rowKeyProp;
 
-  const containedItemStyle = {
+  const containedItemStyle: CSSProperties = {
     background: token.colorFillSecondary,
     borderRadius: token.borderRadius,
     border: `1px solid ${token.colorBorderSecondary}`,

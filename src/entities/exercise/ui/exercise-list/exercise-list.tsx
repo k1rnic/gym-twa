@@ -1,21 +1,20 @@
 import { Flex } from '@/shared/ui/flex';
 import { FLOAT_BUTTON_SIZE } from '@/shared/ui/float-button';
-import { Input, Typography } from 'antd';
+import { Input } from 'antd';
 import { ReactNode, useState } from 'react';
 import { useExerciseFilter } from '../../lib/use-exercise-filter';
 import { Exercise } from '../../model';
 import { ExerciseGroup } from './exercise-group';
 
 const { Search } = Input;
-const { Text } = Typography;
 
-export interface ExerciseListProps {
+export type ExerciseListProps = {
   exercises: Exercise[];
   masterId: number;
   onSelect?: (exercise: Exercise) => void;
   searchPlaceholder?: string;
   extra?: ReactNode;
-}
+};
 
 export const ExerciseList = ({
   exercises,
