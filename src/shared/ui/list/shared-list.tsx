@@ -1,19 +1,19 @@
 import { useTheme } from '@/shared/lib/theme';
-import { List, type ListProps } from 'antd';
+import { List as AntdList, type ListProps as AntdListProps } from 'antd';
 import { CSSProperties, ReactNode } from 'react';
 
-export type SharedListVariant = 'simple' | 'contained';
+export type ListVariant = 'simple' | 'contained';
 
-export type SharedListProps<T> = {
+export type ListProps<T> = {
   items: T[];
-  variant?: SharedListVariant;
+  variant?: ListVariant;
   compact?: boolean;
   renderItem: (item: T, index: number) => ReactNode;
   itemKey?: keyof T | ((item: T) => React.Key);
   emptyText?: ReactNode;
-} & Omit<ListProps<T>, 'dataSource' | 'renderItem'>;
+} & Omit<AntdListProps<T>, 'dataSource' | 'renderItem'>;
 
-export const SharedList = <T,>(props: SharedListProps<T>) => {
+export const List = <T,>(props: ListProps<T>) => {
   const {
     items,
     variant = 'simple',
@@ -38,7 +38,7 @@ export const SharedList = <T,>(props: SharedListProps<T>) => {
   } as const;
 
   return (
-    <List<T>
+    <AntdList<T>
       {...listProps}
       dataSource={items}
       size={compact ? 'small' : 'default'}
@@ -46,14 +46,14 @@ export const SharedList = <T,>(props: SharedListProps<T>) => {
       rowKey={rowKey}
       locale={emptyText !== undefined ? { ...locale, emptyText } : locale}
       renderItem={(item, index) => (
-        <List.Item
+        <AntdList.Item
           key={rowKey ? undefined : index}
           style={
             variant === 'contained' ? { ...containedItemStyle } : undefined
           }
         >
           {renderItem(item, index)}
-        </List.Item>
+        </AntdList.Item>
       )}
     />
   );

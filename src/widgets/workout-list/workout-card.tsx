@@ -6,7 +6,7 @@ import { useDeleteWorkoutAction } from '@/features/delete-workout';
 import { plural } from '@/shared/lib/plural';
 import { CardListItem } from '@/shared/ui/card-list';
 import { Flex } from '@/shared/ui/flex';
-import { SharedList, SharedListItem } from '@/shared/ui/list';
+import { List, ListItem } from '@/shared/ui/list';
 
 import { Avatar, CardProps, Typography } from 'antd';
 import { MenuProps } from 'antd/lib';
@@ -70,14 +70,14 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
       }
       onClick={onClick}
     >
-      <SharedList
+      <List
         items={w.tasks ?? []}
         itemKey="task_id"
         variant="simple"
         size="small"
         emptyText="Упражнения пока не добавлены"
         renderItem={(task) => (
-          <SharedListItem
+          <ListItem
             avatar={<ExerciseAvatar exercise={task.exercise!} size="large" />}
             header={task.exercise?.exercise_name}
             onClick={() => goToExerciseInstance(task)}

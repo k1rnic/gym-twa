@@ -26,8 +26,6 @@ export const ExerciseList = ({
   const [query, setQuery] = useState('');
   const grouped = useExerciseFilter(exercises, masterId, query);
 
-  const hasData = grouped.yours.length > 0 || grouped.basic.length > 0;
-
   return (
     <Flex height="100%" style={{ overflow: 'hidden' }} gap={8}>
       <Search

@@ -4,7 +4,7 @@ import { viewerModel } from '@/entities/viewer';
 import { Api, MastersGymer } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
-import { SharedList, SharedListItem } from '@/shared/ui/list';
+import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Avatar, message } from 'antd';
 import { useMemo, useState } from 'react';
@@ -44,13 +44,13 @@ export default function Page() {
       loading={gymmerApi.loading || isBreaking}
     >
       <Flex style={{ height: '100%', overflow: 'auto' }}>
-        <SharedList
+        <List
           items={gymmers}
           itemKey="gymer_id"
           emptyText={gymmerApi.loading ? '' : 'Учеников пока нет'}
           variant="contained"
           renderItem={(gymmer) => (
-            <SharedListItem
+            <ListItem
               avatar={
                 <Avatar
                   size={64}

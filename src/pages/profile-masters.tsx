@@ -2,7 +2,7 @@ import { masterModel, MasterStatus } from '@/entities/master';
 import { viewerModel } from '@/entities/viewer';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
-import { SharedList, SharedListItem } from '@/shared/ui/list';
+import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Avatar, Typography } from 'antd';
 import { useMemo } from 'react';
@@ -39,13 +39,13 @@ export default function Page() {
   return (
     <PageLayout title="Тренеры" onBackClick={goBack} loading={loading}>
       <Flex height="100%" style={{ overflow: 'auto' }}>
-        <SharedList
+        <List
           items={data}
           itemKey="master_id"
           emptyText={loading ? '' : 'Тренеров пока нет'}
           variant="contained"
           renderItem={(item) => (
-            <SharedListItem
+            <ListItem
               avatar={
                 <Avatar
                   size={64}

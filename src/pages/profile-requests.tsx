@@ -4,7 +4,7 @@ import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
-import { SharedList, SharedListItem } from '@/shared/ui/list';
+import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Avatar, Button, Typography, message } from 'antd';
 import { useEffect, useState } from 'react';
@@ -65,7 +65,7 @@ export default function Page() {
       loading={loading}
     >
       <Flex style={{ height: '100%', overflow: 'auto' }}>
-        <SharedList
+        <List
           items={requests}
           itemKey="notification_id"
           emptyText={loading ? '' : 'Заявок пока нет'}
@@ -74,7 +74,7 @@ export default function Page() {
             const gymerId = item.sender_user?.gymer?.gymer_id;
 
             return (
-              <SharedListItem
+              <ListItem
                 avatar={
                   <Avatar
                     size={64}

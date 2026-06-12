@@ -4,7 +4,7 @@ import { Radio } from 'antd';
 import { RadioChangeEvent } from 'antd/lib';
 import { useLocation, useNavigate } from 'react-router';
 
-export const APP_TOOLBAR_HEIGHT = 72;
+export const APP_TOOLBAR_HEIGHT = 48;
 
 interface Item {
   label: string;

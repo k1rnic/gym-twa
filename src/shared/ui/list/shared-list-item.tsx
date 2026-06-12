@@ -3,7 +3,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { Space, Typography } from 'antd';
 import { CSSProperties, KeyboardEvent, MouseEvent, useMemo } from 'react';
 
-export type SharedListItemProps = {
+export type ListItemProps = {
   avatar?: React.ReactNode;
   header: React.ReactNode;
   description?: React.ReactNode;
@@ -15,7 +15,7 @@ export type SharedListItemProps = {
   style?: CSSProperties;
 };
 
-export const SharedListItem = ({
+export const ListItem = ({
   avatar,
   header,
   description,
@@ -25,7 +25,7 @@ export const SharedListItem = ({
   onClick,
   className,
   style,
-}: SharedListItemProps) => {
+}: ListItemProps) => {
   const { token } = useTheme();
   const interactive = Boolean(onClick);
 
