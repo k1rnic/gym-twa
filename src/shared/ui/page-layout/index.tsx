@@ -59,21 +59,7 @@ export const PageLayout = ({
         <div style={{ position: 'relative', height: '100%' }}>
           {children}
 
-          {showSpinner && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(255,255,255,0.6)',
-                zIndex: 10,
-              }}
-            >
-              <Spin size="large" />
-            </div>
-          )}
+          {showSpinner && <Spin fullscreen delay={100} />}
         </div>
       </Flex>
     </Flex>

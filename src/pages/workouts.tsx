@@ -1,35 +1,12 @@
 import { viewerModel } from '@/entities/viewer';
-import { workoutModel } from '@/entities/workout';
 import { Api, TaskGroupStatus } from '@/shared/api';
-import { useSortableList } from '@/shared/lib/hooks';
 import { Flex } from '@/shared/ui/flex';
-import { FLOAT_BUTTON_SIZE, FloatButton } from '@/shared/ui/float-button';
-import {
-  WorkoutCardPreview,
-  WorkoutCardPreviewProps,
-} from '@/widgets/workout-card-preview';
+import { FloatButton } from '@/shared/ui/float-button';
+import { WorkoutList } from '@/widgets/workout-list';
 import { PlusOutlined } from '@ant-design/icons';
-import {
-  closestCenter,
-  DndContext,
-  DragEndEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  restrictToFirstScrollableAncestor,
-  restrictToVerticalAxis,
-} from '@dnd-kit/modifiers';
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { Empty, Segmented } from 'antd';
+import { Segmented } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
-import { useEffect, useState } from 'react';
-import { useNavigate, useRevalidator } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Route } from './+types/workouts';
 
 const FILTERS: SegmentedOptions<TaskGroupStatus> = [
@@ -37,20 +14,6 @@ const FILTERS: SegmentedOptions<TaskGroupStatus> = [
   { label: 'текущие', value: TaskGroupStatus.Running },
   { label: 'архив', value: TaskGroupStatus.Finished },
 ];
-
-type WorkoutCardProps = WorkoutCardPreviewProps;
-
-const SortableWorkout = (props: WorkoutCardProps) => {
-  const { setNodeRef, style, handler } = useSortableList(
-    props.workout.task_group_id,
-  );
-
-  return (
-    <div ref={setNodeRef} style={style}>
-      <WorkoutCardPreview {...props} titleExtraBefore={handler} />
-    </div>
-  );
-};
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.taskGroup
@@ -63,41 +26,9 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
   const navigate = useNavigate();
-  const { revalidate } = useRevalidator();
 
   const viewer = viewerModel.useViewer();
-
-  const [innerWorkouts, setInnerWorkouts] = useState(workouts);
-
   const status = params.status as TaskGroupStatus;
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-  );
-
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = innerWorkouts.findIndex(
-      (i) => i.task_group_id === active.id,
-    );
-    const newIndex = innerWorkouts.findIndex(
-      (i) => i.task_group_id === over.id,
-    );
-
-    const reordered = arrayMove(innerWorkouts, oldIndex, newIndex);
-
-    setInnerWorkouts(reordered);
-
-    await Api.taskGroup.reorderTaskGroup(
-      reordered.map((w, idx) => ({
-        task_group_id: w.task_group_id,
-        order_idx: idx,
-      })),
-    );
-    revalidate();
-  };
 
   const createWorkout = async () => {
     const data = await Api.taskGroup.createTaskGroup({
@@ -115,14 +46,6 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
     navigate(`../${status}`, { relative: 'path' });
   };
 
-  const goToWorkoutDetails = (w: workoutModel.Workout) => {
-    navigate(`${w.task_group_id}/details`);
-  };
-
-  useEffect(() => {
-    setInnerWorkouts(workouts);
-  }, [workouts]);
-
   return (
     <Flex
       height="100%"
@@ -136,42 +59,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
         onChange={filterWorkouts}
       />
 
-      {innerWorkouts.length ? (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[
-            restrictToVerticalAxis,
-            restrictToFirstScrollableAncestor,
-          ]}
-        >
-          <SortableContext
-            items={innerWorkouts.map((i) => i.task_group_id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <Flex height="100%" gap={8} style={{ overflowY: 'auto' }}>
-              {innerWorkouts.map((w, idx, { length }) => (
-                <SortableWorkout
-                  key={w.task_group_id}
-                  collapsible
-                  collapsed={w.status !== TaskGroupStatus.Running}
-                  workout={w}
-                  style={{
-                    marginBottom: idx === length - 1 ? FLOAT_BUTTON_SIZE : 0,
-                  }}
-                  onClick={() => goToWorkoutDetails(w)}
-                />
-              ))}
-            </Flex>
-          </SortableContext>
-        </DndContext>
-      ) : (
-        <Empty
-          description="Нет тренировок"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-        />
-      )}
+      <WorkoutList data={workouts} />
 
       <FloatButton icon={<PlusOutlined />} onClick={createWorkout} />
     </Flex>

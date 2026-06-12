@@ -1,4 +1,7 @@
-export function plural(forms: string[], n: number) {
+export function plural(
+  forms: [one: string, few: string, many: string],
+  n: number,
+) {
   let idx;
 
   if (n % 10 === 1 && n % 100 !== 11) {

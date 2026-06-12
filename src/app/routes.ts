@@ -20,19 +20,6 @@ export default [
         route(':exId', '../pages/exercise-instance-gym.tsx'),
       ]),
     ]),
-    // route('workouts', '../pages/workout-layout.tsx', [
-    //   route(':gId/:status', '../pages/workouts.tsx'),
-    // ]),
-    // ...prefix('workout/:wId', [
-    //   ...prefix('details', [
-    //     index('../pages/workout-details.tsx'),
-    //     route(':exId', '../pages/exercise-instance-details.tsx'),
-    //   ]),
-    //   ...prefix('gym', [
-    //     index('../pages/workout-gym.tsx'),
-    //     route(':exId', '../pages/exercise-instance-gym.tsx'),
-    //   ]),
-    // ]),
     ...prefix('exercises', [
       index('../pages/exercises.tsx'),
       route(':exId', '../pages/exercise-details.tsx'),
@@ -44,7 +31,10 @@ export default [
         route(':masterId', '../pages/master-details.tsx'),
       ]),
       route('requests', '../pages/profile-requests.tsx'),
-      route('gymmers', '../pages/profile-gymmers.tsx'),
+      ...prefix('gymmers', [
+        index('../pages/profile-gymmers.tsx'),
+        route(':gymerId', '../pages/gymmer-details.tsx'),
+      ]),
     ]),
   ]),
 ] satisfies RouteConfig;

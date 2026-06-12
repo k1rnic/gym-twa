@@ -4,7 +4,7 @@ import { Api, TaskGroupStatus } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { WorkoutExercises } from '@/widgets/workout-exercises';
+import { WorkoutExerciseList } from '@/widgets/workout-exercise-list';
 import { Button, Form, Input } from 'antd';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
@@ -90,10 +90,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
 
           <CreateExerciseInstanceButton workoutId={workout.task_group_id} />
 
-          <WorkoutExercises
-            exercises={workout.tasks ?? []}
-            readonly={readonly}
-          />
+          <WorkoutExerciseList data={workout.tasks ?? []} readonly={readonly} />
         </Flex>
       )}
     </PageLayout>

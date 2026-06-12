@@ -5,7 +5,7 @@ import { Api, TaskGroupStatus } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { WorkoutExercises } from '@/widgets/workout-exercises';
+import { WorkoutExerciseList } from '@/widgets/workout-exercise-list';
 import { Form, Input } from 'antd';
 import { useMemo } from 'react';
 import { Route } from './+types/workout-details';
@@ -34,14 +34,6 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
     status !== TaskGroupStatus.Finished;
 
   const readonly = !(status === TaskGroupStatus.Planned || canAccess);
-
-  const deleteWorkout = async () => {
-    try {
-      await Api.taskGroup.deleteTaskGroup(workout!.task_group_id);
-    } finally {
-      goBack();
-    }
-  };
 
   const submitChanges = async () => {
     try {
@@ -77,10 +69,7 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
             <CreateExerciseInstanceButton workoutId={workout.task_group_id} />
           )}
 
-          <WorkoutExercises
-            exercises={workout.tasks ?? []}
-            readonly={readonly}
-          />
+          <WorkoutExerciseList data={workout.tasks ?? []} readonly={readonly} />
         </Flex>
       )}
     </PageLayout>

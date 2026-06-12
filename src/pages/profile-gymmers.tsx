@@ -4,12 +4,15 @@ import { viewerModel } from '@/entities/viewer';
 import { Api, MastersGymer } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
+import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Avatar, Button, List, message } from 'antd';
+import { Avatar, message } from 'antd';
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 export default function Page() {
   const goBack = useNavigateBack();
+  const navigate = useNavigate();
 
   const viewer = viewerModel.useViewer();
   const [isBreaking, setIsBreaking] = useState(false);
@@ -42,34 +45,23 @@ export default function Page() {
     >
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
-          dataSource={gymmers}
-          locale={{ emptyText: gymmerApi.loading ? '' : 'Учеников пока нет' }}
+          items={gymmers}
+          itemKey="gymer_id"
+          emptyText={gymmerApi.loading ? '' : 'Учеников пока нет'}
+          variant="contained"
           renderItem={(gymmer) => (
-            <List.Item
-              style={{ alignItems: 'flex-start' }}
-              styles={{ actions: { marginLeft: 0 } }}
-              actions={[
-                <Button
-                  key="reject"
-                  danger
-                  size="small"
-                  onClick={() => handleBreak(gymmer)}
-                >
-                  Открепить
-                </Button>,
-              ]}
-            >
-              <List.Item.Meta
-                avatar={
-                  <Avatar
-                    size={64}
-                    style={{ backgroundColor: '#f0f0f0' }}
-                    src={gymmer.photo}
-                  />
-                }
-                title={formatUserDisplayName(gymmer)}
-              />
-            </List.Item>
+            <ListItem
+              avatar={
+                <Avatar
+                  size={64}
+                  style={{ backgroundColor: '#f0f0f0' }}
+                  src={gymmer.photo}
+                />
+              }
+              header={formatUserDisplayName(gymmer)}
+              nav
+              onClick={() => navigate(`/profile/gymmers/${gymmer.gymer_id}`)}
+            />
           )}
         />
       </Flex>

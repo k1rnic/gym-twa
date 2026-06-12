@@ -2,9 +2,9 @@ import { masterModel, MasterStatus } from '@/entities/master';
 import { viewerModel } from '@/entities/viewer';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
+import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { RightOutlined } from '@ant-design/icons';
-import { Avatar, List, Typography } from 'antd';
+import { Avatar, Typography } from 'antd';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -40,29 +40,24 @@ export default function Page() {
     <PageLayout title="Тренеры" onBackClick={goBack} loading={loading}>
       <Flex height="100%" style={{ overflow: 'auto' }}>
         <List
-          dataSource={data}
-          locale={{ emptyText: loading ? '' : 'Тренеров пока нет' }}
+          items={data}
+          itemKey="master_id"
+          emptyText={loading ? '' : 'Тренеров пока нет'}
+          variant="contained"
           renderItem={(item) => (
-            <List.Item
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate(`/profile/masters/${item.master_id}`)}
-            >
-              <Flex vertical={false} width="100%">
-                <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      size={64}
-                      style={{ backgroundColor: '#f0f0f0' }}
-                      src={item.avatar}
-                    />
-                  }
-                  title={<Text strong>{item.displayName}</Text>}
-                  description={<MasterStatus status={item.status} />}
+            <ListItem
+              avatar={
+                <Avatar
+                  size={64}
+                  style={{ backgroundColor: '#f0f0f0' }}
+                  src={item.avatar}
                 />
-
-                <RightOutlined style={{ marginLeft: 8 }} />
-              </Flex>
-            </List.Item>
+              }
+              header={<Text strong>{item.displayName}</Text>}
+              description={<MasterStatus status={item.status} />}
+              nav
+              onClick={() => navigate(`/profile/masters/${item.master_id}`)}
+            />
           )}
         />
       </Flex>
