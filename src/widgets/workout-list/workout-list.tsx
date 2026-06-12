@@ -35,7 +35,7 @@ export const WorkoutList = ({ data }: WorkoutListProps) => {
   };
 
   const goToWorkoutDetails = (w: workoutModel.Workout) => {
-    navigate(`${w.task_group_id}/details`);
+    navigate(`${w.task_group_id}`);
   };
 
   useEffect(() => {

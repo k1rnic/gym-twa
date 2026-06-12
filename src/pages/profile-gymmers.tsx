@@ -1,5 +1,5 @@
 import { gymmerModel } from '@/entities/gymmer';
-import { formatUserDisplayName } from '@/entities/user';
+import { formatUserFullName } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, MastersGymer } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
@@ -58,7 +58,7 @@ export default function Page() {
                   src={gymmer.photo}
                 />
               }
-              header={formatUserDisplayName(gymmer)}
+              header={formatUserFullName(gymmer)}
               nav
               onClick={() => navigate(`/profile/gymmers/${gymmer.gymer_id}`)}
             />

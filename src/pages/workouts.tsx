@@ -37,7 +37,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
       title: '',
     });
 
-    navigate(`../${TaskGroupStatus.Planned}/${data.task_group_id}/details`, {
+    navigate(`../${TaskGroupStatus.Planned}/${data.task_group_id}`, {
       relative: 'path',
     });
   };

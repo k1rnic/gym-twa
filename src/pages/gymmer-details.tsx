@@ -1,9 +1,8 @@
 import { gymmerModel } from '@/entities/gymmer';
-import { formatUserDisplayName } from '@/entities/user';
+import { formatUserFullName, UserAvatarPreview } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, type User } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
-import { AvatarPreview } from '@/shared/ui/avatar';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Button, Card, Empty, message, Space, Typography } from 'antd';
@@ -77,7 +76,7 @@ export default function Page() {
         <Space direction="vertical" style={{ width: '100%' }}>
           <Card loading={loading}>
             <Space align="start" size="large">
-              <AvatarPreview
+              <UserAvatarPreview
                 photos={photos}
                 preview={{ toolbarRender: () => <></> }}
               />
@@ -86,7 +85,7 @@ export default function Page() {
                 {detailsUser && (
                   <Space direction="vertical">
                     <Title level={3} style={{ margin: 0 }}>
-                      {formatUserDisplayName(detailsUser)}
+                      {formatUserFullName(detailsUser)}
                     </Title>
 
                     <Paragraph>

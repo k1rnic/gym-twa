@@ -1,5 +1,5 @@
 import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
-import { formatUserDisplayName } from '@/entities/user';
+import { formatUserFullName } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
 import { useCopyWorkoutAction } from '@/features/copy-workout';
 import { useDeleteWorkoutAction } from '@/features/delete-workout';
@@ -43,7 +43,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
   );
 
   const goToExerciseInstance = (ex: exerciseModel.ExerciseInstance) => {
-    navigate(`${w.task_group_id}/details/${ex.task_id}`);
+    navigate(`${w.task_group_id}/${ex.task_id}`);
   };
 
   return (
@@ -63,7 +63,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
           <Flex gap={8} vertical={false}>
             <Avatar size="small" src={w.owner?.photo || ''} />
             <Typography.Text>
-              {w.owner.username || formatUserDisplayName(w.owner)}
+              {w.owner.username || formatUserFullName(w.owner)}
             </Typography.Text>
           </Flex>
         )

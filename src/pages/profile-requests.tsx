@@ -1,5 +1,5 @@
 import { masterModel } from '@/entities/master';
-import { formatUserDisplayName } from '@/entities/user';
+import { formatUserFullName } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
@@ -86,7 +86,7 @@ export default function Page() {
                 }
                 header={
                   item.sender_user
-                    ? formatUserDisplayName(item.sender_user)
+                    ? formatUserFullName(item.sender_user)
                     : String(item.sender)
                 }
                 description={
@@ -94,7 +94,7 @@ export default function Page() {
                     Пользователь{' '}
                     <b>
                       {item.sender_user
-                        ? formatUserDisplayName(item.sender_user)
+                        ? formatUserFullName(item.sender_user)
                         : item.sender}
                     </b>{' '}
                     хочет прикрепиться к вам

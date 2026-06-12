@@ -1,5 +1,5 @@
 import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
-import { formatUserDisplayName } from '@/entities/user';
+import { formatUserFullName } from '@/entities/user';
 import { useDeleteExerciseInstanceAction } from '@/features/delete-exercise-instance';
 import { Set } from '@/shared/api';
 import { plural } from '@/shared/lib/plural';
@@ -82,7 +82,7 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
               <Flex gap={8} vertical={false}>
                 <Avatar size="small" src={ex.owner?.photo || ''} />
                 <Typography.Text>
-                  {ex.owner.username || formatUserDisplayName(ex.owner)}
+                  {ex.owner.username || formatUserFullName(ex.owner)}
                 </Typography.Text>
               </Flex>
             )}

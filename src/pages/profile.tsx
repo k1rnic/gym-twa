@@ -19,8 +19,11 @@ import { RcFile, UploadProps } from 'antd/es/upload';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { formatUserDisplayName, UserTgLink } from '@/entities/user';
-import { AvatarPreview } from '@/shared/ui/avatar';
+import {
+  formatUserFullName,
+  UserAvatarPreview,
+  UserTgLink,
+} from '@/entities/user';
 const { Title } = Typography;
 
 const mapInitialValues = (
@@ -82,73 +85,77 @@ export default function Page() {
   return (
     <PageLayout title="Профиль">
       <Flex gap="small" style={{ overflow: 'auto', width: '100%' }}>
-      <Card>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Space direction="vertical" align="center" style={{ width: '100%' }}>
-            <Space direction="vertical" align="center">
-              <AvatarPreview
-                photos={viewer.photos ?? []}
-                preview={{ movable: false, toolbarRender: () => <></> }}
-              />
-
-              <Upload {...uploadProps}>
-                <Button loading={uploading} icon={<PlusOutlined />}>
-                  Добавить
-                </Button>
-              </Upload>
-            </Space>
-
-            <Space style={{ width: '100%' }}>
-              <Title level={5} style={{ margin: 0 }}>
-                {formatUserDisplayName(viewer)}
-              </Title>
-
-              <UserTgLink readonly user={viewer} />
-            </Space>
-          </Space>
-
-          <Form form={form} layout="vertical" initialValues={initialValues}>
-            <Form.Item name="description">
-              <Input.TextArea
-                placeholder="Расскажите о себе"
-                autoSize={{ minRows: 3, maxRows: 6 }}
-                onBlur={(e) =>
-                  updateProfileField({ description: e.target.value })
-                }
-              />
-            </Form.Item>
-
-            <Form.Item name="is_private" valuePropName="checked">
-              <Checkbox
-                onChange={(e) =>
-                  updateProfileField({ is_private: e.target.checked })
-                }
-              >
-                Скрыть профиль
-              </Checkbox>
-            </Form.Item>
-          </Form>
-        </Space>
-      </Card>
-
-      <Card>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Title level={4} style={{ margin: 0 }}>
-            Действия
-          </Title>
+        <Card>
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Button block onClick={() => navigate('/profile/masters')}>
-              Мои тренера
-            </Button>
-            <Button block onClick={() => navigate('/profile/gymmers')}>
-              Мои ученики
-            </Button>
-            <Button block onClick={() => navigate('/profile/requests')}>
-              Заявки на прикрепление
-            </Button>
+            <Space
+              direction="vertical"
+              align="center"
+              style={{ width: '100%' }}
+            >
+              <Space direction="vertical" align="center">
+                <UserAvatarPreview
+                  photos={viewer.photos ?? []}
+                  preview={{ movable: false, toolbarRender: () => <></> }}
+                />
+
+                <Upload {...uploadProps}>
+                  <Button loading={uploading} icon={<PlusOutlined />}>
+                    Добавить
+                  </Button>
+                </Upload>
+              </Space>
+
+              <Space style={{ width: '100%' }}>
+                <Title level={5} style={{ margin: 0 }}>
+                  {formatUserFullName(viewer)}
+                </Title>
+
+                <UserTgLink readonly user={viewer} />
+              </Space>
+            </Space>
+
+            <Form form={form} layout="vertical" initialValues={initialValues}>
+              <Form.Item name="description">
+                <Input.TextArea
+                  placeholder="Расскажите о себе"
+                  autoSize={{ minRows: 3, maxRows: 6 }}
+                  onBlur={(e) =>
+                    updateProfileField({ description: e.target.value })
+                  }
+                />
+              </Form.Item>
+
+              <Form.Item name="is_private" valuePropName="checked">
+                <Checkbox
+                  onChange={(e) =>
+                    updateProfileField({ is_private: e.target.checked })
+                  }
+                >
+                  Скрыть профиль
+                </Checkbox>
+              </Form.Item>
+            </Form>
           </Space>
-        </Space>
-      </Card>
+        </Card>
+
+        <Card>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <Title level={4} style={{ margin: 0 }}>
+              Действия
+            </Title>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <Button block onClick={() => navigate('/profile/masters')}>
+                Мои тренера
+              </Button>
+              <Button block onClick={() => navigate('/profile/gymmers')}>
+                Мои ученики
+              </Button>
+              <Button block onClick={() => navigate('/profile/requests')}>
+                Заявки на прикрепление
+              </Button>
+            </Space>
+          </Space>
+        </Card>
       </Flex>
     </PageLayout>
   );

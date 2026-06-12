@@ -1,11 +1,14 @@
 import emptyAvatar from '@/shared/assets/empty-avatar.png';
 import { Image } from 'antd';
 
-export type AvatarPreviewProps = {
+export type UserAvatarPreviewProps = {
   photos: string[];
 } & Pick<Parameters<typeof Image.PreviewGroup>[0], 'preview'>;
 
-export const AvatarPreview = ({ photos, preview }: AvatarPreviewProps) => {
+export const UserAvatarPreview = ({
+  photos,
+  preview,
+}: UserAvatarPreviewProps) => {
   return (
     <Image.PreviewGroup items={photos ?? []} preview={preview}>
       <Image

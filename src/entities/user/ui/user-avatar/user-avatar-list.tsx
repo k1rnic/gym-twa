@@ -1,24 +1,24 @@
-import { Avatar, AvatarProps } from '@/shared/ui/avatar';
+import { UserAvatar, UserAvatarProps } from '@/entities/user';
 import { Flex } from '@/shared/ui/flex';
 import { Divider, Space } from 'antd';
 import { useEffect, useRef } from 'react';
 
-export type AvatarListItem = Pick<AvatarProps, 'name' | 'src'> & {
+export type UserAvatarListItem = Pick<UserAvatarProps, 'name' | 'src'> & {
   id: number;
 };
 
-export type AvatarListProps = {
+export type UserAvatarListProps = {
   pinned?: number;
   selected?: number;
-  items: AvatarListItem[];
-  onClick?: (item: AvatarListItem) => void;
+  items: UserAvatarListItem[];
+  onClick?: (item: UserAvatarListItem) => void;
 };
 
-export const AvatarList = (props: AvatarListProps) => {
+export const UserAvatarList = (props: UserAvatarListProps) => {
   const avatarRefs = useRef<HTMLSpanElement[]>([]);
 
   const [{ 0: pinned }, other] = props.items.reduce<
-    [AvatarListItem[], AvatarListItem[]]
+    [UserAvatarListItem[], UserAvatarListItem[]]
   >(
     (acc, item) => {
       acc[item.id === props.pinned ? 0 : 1].push(item);
@@ -43,7 +43,7 @@ export const AvatarList = (props: AvatarListProps) => {
     <Flex vertical={false} width="100%">
       {pinned && (
         <>
-          <Avatar
+          <UserAvatar
             name={pinned.name}
             src={pinned.src}
             active={pinned.id === props.selected}
@@ -55,7 +55,7 @@ export const AvatarList = (props: AvatarListProps) => {
 
       <Space style={{ flexShrink: 0, overflowX: 'auto', flex: 1 }}>
         {other.map((av, idx) => (
-          <Avatar
+          <UserAvatar
             key={idx}
             ref={(el) => (avatarRefs.current[idx] = el!)}
             name={av.name}

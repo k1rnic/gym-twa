@@ -1,6 +1,6 @@
 import { User } from '@/shared/api';
 
-export const formatUserDisplayName = (
+export const formatUserFullName = (
   user: Pick<User, 'first_name' | 'last_name'>,
 ) => {
   return (

@@ -1,9 +1,12 @@
 import { gymmerModel } from '@/entities/gymmer';
-import { formatUserDisplayName } from '@/entities/user';
+import {
+  formatUserFullName,
+  UserAvatarList,
+  UserAvatarListItem,
+} from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { TaskGroupStatus } from '@/shared/api';
 import { useMatchExact } from '@/shared/lib/router';
-import { AvatarList, AvatarListItem } from '@/shared/ui/avatar';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Divider } from 'antd';
@@ -25,9 +28,9 @@ const Page = () => {
   const items = useMemo(
     () =>
       masterGymmers
-        .map<AvatarListItem>((gymmer) => ({
+        .map<UserAvatarListItem>((gymmer) => ({
           id: gymmer.gymer_id,
-          name: gymmer.username || formatUserDisplayName(gymmer),
+          name: gymmer.username || formatUserFullName(gymmer),
           src: gymmer.photo!,
         }))
         .sort((a, b) =>
@@ -41,7 +44,7 @@ const Page = () => {
     [items, pathname],
   );
 
-  const navigateToGymmer = (g: AvatarListItem) => {
+  const navigateToGymmer = (g: UserAvatarListItem) => {
     navigate(`${g.id}/${TaskGroupStatus.Planned}`);
   };
 
@@ -54,7 +57,7 @@ const Page = () => {
   return (
     <PageLayout>
       <Flex height="100%" gap="small" style={{ overflow: 'hidden' }}>
-        <AvatarList
+        <UserAvatarList
           items={items}
           selected={selectedItem}
           onClick={navigateToGymmer}

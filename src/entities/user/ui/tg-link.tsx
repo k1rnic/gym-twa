@@ -1,4 +1,4 @@
-import { formatUserDisplayName } from '@/entities/user/lib';
+import { formatUserFullName } from '@/entities/user/lib';
 import { User } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
 import { Modal, Typography } from 'antd';
@@ -45,7 +45,7 @@ export const UserTgLink = ({ user, readonly }: Props) => {
         }}
       >
         <Typography.Paragraph>
-          Начать диалог с <b>{formatUserDisplayName(user)}</b>?
+          Начать диалог с <b>{formatUserFullName(user)}</b>?
         </Typography.Paragraph>
       </Modal>
     </>

@@ -7,10 +7,10 @@ import { Button, Card, Empty, message, Space, Typography } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { formatUserDisplayName, UserTgLink } from '@/entities/user';
+import { formatUserFullName, UserTgLink } from '@/entities/user';
 
+import { UserAvatarPreview } from '@/entities/user';
 import { useNavigateBack } from '@/shared/lib/router';
-import { AvatarPreview } from '@/shared/ui/avatar';
 
 const { Title, Paragraph } = Typography;
 
@@ -103,7 +103,7 @@ export default function Page() {
         <Space direction="vertical" style={{ width: '100%' }}>
           <Card loading={loading}>
             <Space align="start" size="large">
-              <AvatarPreview
+              <UserAvatarPreview
                 photos={master?.photos ?? []}
                 preview={{ toolbarRender: () => <></> }}
               />
@@ -112,7 +112,7 @@ export default function Page() {
                 {master && (
                   <Space direction="vertical">
                     <Title level={3} style={{ margin: 0 }}>
-                      {formatUserDisplayName(master)}
+                      {formatUserFullName(master)}
                     </Title>
 
                     <UserTgLink user={master} />
