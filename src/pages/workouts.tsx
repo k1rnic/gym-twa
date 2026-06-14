@@ -1,5 +1,6 @@
 import { viewerModel } from '@/entities/viewer';
 import { Api, TaskGroupStatus } from '@/shared/api';
+import { sortByCreated } from '@/shared/lib/date';
 import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
 import { WorkoutList } from '@/widgets/workout-list';
@@ -21,6 +22,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
       gymer_id: +params.gId,
       status: params.status as TaskGroupStatus,
     })
+    .then((data) => data.sort(sortByCreated()))
     .catch(() => []);
 };
 

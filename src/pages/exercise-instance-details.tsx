@@ -1,58 +1,54 @@
-import {
-  ExerciseInstanceForm,
-  exerciseModel,
-  normalizeSetValues,
-} from '@/entities/exercise';
-import { viewerModel } from '@/entities/viewer';
-import { Api, TaskGroupStatus } from '@/shared/api';
+import { ExerciseInstanceForm, normalizeSetValues } from '@/entities/exercise';
+import { Api } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { PageLayout } from '@/shared/ui/page-layout';
+import { Empty } from 'antd';
 import { useState } from 'react';
 import { Route } from './+types/exercise-instance-details';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
-  return await Api.task.getTaskByTaskId(+params.exId);
+  const workout = await Api.taskGroup.taskGroupById(+params.wId);
+  const exercise = await Api.task.getTaskByTaskId(+params.exId);
+
+  return { workout, exercise };
 };
 
-const Page = ({ params, loaderData: initialValues }: Route.ComponentProps) => {
+const Page = ({ loaderData }: Route.ComponentProps) => {
   const goBack = useNavigateBack();
-  const viewer = viewerModel.useViewer();
 
-  const [formValues, setFormValues] = useState<exerciseModel.ExerciseInstance>(
-    initialValues!,
-  );
+  const { workout, exercise } = loaderData;
 
-  const status = params.status as TaskGroupStatus;
-  const canAccess =
-    +params.gId === viewer.gymer?.gymer_id &&
-    status !== TaskGroupStatus.Finished;
-
-  const readonly = !(status === TaskGroupStatus.Planned || canAccess);
+  const [formValues, setFormValues] = useState(exercise);
 
   const deleteExercise = async () => {
-    await Api.task.deleteTask(initialValues!.task_id);
-    goBack();
+    if (formValues) {
+      await Api.task.deleteTask(formValues.task_id);
+      goBack();
+    }
   };
 
   const saveChanges = async () => {
-    await Api.task.updateTask(normalizeSetValues(formValues));
-    goBack();
+    if (formValues) {
+      await Api.task.updateTask(normalizeSetValues(formValues));
+      goBack();
+    }
   };
 
   return (
     <PageLayout
-      title={readonly ? 'Просмотр упражнения' : 'Редактирование упражнения'}
       onBackClick={saveChanges}
       extra={<DeleteButton onDelete={deleteExercise} />}
     >
-      <ExerciseInstanceForm
-        readonly={readonly}
-        type="plan"
-        masterId={viewer.master!.master_id!}
-        values={initialValues!}
-        onChange={setFormValues}
-      />
+      {formValues ? (
+        <ExerciseInstanceForm
+          exercise={exercise!}
+          workout={workout!}
+          onChange={setFormValues}
+        />
+      ) : (
+        <Empty description="Упражнение не найдено" />
+      )}
     </PageLayout>
   );
 };

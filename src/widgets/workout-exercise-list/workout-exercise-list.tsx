@@ -5,16 +5,14 @@ import { FLOAT_BUTTON_SIZE } from '@/shared/ui/float-button';
 import { useEffect, useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { ExerciseCard } from './workout-exercise-card';
+import { workoutModel } from '@/entities/workout';
 
 type WorkoutExerciseListProps = {
+  w: workoutModel.Workout;
   data: exerciseModel.ExerciseInstance[];
-  readonly?: boolean;
 };
 
-export const WorkoutExerciseList = ({
-  data,
-  readonly = false,
-}: WorkoutExerciseListProps) => {
+export const WorkoutExerciseList = ({ w, data }: WorkoutExerciseListProps) => {
   const navigate = useNavigate();
   const { revalidate } = useRevalidator();
 
@@ -55,10 +53,10 @@ export const WorkoutExerciseList = ({
       renderItem={(ex, itemProps, idx) => (
         <ExerciseCard
           {...itemProps}
+          w={w}
           ex={ex}
           collapsible
           collapsed
-          readonly={readonly}
           onClick={() => goToExercise(ex.task_id)}
           style={{
             marginBottom: idx === innerTasks.length - 1 ? FLOAT_BUTTON_SIZE : 0,

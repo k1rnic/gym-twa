@@ -1,34 +1,35 @@
 import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
-import { formatUserFullName } from '@/entities/user';
+import { formatUserFullName, UserAvatar } from '@/entities/user';
+import { workoutModel } from '@/entities/workout';
 import { useDeleteExerciseInstanceAction } from '@/features/delete-exercise-instance';
 import { Set } from '@/shared/api';
 import { plural } from '@/shared/lib/plural';
 import { useTheme } from '@/shared/lib/theme';
 import { CardListItem } from '@/shared/ui/card-list';
 import { Flex } from '@/shared/ui/flex';
-import { Avatar, Descriptions, MenuProps, Typography } from 'antd';
+import { Descriptions, MenuProps, Typography } from 'antd';
 import { CardProps } from 'antd/lib';
 import { DescriptionsItemType } from 'antd/lib/descriptions';
 import { useCallback, useMemo, useState } from 'react';
 
 type ExerciseCardProps = {
   id: Exclude<React.Key, bigint>;
+  w: workoutModel.Workout;
   ex: exerciseModel.ExerciseInstance;
-  readonly: boolean;
   collapsed?: boolean;
   collapsible?: boolean;
 } & Pick<CardProps, 'style' | 'onClick'>;
 
 export const ExerciseCard = (props: ExerciseCardProps) => {
-  const { id, ex, collapsible, collapsed, onClick } = props;
   const { token } = useTheme();
+  const { id, ex, w, collapsible, collapsed, onClick } = props;
 
   const [contentVisible, setContentVisible] = useState(!collapsed);
 
   const exSets = ex.task_properties?.sets ?? [];
   const hasSets = Boolean(ex.task_properties?.sets?.length);
 
-  const deleteAction = useDeleteExerciseInstanceAction(ex.task_id, 'delete');
+  const deleteAction = useDeleteExerciseInstanceAction(w, ex, 'delete');
 
   const actions = useMemo<MenuProps['items']>(
     () => [deleteAction],
@@ -80,7 +81,7 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
             } сек`}</Typography>
             {ex.owner && (
               <Flex gap={8} vertical={false}>
-                <Avatar size="small" src={ex.owner?.photo || ''} />
+                <UserAvatar user={ex.owner} size="small" />
                 <Typography.Text>
                   {ex.owner.username || formatUserFullName(ex.owner)}
                 </Typography.Text>

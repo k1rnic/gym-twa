@@ -1,3 +1,9 @@
+import { viewerModel } from '@/entities/viewer';
+import {
+  getWorkoutStatus,
+  useWorkoutAccesses,
+  workoutModel,
+} from '@/entities/workout';
 import { Set, TaskPropertiesAggregate } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
 import { CountDown } from '@/shared/ui/countdown';
@@ -21,12 +27,10 @@ type FormValues = ExerciseInstance;
 type ExerciseValuesType = 'fact' | 'plan';
 
 export type ExerciseInstanceFormProps<T extends ExerciseValuesType> = {
-  masterId: number;
-  values: FormValues;
-  type: T;
+  exercise: FormValues;
+  workout: workoutModel.Workout;
   onSubmit?: (values: FormValues) => void;
   onChange?: (values: FormValues) => void;
-  readonly?: boolean;
 };
 
 export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
@@ -39,17 +43,29 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
 
   const [showToolbar, toggleToolbar] = useToggle(true);
 
-  const { values } = props;
+  const { workout, exercise } = props;
+  const viewer = viewerModel.useViewer();
+
   const initialValues = useMemo<FormValues>(
     () => ({
-      ...values,
+      ...exercise,
       task_properties: {
-        ...values.task_properties!,
-        rest: values.task_properties?.rest ?? 120,
+        ...exercise.task_properties!,
+        rest: exercise.task_properties?.rest ?? 120,
       },
     }),
-    [values],
+    [exercise],
   );
+
+  const accesses = useWorkoutAccesses(workout, exercise);
+  const workoutStatus = useMemo(
+    () => getWorkoutStatus(workout.status),
+    [workout.status],
+  );
+
+  const valueType: ExerciseValuesType = workoutStatus.isPlanned
+    ? 'plan'
+    : 'fact';
 
   const getFieldPath = (
     type: ExerciseValuesType,
@@ -67,20 +83,10 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
   ) => form.getFieldValue(getFieldPath(type, fieldType, index)) ?? 0;
 
   const getFieldPlaceholder = (fieldType: 'value' | 'rep', index: number) => {
-    if (props.type === 'fact') {
+    if (valueType === 'fact') {
       return getFieldValue('plan', fieldType, index);
     }
     return fieldType === 'value' ? 'Вес' : 'Количество';
-  };
-
-  const getLastSetPlan = (): Pick<Set, `${T}_value` | `${T}_rep`> => {
-    const last = (
-      (form.getFieldValue(['task_properties', 'sets']) ?? []) as Set[]
-    ).at(-1);
-    return {
-      [`${props.type}_rep`]: last?.[`${props.type}_rep`] ?? null,
-      [`${props.type}_value`]: last?.[`${props.type}_value`] ?? null,
-    } as Pick<Set, `${T}_value` | `${T}_rep`>;
   };
 
   const [inputToolbarFocused, setInputToolbarFocused] = useState(false);
@@ -109,13 +115,24 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
 
   const getAutoCompleteOptions = (field: SuggestionField, index: number) => {
     return getFieldSuggestions({
-      mode: props.type,
+      mode: valueType,
       field,
       index,
       sets: formValues?.task_properties?.sets ?? [],
     })
       .map<DefaultOptionType>((value) => ({ value: `${value}`, label: value }))
       .concat({ value: 'max', label: 'max' });
+  };
+
+  const getLastSetValues = (): Pick<Set, `${T}_value` | `${T}_rep`> => {
+    const last = (
+      (form.getFieldValue(['task_properties', 'sets']) ?? []) as Set[]
+    ).at(-1);
+    return {
+      [`${valueType}_rep`]: last?.[`${valueType}_rep`] ?? null,
+      [`${valueType}_value`]: last?.[`${valueType}_value`] ?? null,
+      owner_id: viewer.user_id,
+    } as Pick<Set, `${T}_value` | `${T}_rep` | 'owner_id'>;
   };
 
   const fillFromPlan = (index: number) => {
@@ -132,9 +149,9 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
   return (
     <Form<FormValues>
       form={form}
+      disabled={workoutStatus.isFinished}
       initialValues={initialValues}
       size="middle"
-      disabled={props.readonly}
       style={{ overflow: 'hidden', height: '100%' }}
       onFocus={handleInputFocusChange}
       onBlur={handleInputFocusChange}
@@ -144,7 +161,7 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
           name="exercise_id"
           style={{ margin: 0, width: '100%' }}
         >
-          <ExerciseSelector masterId={props.masterId} />
+          <ExerciseSelector />
         </Form.Item>
 
         <Form.List name={['task_properties', 'sets']}>
@@ -153,26 +170,21 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
 
             return (
               <Flex flex={1} style={{ overflow: 'auto' }}>
-                {!props.readonly && (
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() =>
-                      exerciseListOps.current!.add(getLastSetPlan())
-                    }
-                  >
-                    Добавить подход
-                  </Button>
-                )}
-                {fields.map(({ key, ...field }) => (
+                {fields.map(({ key, ...field }, idx) => (
                   <Flex key={key} vertical={false} align="start" gap={8}>
                     <Flex vertical={false} gap={8} flex={1}>
                       <Form.Item
                         {...field}
-                        name={[field.name, `${props.type}_value`]}
+                        name={[field.name, `${valueType}_value`]}
                         style={{ flex: 1 }}
                       >
                         <AutoComplete
+                          disabled={
+                            !(
+                              (accesses.isGymmer && workoutStatus.isActive) ||
+                              (accesses.isTaskOwner && workoutStatus.isPlanned)
+                            )
+                          }
                           options={getAutoCompleteOptions('value', field.name)}
                           placeholder={getFieldPlaceholder('value', field.name)}
                         >
@@ -182,10 +194,16 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
 
                       <Form.Item
                         {...field}
-                        name={[field.name, `${props.type}_rep`]}
+                        name={[field.name, `${valueType}_rep`]}
                         style={{ flex: 1 }}
                       >
                         <AutoComplete
+                          disabled={
+                            !(
+                              (accesses.isGymmer && workoutStatus.isActive) ||
+                              (accesses.isTaskOwner && workoutStatus.isPlanned)
+                            )
+                          }
                           options={getAutoCompleteOptions('rep', field.name)}
                           placeholder={getFieldPlaceholder('rep', field.name)}
                         >
@@ -198,13 +216,16 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                       <Button
                         variant="filled"
                         type="primary"
-                        hidden={props.type !== 'fact'}
+                        hidden={!(workoutStatus.isActive && accesses.isGymmer)}
                         icon={<FormOutlined />}
                         onClick={() => fillFromPlan(field.name)}
                       />
                       <Button
                         type="text"
-                        hidden={props.readonly}
+                        hidden={
+                          viewer.user_id !==
+                          formValues?.task_properties?.sets?.[idx].owner_id
+                        }
                         icon={<CloseOutlined />}
                         onClick={() =>
                           exerciseListOps.current!.remove(field.name)
@@ -213,6 +234,18 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
                     </Flex>
                   </Flex>
                 ))}
+
+                <Button
+                  hidden={!accesses.addTaskSet}
+                  type="dashed"
+                  size="large"
+                  icon={<PlusOutlined />}
+                  onClick={() =>
+                    exerciseListOps.current!.add(getLastSetValues())
+                  }
+                >
+                  Добавить подход
+                </Button>
               </Flex>
             );
           }}
@@ -223,7 +256,10 @@ export const ExerciseInstanceForm = <T extends ExerciseValuesType>(
             name={['task_properties', 'rest']}
             style={{ margin: 0, width: '100%' }}
           >
-            <CountDown runEnabled={props.type === 'fact'} placeholder="Отдых" />
+            <CountDown
+              runEnabled={workoutStatus.isActive && accesses.isGymmer}
+              placeholder="Отдых"
+            />
           </Form.Item>
         )}
 

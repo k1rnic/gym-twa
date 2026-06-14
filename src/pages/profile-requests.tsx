@@ -1,12 +1,12 @@
 import { masterModel } from '@/entities/master';
-import { formatUserFullName } from '@/entities/user';
+import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Avatar, Button, Typography, message } from 'antd';
+import { Button, message, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -76,13 +76,9 @@ export default function Page() {
             return (
               <ListItem
                 avatar={
-                  <Avatar
-                    size={64}
-                    style={{ backgroundColor: '#f0f0f0' }}
-                    src={
-                      item.sender_user?.photos?.[0] ?? item.sender_user?.photo
-                    }
-                  />
+                  item.sender_user && (
+                    <UserAvatar size="large" user={item.sender_user} />
+                  )
                 }
                 header={
                   item.sender_user

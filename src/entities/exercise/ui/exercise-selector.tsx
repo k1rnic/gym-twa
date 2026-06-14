@@ -1,3 +1,4 @@
+import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
 import { useSelectKeyboardDistance, useToggle } from '@/shared/lib/hooks';
 import { Flex } from '@/shared/ui/flex';
@@ -9,14 +10,16 @@ import { useNavigate } from 'react-router';
 import { Exercise, useExercises } from '../model';
 import { ExerciseAvatar } from './exercise-avatar';
 
-type Props = {
-  masterId: number;
-} & Pick<
+type Props = Pick<
   SelectProps<number>,
   'value' | 'onChange' | 'style' | 'styles' | 'disabled'
 >;
 
-export const ExerciseSelector = ({ masterId, ...selectProps }: Props) => {
+export const ExerciseSelector = ({ ...selectProps }: Props) => {
+  const { master } = viewerModel.useViewer();
+
+  const masterId = master!.master_id!;
+
   const { data: exercises } = useExercises(masterId);
 
   const selectRef = useRef<RefSelectProps>(null);

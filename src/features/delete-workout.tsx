@@ -1,55 +1,36 @@
+import { useWorkoutAccesses, workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
-import { MenuProps } from 'antd/lib';
+import { ItemType } from 'antd/es/menu/interface';
 import { useCallback, useMemo } from 'react';
 import { useRevalidator } from 'react-router';
 
-export type DeleteWorkoutButtonProps = {
-  workoutId: number;
-};
-
-export const DeleteWorkoutButton = (props: DeleteWorkoutButtonProps) => {
+export const useDeleteWorkoutAction = (
+  w: workoutModel.Workout,
+  key: string,
+) => {
   const { revalidate } = useRevalidator();
-
-  const deleteWorkout = async () => {
-    try {
-      await Api.taskGroup.deleteTaskGroup(props.workoutId);
-    } finally {
-      revalidate();
-    }
-  };
-
-  return (
-    <Button
-      icon={<DeleteOutlined />}
-      onClick={deleteWorkout}
-      size="small"
-      type="text"
-    >
-      Удалить
-    </Button>
-  );
-};
-
-export const useDeleteWorkoutAction = (wId: number, key: string) => {
-  const { revalidate } = useRevalidator();
+  const accesses = useWorkoutAccesses(w);
 
   const deleteWorkout = useCallback(async () => {
     try {
-      await Api.taskGroup.deleteTaskGroup(wId);
-    } finally {
+      await Api.taskGroup.deleteTaskGroup(w.task_group_id);
       revalidate();
+    } catch (e) {
+      console.error(e);
     }
-  }, [wId]);
+  }, [w.task_group_id]);
 
-  return useMemo<Required<MenuProps>['items'][number]>(
-    () => ({
-      key,
-      label: 'Удалить',
-      icon: <DeleteOutlined />,
-      onClick: deleteWorkout,
-    }),
-    [key, deleteWorkout],
+  return useMemo<ItemType>(
+    () =>
+      accesses.deleteWorkout
+        ? {
+            key,
+            label: 'Удалить',
+            icon: <DeleteOutlined />,
+            onClick: deleteWorkout,
+          }
+        : null,
+    [key, accesses.deleteWorkout, deleteWorkout],
   );
 };

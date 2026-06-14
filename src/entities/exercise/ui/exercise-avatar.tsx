@@ -1,12 +1,12 @@
-import { exerciseModel } from '@/entities/exercise';
 import { useTheme } from '@/shared/lib/theme';
 import { Avatar } from 'antd';
 import { AvatarSize } from 'antd/es/avatar/AvatarContext';
 import { useMemo } from 'react';
+import { Exercise } from '../model';
 
 type ExerciseAvatarProps = {
   size?: AvatarSize;
-  exercise?: exerciseModel.Exercise;
+  exercise?: Exercise;
 };
 
 export const ExerciseAvatar = ({

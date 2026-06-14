@@ -1,13 +1,16 @@
-import { viewerModel } from '@/entities/viewer';
-import { workoutModel } from '@/entities/workout';
+import { useWorkoutAccesses, workoutModel } from '@/entities/workout';
 import { CreateExerciseInstanceButton } from '@/features/create-exercise-instance';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
+import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
+import { FloatButton } from '@/shared/ui/float-button';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExerciseList } from '@/widgets/workout-exercise-list';
+import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';
 import { Form, Input } from 'antd';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useRevalidator } from 'react-router';
 import { Route } from './+types/workout-details';
 
 type FormValues = workoutModel.Workout;
@@ -16,10 +19,13 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.taskGroup.taskGroupById(+params.wId);
 };
 
-const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
+const Page = ({ loaderData: workout }: Route.ComponentProps) => {
+  const { revalidate } = useRevalidator();
   const goBack = useNavigateBack();
 
-  const viewer = viewerModel.useViewer();
+  const { token } = useTheme();
+
+  const accesses = useWorkoutAccesses(workout!);
 
   const [form] = Form.useForm<FormValues>();
 
@@ -28,27 +34,43 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
     [workout],
   );
 
-  const status = params.status as TaskGroupStatus;
-  const canAccess =
-    workout?.gymer_id === viewer.gymer?.gymer_id &&
-    status !== TaskGroupStatus.Finished;
-
-  const readonly = !(status === TaskGroupStatus.Planned || canAccess);
-
-  const submitChanges = async () => {
+  const changeWorkoutStatus = async (status: TaskGroupStatus) => {
     try {
-      if (form.isFieldTouched('title')) {
-        await Api.taskGroup.updateTaskGroupTitle(workout!.task_group_id, {
-          title: form.getFieldValue('title') || 'Без названия',
-        });
-      }
-    } finally {
-      goBack();
+      await Api.taskGroup.updateTaskGroupStatus(workout!.task_group_id, {
+        status,
+      });
+      revalidate();
+    } catch (e) {
+      console.error(e);
     }
   };
 
+  const startWorkout = () => changeWorkoutStatus(TaskGroupStatus.Running);
+  const finishWorkout = () => changeWorkoutStatus(TaskGroupStatus.Finished);
+
+  const submitChanges = async () => {
+    try {
+      const changed = form.getFieldValue('title') !== workout?.title;
+
+      if (changed) {
+        await Api.taskGroup.updateTaskGroupTitle(workout!.task_group_id, {
+          title: form.getFieldValue('title') || 'Без названия',
+        });
+        revalidate();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      submitChanges();
+    };
+  }, []);
+
   return (
-    <PageLayout onBackClick={submitChanges}>
+    <PageLayout onBackClick={goBack}>
       {workout && (
         <Flex
           height="100%"
@@ -58,18 +80,30 @@ const Page = ({ loaderData: workout, params }: Route.ComponentProps) => {
             form={form}
             initialValues={initialData}
             size="middle"
-            disabled={readonly}
+            disabled={!accesses.modifyWorkout}
           >
             <Form.Item<FormValues> name="title">
               <Input style={{ width: '100%' }} placeholder="Название" />
             </Form.Item>
           </Form>
 
-          {!readonly && (
-            <CreateExerciseInstanceButton workoutId={workout.task_group_id} />
-          )}
+          <Flex gap={token.paddingXS}>
+            <WorkoutExerciseList w={workout} data={workout.tasks ?? []} />
+            <CreateExerciseInstanceButton workout={workout} />
+          </Flex>
 
-          <WorkoutExerciseList data={workout.tasks ?? []} readonly={readonly} />
+          <FloatButton
+            icon={<CaretRightOutlined />}
+            hidden={!accesses.runWorkout}
+            onClick={startWorkout}
+          />
+
+          <FloatButton
+            danger
+            icon={<PauseOutlined />}
+            hidden={!accesses.finishWorkout}
+            onClick={finishWorkout}
+          />
         </Flex>
       )}
     </PageLayout>

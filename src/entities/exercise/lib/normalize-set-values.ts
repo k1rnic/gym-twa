@@ -26,7 +26,7 @@ export const normalizeSetValues = (instance: ExerciseInstance): UpdateTask => {
   const taskProps = instance.task_properties;
 
   const sets = (taskProps?.sets?.map((set) => ({
-    set_id: set.set_id,
+    ...set,
     fact_value: mapValue(set.fact_value),
     fact_rep: mapValue(set.fact_rep),
     plan_value: mapValue(set.plan_value),

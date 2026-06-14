@@ -1,6 +1,7 @@
 import { gymmerModel } from '@/entities/gymmer';
 import {
   formatUserFullName,
+  getDefaultUserPhoto,
   UserAvatarList,
   UserAvatarListItem,
 } from '@/entities/user';
@@ -28,10 +29,10 @@ const Page = () => {
   const items = useMemo(
     () =>
       masterGymmers
-        .map<UserAvatarListItem>((gymmer) => ({
-          id: gymmer.gymer_id,
-          name: gymmer.username || formatUserFullName(gymmer),
-          src: gymmer.photo!,
+        .map<UserAvatarListItem>((g) => ({
+          id: g.gymer_id,
+          name: g.username || formatUserFullName(g),
+          src: getDefaultUserPhoto(g),
         }))
         .sort((a, b) =>
           a.id === gymer?.gymer_id ? -1 : b.id === gymer?.gymer_id ? -1 : 1,

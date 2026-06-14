@@ -49,6 +49,7 @@ export const CardListItem = (props: PropsWithChildren<CardListItemProps>) => {
   const { handler, attributes } = useSortableList(id);
 
   const draggable = !attributes['aria-disabled'];
+  const hasActions = Boolean(actions.filter(Boolean).length);
 
   const [collapsedInner, setCollapsedInner] = useState(collapsed);
 
@@ -99,7 +100,7 @@ export const CardListItem = (props: PropsWithChildren<CardListItemProps>) => {
       }
       extra={
         <Space size={token.padding}>
-          {Boolean(actions.length) && (
+          {hasActions && (
             <Dropdown menu={{ items: actions }} trigger={['click']}>
               <EllipsisOutlined />
             </Dropdown>
