@@ -1,18 +1,22 @@
 import { exerciseModel } from '@/entities/exercise';
+import { workoutModel } from '@/entities/workout';
 import { Api, TaskAggregate } from '@/shared/api';
 import { CardList } from '@/shared/ui/card-list';
-import { FLOAT_BUTTON_SIZE } from '@/shared/ui/float-button';
 import { useEffect, useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { ExerciseCard } from './workout-exercise-card';
-import { workoutModel } from '@/entities/workout';
 
 type WorkoutExerciseListProps = {
   w: workoutModel.Workout;
   data: exerciseModel.ExerciseInstance[];
+  reorderEnabled?: boolean;
 };
 
-export const WorkoutExerciseList = ({ w, data }: WorkoutExerciseListProps) => {
+export const WorkoutExerciseList = ({
+  w,
+  data,
+  reorderEnabled,
+}: WorkoutExerciseListProps) => {
   const navigate = useNavigate();
   const { revalidate } = useRevalidator();
 
@@ -23,10 +27,7 @@ export const WorkoutExerciseList = ({ w, data }: WorkoutExerciseListProps) => {
 
     try {
       await Api.task.reorderTask(
-        reordered.map((t, idx) => ({
-          task_id: t.task_id,
-          order_idx: idx,
-        })),
+        reordered.map((t, idx) => ({ task_id: t.task_id, order_idx: idx })),
       );
     } catch (e) {
       console.error('Failed to reorder tasks', e);
@@ -45,12 +46,12 @@ export const WorkoutExerciseList = ({ w, data }: WorkoutExerciseListProps) => {
 
   return (
     <CardList
-      reorderEnabled
+      reorderEnabled={reorderEnabled}
       emptyText="Нет упражнений"
       items={innerTasks}
       itemKey="task_id"
       onReorder={handleReorder}
-      renderItem={(ex, itemProps, idx) => (
+      renderItem={(ex, itemProps) => (
         <ExerciseCard
           {...itemProps}
           w={w}
@@ -58,9 +59,6 @@ export const WorkoutExerciseList = ({ w, data }: WorkoutExerciseListProps) => {
           collapsible
           collapsed
           onClick={() => goToExercise(ex.task_id)}
-          style={{
-            marginBottom: idx === innerTasks.length - 1 ? FLOAT_BUTTON_SIZE : 0,
-          }}
         />
       )}
     />

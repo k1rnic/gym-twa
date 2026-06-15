@@ -1,4 +1,4 @@
-import { useWorkoutAccesses, workoutModel } from '@/entities/workout';
+import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
 import { DeleteOutlined } from '@ant-design/icons';
 import { ItemType } from 'antd/es/menu/interface';
@@ -10,7 +10,7 @@ export const useDeleteWorkoutAction = (
   key: string,
 ) => {
   const { revalidate } = useRevalidator();
-  const accesses = useWorkoutAccesses(w);
+  const permissions = useWorkoutPermissions(w);
 
   const deleteWorkout = useCallback(async () => {
     try {
@@ -23,7 +23,7 @@ export const useDeleteWorkoutAction = (
 
   return useMemo<ItemType>(
     () =>
-      accesses.deleteWorkout
+      permissions.deleteWorkout
         ? {
             key,
             label: 'Удалить',
@@ -31,6 +31,6 @@ export const useDeleteWorkoutAction = (
             onClick: deleteWorkout,
           }
         : null,
-    [key, accesses.deleteWorkout, deleteWorkout],
+    [key, permissions.deleteWorkout, deleteWorkout],
   );
 };

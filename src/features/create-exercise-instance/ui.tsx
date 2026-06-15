@@ -1,5 +1,5 @@
 import { viewerModel } from '@/entities/viewer';
-import { useWorkoutAccesses, workoutModel } from '@/entities/workout';
+import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
@@ -12,7 +12,7 @@ type Props = {
 export const CreateExerciseInstanceButton = ({ workout }: Props) => {
   const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
-  const accesses = useWorkoutAccesses(workout);
+  const permissions = useWorkoutPermissions(workout);
 
   const createExerciseInstance = async () => {
     try {
@@ -31,7 +31,7 @@ export const CreateExerciseInstanceButton = ({ workout }: Props) => {
       block
       size="large"
       type="dashed"
-      hidden={!accesses.addTask}
+      hidden={!permissions.addTask}
       onClick={createExerciseInstance}
       icon={<PlusOutlined />}
     >

@@ -1,3 +1,4 @@
+import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
 import { useSelectKeyboardDistance, useToggle } from '@/shared/lib/hooks';
@@ -7,8 +8,6 @@ import { Button, Divider, Select, SelectProps, Typography } from 'antd';
 import { RefSelectProps } from 'antd/es/select';
 import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
-import { Exercise, useExercises } from '../model';
-import { ExerciseAvatar } from './exercise-avatar';
 
 type Props = Pick<
   SelectProps<number>,
@@ -20,7 +19,7 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
 
   const masterId = master!.master_id!;
 
-  const { data: exercises } = useExercises(masterId);
+  const { data: exercises } = exerciseModel.useExercises(masterId);
 
   const selectRef = useRef<RefSelectProps>(null);
   const distance = useSelectKeyboardDistance(selectRef);
@@ -43,7 +42,7 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
     [exerciseMap],
   );
 
-  const goToExercise = (ex: Exercise) => {
+  const goToExercise = (ex: exerciseModel.Exercise) => {
     navigate(`/exercises/${ex.exercise_id}`);
   };
 

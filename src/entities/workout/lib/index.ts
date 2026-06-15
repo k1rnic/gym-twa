@@ -1,2 +1,2 @@
 export * from './get-workout-meta';
-export * from './use-workout-accesses';
+export * from './use-workout-permissions';

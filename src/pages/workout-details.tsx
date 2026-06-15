@@ -1,4 +1,4 @@
-import { useWorkoutAccesses, workoutModel } from '@/entities/workout';
+import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { CreateExerciseInstanceButton } from '@/features/create-exercise-instance';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
@@ -25,7 +25,7 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
 
   const { token } = useTheme();
 
-  const accesses = useWorkoutAccesses(workout!);
+  const permissions = useWorkoutPermissions(workout!);
 
   const [form] = Form.useForm<FormValues>();
 
@@ -80,7 +80,7 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
             form={form}
             initialValues={initialData}
             size="middle"
-            disabled={!accesses.modifyWorkout}
+            disabled={!permissions.modifyWorkout}
           >
             <Form.Item<FormValues> name="title">
               <Input style={{ width: '100%' }} placeholder="Название" />
@@ -88,20 +88,24 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
           </Form>
 
           <Flex gap={token.paddingXS}>
-            <WorkoutExerciseList w={workout} data={workout.tasks ?? []} />
+            <WorkoutExerciseList
+              w={workout}
+              data={workout.tasks ?? []}
+              reorderEnabled={permissions.isOwner || permissions.isGymmer}
+            />
             <CreateExerciseInstanceButton workout={workout} />
           </Flex>
 
           <FloatButton
             icon={<CaretRightOutlined />}
-            hidden={!accesses.runWorkout}
+            hidden={!permissions.runWorkout}
             onClick={startWorkout}
           />
 
           <FloatButton
             danger
             icon={<PauseOutlined />}
-            hidden={!accesses.finishWorkout}
+            hidden={!permissions.finishWorkout}
             onClick={finishWorkout}
           />
         </Flex>

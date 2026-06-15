@@ -1,8 +1,9 @@
-import { ExerciseInstanceForm, normalizeSetValues } from '@/entities/exercise';
 import { Api } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { PageLayout } from '@/shared/ui/page-layout';
+import { WorkoutExerciseForm } from '@/widgets/workout-exercise-form';
+import { normalizeSetValues } from '@/widgets/workout-exercise-form/lib/normalize-set-values';
 import { Empty } from 'antd';
 import { useState } from 'react';
 import { Route } from './+types/exercise-instance-details';
@@ -41,7 +42,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
       extra={<DeleteButton onDelete={deleteExercise} />}
     >
       {formValues ? (
-        <ExerciseInstanceForm
+        <WorkoutExerciseForm
           exercise={exercise!}
           workout={workout!}
           onChange={setFormValues}

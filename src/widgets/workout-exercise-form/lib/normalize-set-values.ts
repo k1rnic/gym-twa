@@ -1,9 +1,9 @@
+import { exerciseModel } from '@/entities/exercise';
 import {
   SetUpdate,
   TaskPropertiesAggregateUpdate,
   UpdateTask,
 } from '@/shared/api';
-import { ExerciseInstance } from '../model/types';
 
 const mapValue = (value: unknown): number | 'max' | null => {
   if (value === 'max') {
@@ -22,7 +22,9 @@ const mapValue = (value: unknown): number | 'max' | null => {
   return Number.isFinite(numeric) ? numeric : null;
 };
 
-export const normalizeSetValues = (instance: ExerciseInstance): UpdateTask => {
+export const normalizeSetValues = (
+  instance: exerciseModel.ExerciseInstance,
+): UpdateTask => {
   const taskProps = instance.task_properties;
 
   const sets = (taskProps?.sets?.map((set) => ({

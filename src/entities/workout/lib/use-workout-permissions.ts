@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Workout } from '../model/types';
 import { getWorkoutStatus } from './get-workout-meta';
 
-export const useWorkoutAccesses = (
+export const useWorkoutPermissions = (
   w: Workout,
   task?: exerciseModel.ExerciseInstance,
 ) => {
@@ -27,13 +27,9 @@ export const useWorkoutAccesses = (
   }, [status, isOwner, isGymmer]);
 
   const addTask = isOwner && !status.isFinished;
+
   const deleteTask =
     (isGymmer && !status.isFinished) || (isTaskOwner && status.isPlanned);
-
-  const addTaskSet = useMemo(() => {
-    if (status.isFinished) return false;
-    return isGymmer || (isTaskOwner && status.isPlanned);
-  }, [status, isTaskOwner, isGymmer]);
 
   return {
     modifyWorkout,
@@ -42,7 +38,6 @@ export const useWorkoutAccesses = (
     finishWorkout,
     addTask,
     deleteTask,
-    addTaskSet,
     isGymmer,
     isOwner,
     isTaskOwner,
