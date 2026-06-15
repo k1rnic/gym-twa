@@ -9,9 +9,10 @@ import { WorkoutCard } from './workout-card';
 
 type WorkoutListProps = {
   data: workoutModel.Workout[];
+  reorderEnabled?: boolean;
 };
 
-export const WorkoutList = ({ data }: WorkoutListProps) => {
+export const WorkoutList = ({ data, reorderEnabled }: WorkoutListProps) => {
   const navigate = useNavigate();
   const { revalidate } = useRevalidator();
 
@@ -44,7 +45,7 @@ export const WorkoutList = ({ data }: WorkoutListProps) => {
 
   return (
     <CardList
-      reorderEnabled
+      reorderEnabled={reorderEnabled}
       emptyText="Нет тренировок"
       items={innerWorkouts}
       itemKey="task_group_id"

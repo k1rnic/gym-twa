@@ -1,9 +1,15 @@
-import { UserAvatar, UserAvatarProps } from '@/entities/user';
 import { Flex } from '@/shared/ui/flex';
 import { Divider, Space } from 'antd';
 import { useEffect, useRef } from 'react';
+import {
+  UserAvatarListItem,
+  UserAvatarListItemProps,
+} from './user-avatar-list-item';
 
-export type UserAvatarListItem = Pick<UserAvatarProps, 'name' | 'src'> & {
+export type UserAvatarListItem = Pick<
+  UserAvatarListItemProps,
+  'name' | 'src'
+> & {
   id: number;
 };
 
@@ -43,7 +49,7 @@ export const UserAvatarList = (props: UserAvatarListProps) => {
     <Flex vertical={false} width="100%">
       {pinned && (
         <>
-          <UserAvatar
+          <UserAvatarListItem
             name={pinned.name}
             src={pinned.src}
             active={pinned.id === props.selected}
@@ -55,7 +61,7 @@ export const UserAvatarList = (props: UserAvatarListProps) => {
 
       <Space style={{ flexShrink: 0, overflowX: 'auto', flex: 1 }}>
         {other.map((av, idx) => (
-          <UserAvatar
+          <UserAvatarListItem
             key={idx}
             ref={(el) => (avatarRefs.current[idx] = el!)}
             name={av.name}

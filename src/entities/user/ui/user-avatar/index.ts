@@ -1,3 +1,3 @@
-export * from './user-avatar-list-item';
-export * from './user-avatar-preview';
+export * from './user-avatar';
 export * from './user-avatar-list';
+export * from './user-avatar-preview';

@@ -1,23 +1,14 @@
 import { masterModel, MasterStatus } from '@/entities/master';
+import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Avatar, Typography } from 'antd';
-import { useMemo } from 'react';
+import { Typography } from 'antd';
 import { useNavigate } from 'react-router';
 
 const { Text } = Typography;
-
-const formatName = (
-  first?: string | null,
-  last?: string | null,
-  username?: string | null,
-) => {
-  const fio = `${first ?? ''} ${last ?? ''}`.trim();
-  return fio || username || 'Без имени';
-};
 
 export default function Page() {
   const viewer = viewerModel.useViewer();
@@ -26,37 +17,21 @@ export default function Page() {
 
   const { masters, loading } = masterModel.useMasters(viewer.gymer?.gymer_id);
 
-  const data = useMemo(
-    () =>
-      masters.map((m) => ({
-        ...m,
-        displayName: formatName(m.first_name, m.last_name, m.username),
-        avatar: m.photos?.[0],
-      })),
-    [masters],
-  );
-
   return (
     <PageLayout title="Тренеры" onBackClick={goBack} loading={loading}>
       <Flex height="100%" style={{ overflow: 'auto' }}>
         <List
-          items={data}
+          items={masters}
           itemKey="master_id"
           emptyText={loading ? '' : 'Тренеров пока нет'}
           variant="contained"
-          renderItem={(item) => (
+          renderItem={(m) => (
             <ListItem
-              avatar={
-                <Avatar
-                  size={64}
-                  style={{ backgroundColor: '#f0f0f0' }}
-                  src={item.avatar}
-                />
-              }
-              header={<Text strong>{item.displayName}</Text>}
-              description={<MasterStatus status={item.status} />}
+              avatar={m && <UserAvatar size="large" user={m} />}
+              header={<Text strong>{formatUserFullName(m) || m.username}</Text>}
+              description={<MasterStatus status={m.status} />}
               nav
-              onClick={() => navigate(`/profile/masters/${item.master_id}`)}
+              onClick={() => navigate(`/profile/masters/${m.master_id}`)}
             />
           )}
         />

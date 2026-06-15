@@ -15,7 +15,7 @@ import { Form, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Title from 'antd/lib/typography/Title';
 import { useMemo } from 'react';
-import { Route } from './+types/exercise-details';
+import { Route } from './+types/exercise-by-id';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.exercise.getExercise(+params.exId);

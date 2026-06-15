@@ -1,5 +1,6 @@
 import { viewerModel } from '@/entities/viewer';
 import { Api, TaskGroupStatus } from '@/shared/api';
+import { sortByCreated } from '@/shared/lib/date';
 import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
 import { WorkoutList } from '@/widgets/workout-list';
@@ -21,6 +22,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
       gymer_id: +params.gId,
       status: params.status as TaskGroupStatus,
     })
+    .then((data) => data.sort(sortByCreated()))
     .catch(() => []);
 };
 
@@ -29,6 +31,9 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
 
   const viewer = viewerModel.useViewer();
   const status = params.status as TaskGroupStatus;
+  const currentGymmerId = +params.gId;
+
+  const reorderEnabled = currentGymmerId === viewer.gymer?.gymer_id;
 
   const createWorkout = async () => {
     const data = await Api.taskGroup.createTaskGroup({
@@ -59,7 +64,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
         onChange={filterWorkouts}
       />
 
-      <WorkoutList data={workouts} />
+      <WorkoutList data={workouts} reorderEnabled={reorderEnabled} />
 
       <FloatButton icon={<PlusOutlined />} onClick={createWorkout} />
     </Flex>

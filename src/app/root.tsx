@@ -1,4 +1,4 @@
-import { withProviders } from '@/app/providers';
+import { withProviders } from './providers';
 import { PropsWithChildren } from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 

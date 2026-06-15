@@ -1,12 +1,12 @@
 import { gymmerModel } from '@/entities/gymmer';
-import { formatUserFullName } from '@/entities/user';
+import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, MastersGymer } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Avatar, message } from 'antd';
+import { message } from 'antd';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -49,18 +49,12 @@ export default function Page() {
           itemKey="gymer_id"
           emptyText={gymmerApi.loading ? '' : 'Учеников пока нет'}
           variant="contained"
-          renderItem={(gymmer) => (
+          renderItem={(g) => (
             <ListItem
-              avatar={
-                <Avatar
-                  size={64}
-                  style={{ backgroundColor: '#f0f0f0' }}
-                  src={gymmer.photo}
-                />
-              }
-              header={formatUserFullName(gymmer)}
+              avatar={<UserAvatar size="large" user={g} />}
+              header={formatUserFullName(g)}
               nav
-              onClick={() => navigate(`/profile/gymmers/${gymmer.gymer_id}`)}
+              onClick={() => navigate(`/profile/gymmers/${g.gymer_id}`)}
             />
           )}
         />

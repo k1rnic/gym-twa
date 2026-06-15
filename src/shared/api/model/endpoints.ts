@@ -300,10 +300,13 @@ export interface Set {
   plan_value?: number | "max" | null;
   /** Plan Rep */
   plan_rep?: number | "max" | null;
+  /** Owner Id */
+  owner_id?: number | null;
   /** Set Id */
   set_id: number;
   /** Task Properties Id */
   task_properties_id: number;
+  owner?: UserBase | null;
 }
 
 /** SetUpdate */
@@ -316,6 +319,8 @@ export interface SetUpdate {
   plan_value?: number | "max" | null;
   /** Plan Rep */
   plan_rep?: number | "max" | null;
+  /** Owner Id */
+  owner_id?: number | null;
   /** Set Id */
   set_id?: number | null;
 }
@@ -702,7 +707,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.6.0
+ * @version 2.7.0
  */
 export class Endpoints<
   SecurityDataType extends unknown,

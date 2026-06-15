@@ -1,5 +1,5 @@
-import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
-import { formatUserFullName } from '@/entities/user';
+import { ExerciseAvatar } from '@/entities/exercise';
+import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
 import { useCopyWorkoutAction } from '@/features/copy-workout';
 import { useDeleteWorkoutAction } from '@/features/delete-workout';
@@ -8,7 +8,7 @@ import { CardListItem } from '@/shared/ui/card-list';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 
-import { Avatar, CardProps, Typography } from 'antd';
+import { CardProps, Typography } from 'antd';
 import { MenuProps } from 'antd/lib';
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router';
@@ -34,15 +34,15 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
 
   const taskCount = w.tasks?.length ?? 0;
 
-  const copyAction = useCopyWorkoutAction(w.task_group_id, 'copy');
-  const deleteAction = useDeleteWorkoutAction(w.task_group_id, 'delete');
+  const copyAction = useCopyWorkoutAction(w, 'copy');
+  const deleteAction = useDeleteWorkoutAction(w, 'delete');
 
   const actions = useMemo<MenuProps['items']>(
     () => [copyAction, deleteAction],
     [copyAction, deleteAction],
   );
 
-  const goToExerciseInstance = (ex: exerciseModel.ExerciseInstance) => {
+  const goToWorkoutExercise = (ex: workoutModel.WorkoutExercise) => {
     navigate(`${w.task_group_id}/${ex.task_id}`);
   };
 
@@ -61,7 +61,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
       footer={
         w.owner && (
           <Flex gap={8} vertical={false}>
-            <Avatar size="small" src={w.owner?.photo || ''} />
+            <UserAvatar size="small" user={w.owner} />
             <Typography.Text>
               {w.owner.username || formatUserFullName(w.owner)}
             </Typography.Text>
@@ -80,7 +80,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
           <ListItem
             avatar={<ExerciseAvatar exercise={task.exercise!} size="large" />}
             header={task.exercise?.exercise_name}
-            onClick={() => goToExerciseInstance(task)}
+            onClick={() => goToWorkoutExercise(task)}
           />
         )}
       />
