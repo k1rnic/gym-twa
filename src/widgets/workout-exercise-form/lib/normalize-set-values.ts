@@ -1,4 +1,4 @@
-import { exerciseModel } from '@/entities/exercise';
+import { workoutModel } from '@/entities/workout';
 import {
   SetUpdate,
   TaskPropertiesAggregateUpdate,
@@ -23,7 +23,7 @@ const mapValue = (value: unknown): number | 'max' | null => {
 };
 
 export const normalizeSetValues = (
-  instance: exerciseModel.ExerciseInstance,
+  instance: workoutModel.WorkoutExercise,
 ): UpdateTask => {
   const taskProps = instance.task_properties;
 

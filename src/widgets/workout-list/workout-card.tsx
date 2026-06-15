@@ -1,4 +1,4 @@
-import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
+import { ExerciseAvatar } from '@/entities/exercise';
 import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
 import { useCopyWorkoutAction } from '@/features/copy-workout';
@@ -42,7 +42,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
     [copyAction, deleteAction],
   );
 
-  const goToExerciseInstance = (ex: exerciseModel.ExerciseInstance) => {
+  const goToWorkoutExercise = (ex: workoutModel.WorkoutExercise) => {
     navigate(`${w.task_group_id}/${ex.task_id}`);
   };
 
@@ -80,7 +80,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
           <ListItem
             avatar={<ExerciseAvatar exercise={task.exercise!} size="large" />}
             header={task.exercise?.exercise_name}
-            onClick={() => goToExerciseInstance(task)}
+            onClick={() => goToWorkoutExercise(task)}
           />
         )}
       />

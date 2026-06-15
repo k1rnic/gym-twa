@@ -1,4 +1,3 @@
-import { exerciseModel } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { Flex } from '@/shared/ui/flex';
 import { CheckOutlined } from '@ant-design/icons';
@@ -10,7 +9,7 @@ import { ExerciseSelector } from './exercise-selector';
 import { ExerciseSetList } from './exercise-set-list';
 import { ExerciseToolbar } from './exercise-toolbar';
 
-type FormValues = exerciseModel.ExerciseInstance;
+type FormValues = workoutModel.WorkoutExercise;
 
 export type WorkoutExerciseFormProps = {
   exercise: FormValues;

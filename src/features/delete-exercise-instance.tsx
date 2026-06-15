@@ -1,4 +1,3 @@
-import { exerciseModel } from '@/entities/exercise';
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
 import { DeleteOutlined } from '@ant-design/icons';
@@ -6,15 +5,15 @@ import { MenuProps } from 'antd/lib';
 import { useCallback, useMemo } from 'react';
 import { useRevalidator } from 'react-router';
 
-export const useDeleteExerciseInstanceAction = (
+export const useDeleteWorkoutExerciseAction = (
   w: workoutModel.Workout,
-  task: exerciseModel.ExerciseInstance,
+  task: workoutModel.WorkoutExercise,
   key: string,
 ) => {
   const { revalidate } = useRevalidator();
   const permissions = useWorkoutPermissions(w, task);
 
-  const deleteExerciseInstance = useCallback(async () => {
+  const deleteWorkoutExercise = useCallback(async () => {
     try {
       await Api.task.deleteTask(task.task_id);
       revalidate();
@@ -30,9 +29,9 @@ export const useDeleteExerciseInstanceAction = (
             key,
             label: 'Удалить',
             icon: <DeleteOutlined />,
-            onClick: deleteExerciseInstance,
+            onClick: deleteWorkoutExercise,
           }
         : null,
-    [key, permissions.deleteTask, deleteExerciseInstance],
+    [key, permissions.deleteTask, deleteWorkoutExercise],
   );
 };

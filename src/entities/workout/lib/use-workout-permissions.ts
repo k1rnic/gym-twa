@@ -1,12 +1,12 @@
-import { exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
+import { workoutModel } from '@/entities/workout';
 import { useMemo } from 'react';
 import { Workout } from '../model/types';
 import { getWorkoutStatus } from './get-workout-meta';
 
 export const useWorkoutPermissions = (
   w: Workout,
-  task?: exerciseModel.ExerciseInstance,
+  task?: workoutModel.WorkoutExercise,
 ) => {
   const { gymer, user_id } = viewerModel.useViewer();
 

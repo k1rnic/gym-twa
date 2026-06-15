@@ -6,7 +6,7 @@ import { WorkoutExerciseForm } from '@/widgets/workout-exercise-form';
 import { normalizeSetValues } from '@/widgets/workout-exercise-form/lib/normalize-set-values';
 import { Empty } from 'antd';
 import { useState } from 'react';
-import { Route } from './+types/exercise-instance-details';
+import { Route } from './+types/workout-exercise-by-id';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   const workout = await Api.taskGroup.taskGroupById(+params.wId);

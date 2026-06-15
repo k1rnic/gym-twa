@@ -1,7 +1,7 @@
-import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
+import { ExerciseAvatar } from '@/entities/exercise';
 import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
-import { useDeleteExerciseInstanceAction } from '@/features/delete-exercise-instance';
+import { useDeleteWorkoutExerciseAction } from '@/features/delete-exercise-instance';
 import { Set } from '@/shared/api';
 import { plural } from '@/shared/lib/plural';
 import { useTheme } from '@/shared/lib/theme';
@@ -15,7 +15,7 @@ import { useCallback, useMemo, useState } from 'react';
 type ExerciseCardProps = {
   id: Exclude<React.Key, bigint>;
   w: workoutModel.Workout;
-  ex: exerciseModel.ExerciseInstance;
+  ex: workoutModel.WorkoutExercise;
   collapsed?: boolean;
   collapsible?: boolean;
 } & Pick<CardProps, 'style' | 'onClick'>;
@@ -29,7 +29,7 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
   const exSets = ex.task_properties?.sets ?? [];
   const hasSets = Boolean(ex.task_properties?.sets?.length);
 
-  const deleteAction = useDeleteExerciseInstanceAction(w, ex, 'delete');
+  const deleteAction = useDeleteWorkoutExerciseAction(w, ex, 'delete');
 
   const actions = useMemo<MenuProps['items']>(
     () => [deleteAction],
@@ -42,7 +42,7 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
   );
 
   const getExerciseDescriptions = useCallback(
-    (ex: exerciseModel.ExerciseInstance): DescriptionsItemType[] => [
+    (ex: workoutModel.WorkoutExercise): DescriptionsItemType[] => [
       ...(ex.task_properties?.sets?.map((s, idx) => ({
         key: s.set_id,
         label: `${idx + 1}`,

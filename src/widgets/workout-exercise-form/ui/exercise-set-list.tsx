@@ -2,8 +2,8 @@ import { Set } from '@/shared/api';
 import { Button, Form } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 
-import { exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
+import { workoutModel } from '@/entities/workout';
 import { useExercisePermissions } from '@/widgets/workout-exercise-form/lib/use-exercise-permissions';
 import { PlusOutlined } from '@ant-design/icons';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
@@ -20,7 +20,7 @@ const FIELD_PLACEHOLDERS = {
 };
 
 type Props = {
-  formValues?: exerciseModel.ExerciseInstance;
+  formValues?: workoutModel.WorkoutExercise;
 } & ReturnType<typeof useExercisePermissions>;
 
 export const ExerciseSetList = ({
@@ -32,7 +32,7 @@ export const ExerciseSetList = ({
 
   const valueType: ValueType = workoutStatus.isPlanned ? 'plan' : 'fact';
 
-  const form = useFormInstance<exerciseModel.ExerciseInstance>();
+  const form = useFormInstance<workoutModel.WorkoutExercise>();
 
   const getSetOwner = (index: number) =>
     formValues?.task_properties?.sets?.[index]?.owner_id ?? null;
@@ -41,7 +41,7 @@ export const ExerciseSetList = ({
     type: ValueType,
     fieldType: FieldType,
     index: number,
-  ): NamePath<exerciseModel.ExerciseInstance> => {
+  ): NamePath<workoutModel.WorkoutExercise> => {
     return ['task_properties', 'sets', index, `${type}_${fieldType}`];
   };
 

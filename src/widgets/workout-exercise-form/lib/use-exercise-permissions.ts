@@ -1,4 +1,3 @@
-import { exerciseModel } from '@/entities/exercise';
 import {
   getWorkoutStatus,
   useWorkoutPermissions,
@@ -8,7 +7,7 @@ import { useMemo } from 'react';
 
 export const useExercisePermissions = (
   workout: workoutModel.Workout,
-  exercise: exerciseModel.ExerciseInstance,
+  exercise: workoutModel.WorkoutExercise,
 ) => {
   const permissions = useWorkoutPermissions(workout, exercise);
   const workoutStatus = getWorkoutStatus(workout.status);

@@ -1,11 +1,11 @@
 import { Form } from 'antd';
 import { useMemo } from 'react';
 
-import { exerciseModel } from '@/entities/exercise';
+import { workoutModel } from '@/entities/workout';
 import { TaskPropertiesAggregate } from '@/shared/api';
 
-export const useExerciseForm = (exercise: exerciseModel.ExerciseInstance) => {
-  const [form] = Form.useForm<exerciseModel.ExerciseInstance>();
+export const useExerciseForm = (exercise: workoutModel.WorkoutExercise) => {
+  const [form] = Form.useForm<workoutModel.WorkoutExercise>();
 
   const formValues = Form.useWatch([], form);
 

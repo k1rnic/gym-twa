@@ -1,5 +1,5 @@
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
-import { CreateExerciseInstanceButton } from '@/features/create-exercise-instance';
+import { CreateWorkoutExerciseButton } from '@/features/create-exercise-instance';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
 import { useTheme } from '@/shared/lib/theme';
@@ -11,7 +11,7 @@ import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';
 import { Form, Input } from 'antd';
 import { useEffect, useMemo } from 'react';
 import { useRevalidator } from 'react-router';
-import { Route } from './+types/workout-details';
+import { Route } from './+types/workout-by-id';
 
 type FormValues = workoutModel.Workout;
 
@@ -93,7 +93,7 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
               data={workout.tasks ?? []}
               reorderEnabled={permissions.isOwner || permissions.isGymmer}
             />
-            <CreateExerciseInstanceButton workout={workout} />
+            <CreateWorkoutExerciseButton workout={workout} />
           </Flex>
 
           <FloatButton

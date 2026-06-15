@@ -1,4 +1,3 @@
-import { exerciseModel } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { Api, TaskAggregate } from '@/shared/api';
 import { CardList } from '@/shared/ui/card-list';
@@ -8,7 +7,7 @@ import { ExerciseCard } from './workout-exercise-card';
 
 type WorkoutExerciseListProps = {
   w: workoutModel.Workout;
-  data: exerciseModel.ExerciseInstance[];
+  data: workoutModel.WorkoutExercise[];
   reorderEnabled?: boolean;
 };
 
@@ -36,7 +35,7 @@ export const WorkoutExerciseList = ({
     revalidate();
   };
 
-  const goToExercise = (id: exerciseModel.ExerciseInstance['task_id']) => {
+  const goToExercise = (id: workoutModel.WorkoutExercise['task_id']) => {
     navigate(`${id}`);
   };
 

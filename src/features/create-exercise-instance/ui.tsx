@@ -9,12 +9,12 @@ type Props = {
   workout: workoutModel.Workout;
 };
 
-export const CreateExerciseInstanceButton = ({ workout }: Props) => {
+export const CreateWorkoutExerciseButton = ({ workout }: Props) => {
   const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
   const permissions = useWorkoutPermissions(workout);
 
-  const createExerciseInstance = async () => {
+  const createWorkoutExercise = async () => {
     try {
       const instance = await Api.task.createTask({
         task_group_id: workout.task_group_id,
@@ -32,7 +32,7 @@ export const CreateExerciseInstanceButton = ({ workout }: Props) => {
       size="large"
       type="dashed"
       hidden={!permissions.addTask}
-      onClick={createExerciseInstance}
+      onClick={createWorkoutExercise}
       icon={<PlusOutlined />}
     >
       Новое упражнение
