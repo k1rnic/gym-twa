@@ -80,12 +80,7 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
               ex.task_properties?.rest || 0
             } сек`}</Typography>
             {ex.owner && (
-              <Flex gap={8} vertical={false}>
-                <UserAvatar user={ex.owner} size="small" />
-                <Typography.Text>
-                  {ex.owner.username || formatUserFullName(ex.owner)}
-                </Typography.Text>
-              </Flex>
+              <UserAvatar user={ex.owner} size="small" compact={false} />
             )}
           </Flex>
           <Typography hidden={contentVisible}>{`${exSets.length} ${plural(

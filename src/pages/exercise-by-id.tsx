@@ -118,7 +118,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
             </Title>
 
             <GridPreview
-              readonly={!canEdit}
+              readOnly={!canEdit}
               itemType="image"
               items={imagesUrls}
               onAddClick={uploadExerciseImage}
@@ -139,7 +139,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
 
             <GridPreview
               visibleCount={2}
-              readonly={!canEdit}
+              readOnly={!canEdit}
               itemType="video"
               items={videosUrls}
               onAddClick={toggleVideoUpload}

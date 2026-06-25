@@ -1,26 +1,42 @@
 import { User } from '@/shared/api';
 import { useTheme } from '@/shared/lib/theme';
-import { Avatar } from 'antd';
+import { Flex } from '@/shared/ui/flex';
+import { Avatar, Typography } from 'antd';
 import { AvatarSize } from 'antd/es/avatar/AvatarContext';
 import { useMemo } from 'react';
-import { getDefaultUserPhoto } from '../../lib';
+import { formatUserFullName, getDefaultUserPhoto } from '../../lib';
 
 type UserAvatarProps = {
-  user: Pick<User, 'photo' | 'photos'>;
+  user: Pick<
+    User,
+    'first_name' | 'last_name' | 'username' | 'photos' | 'photo'
+  >;
   size?: AvatarSize;
+  compact?: boolean;
+  vertical?: boolean;
 };
 
-export const UserAvatar = ({ size = 'default', user }: UserAvatarProps) => {
+export const UserAvatar = ({
+  size = 'default',
+  user,
+  compact = true,
+  vertical = false,
+}: UserAvatarProps) => {
   const { token } = useTheme();
 
   const src = useMemo(() => getDefaultUserPhoto(user), [user]);
 
   return (
-    <Avatar
-      shape="circle"
-      size={size}
-      src={src}
-      style={{ backgroundColor: token.colorSplit }}
-    />
+    <Flex gap={8} vertical={vertical}>
+      <Avatar
+        shape="circle"
+        size={size}
+        src={src}
+        style={{ backgroundColor: token.colorSplit }}
+      />
+      <Typography.Text hidden={compact}>
+        {formatUserFullName(user) || user.username}
+      </Typography.Text>
+    </Flex>
   );
 };

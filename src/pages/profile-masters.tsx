@@ -28,7 +28,7 @@ export default function Page() {
           renderItem={(m) => (
             <ListItem
               avatar={m && <UserAvatar size="large" user={m} />}
-              header={<Text strong>{formatUserFullName(m) || m.username}</Text>}
+              header={formatUserFullName(m) || m.username}
               description={<MasterStatus status={m.status} />}
               nav
               onClick={() => navigate(`/profile/masters/${m.master_id}`)}

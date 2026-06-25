@@ -2,13 +2,15 @@ import { formatUserFullName } from '@/entities/user/lib';
 import { User } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
 import { Modal, Typography } from 'antd';
+import { CSSProperties } from 'react';
 
 type Props = {
-  readonly?: boolean;
+  readOnly?: boolean;
   user: Pick<User, 'telegram_id' | 'username' | 'first_name' | 'last_name'>;
+  style?: CSSProperties;
 };
 
-export const UserTgLink = ({ user, readonly }: Props) => {
+export const UserTgLink = ({ user, readOnly, style }: Props) => {
   const [opened, toggle] = useToggle();
 
   const goToChat = () => {
@@ -21,8 +23,9 @@ export const UserTgLink = ({ user, readonly }: Props) => {
       <Typography.Link
         hidden={!user.username}
         target="_blank"
-        disabled={!user.username || readonly}
+        disabled={!user.username || readOnly}
         onClick={toggle}
+        style={style}
       >
         @{user.username}
       </Typography.Link>

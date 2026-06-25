@@ -30,7 +30,7 @@ export type GridPreviewProps = {
   items: string[];
   cols?: number;
   visibleCount?: number;
-  readonly?: boolean;
+  readOnly?: boolean;
   renderToolbar?: (
     origin: React.ReactElement,
     params: { current: number },
@@ -173,7 +173,7 @@ export const GridPreview = (props: GridPreviewProps) => {
       </Image.PreviewGroup>
 
       <Col
-        hidden={props.readonly}
+        hidden={props.readOnly}
         span={tileSpan}
         className={classes.filePickerContainer}
         style={{ aspectRatio: previewCount === cols ? '1/1' : undefined }}

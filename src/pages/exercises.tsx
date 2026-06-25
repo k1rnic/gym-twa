@@ -29,7 +29,7 @@ const Page = () => {
   };
 
   return (
-    <PageLayout title="Упражнения" loading={loading}>
+    <PageLayout loading={loading}>
       <Flex height="100%" style={{ overflow: 'hidden', position: 'relative' }}>
         <ExerciseList
           exercises={exercises}
