@@ -27,20 +27,18 @@ export default function Page() {
     <Flex
       height="100%"
       width="100%"
-      p={token.padding}
       style={{
         backgroundColor: token.colorBgContainer,
         paddingBottom: 0,
         paddingTop: topBarOffset,
       }}
     >
-      <Flex
-        flex={1}
-        style={{ overflow: 'hidden', paddingTop: token.paddingXS }}
-      >
+      <Flex flex={1} style={{ overflow: 'hidden' }}>
         <Outlet />
       </Flex>
-      <AppToolbar />
+      <Flex px={token.padding}>
+        <AppToolbar />
+      </Flex>
     </Flex>
   );
 }

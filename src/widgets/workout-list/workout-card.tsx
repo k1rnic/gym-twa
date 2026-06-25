@@ -1,14 +1,13 @@
 import { ExerciseAvatar } from '@/entities/exercise';
-import { formatUserFullName, UserAvatar } from '@/entities/user';
+import { UserAvatar } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
 import { useCopyWorkoutAction } from '@/features/copy-workout';
 import { useDeleteWorkoutAction } from '@/features/delete-workout';
 import { plural } from '@/shared/lib/plural';
 import { CardListItem } from '@/shared/ui/card-list';
-import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 
-import { CardProps, Typography } from 'antd';
+import { CardProps } from 'antd';
 import { MenuProps } from 'antd/lib';
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router';
@@ -59,14 +58,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
       collapsible={collapsible}
       style={style}
       footer={
-        w.owner && (
-          <Flex gap={8} vertical={false}>
-            <UserAvatar size="small" user={w.owner} />
-            <Typography.Text>
-              {w.owner.username || formatUserFullName(w.owner)}
-            </Typography.Text>
-          </Flex>
-        )
+        w.owner && <UserAvatar size="small" user={w.owner} compact={false} />
       }
       onClick={onClick}
     >

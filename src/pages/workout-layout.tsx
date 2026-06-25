@@ -31,7 +31,7 @@ const Page = () => {
       masterGymmers
         .map<UserAvatarListItem>((g) => ({
           id: g.gymer_id,
-          name: g.username || formatUserFullName(g),
+          name: formatUserFullName(g) ?? g.username,
           src: getDefaultUserPhoto(g),
         }))
         .sort((a, b) =>

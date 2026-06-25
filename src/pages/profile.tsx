@@ -3,27 +3,20 @@ import { Api } from '@/shared/api';
 
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { PlusOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Card,
-  Checkbox,
-  Form,
-  Input,
-  message,
-  Space,
-  Typography,
-  Upload,
-} from 'antd';
-import { RcFile, UploadProps } from 'antd/es/upload';
-import { useMemo, useState } from 'react';
+import { Form, message, Space, Typography } from 'antd';
+import { RcFile } from 'antd/es/upload';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
+import { useTheme } from '@/shared/lib/theme';
+import { ActionListItem } from '@/shared/ui/action-list-item';
+
 import {
-  formatUserFullName,
-  UserAvatarPreview,
-  UserTgLink,
-} from '@/entities/user';
+  ProfileDescription,
+  ProfileHero,
+  ProfileName,
+  ProfileToggle,
+} from '@/widgets/user-profile';
 const { Title } = Typography;
 
 const mapInitialValues = (
@@ -34,12 +27,12 @@ const mapInitialValues = (
 });
 
 export default function Page() {
+  const { token } = useTheme();
+
   const viewer = viewerModel.useViewer();
   const setViewer = viewerModel.useSetViewer();
   const navigate = useNavigate();
   const [form] = Form.useForm<ReturnType<typeof mapInitialValues>>();
-
-  const [uploading, setUploading] = useState(false);
 
   const initialValues = useMemo(() => mapInitialValues(viewer), [viewer]);
 
@@ -53,26 +46,13 @@ export default function Page() {
   };
 
   const uploadFile = async (file: RcFile) => {
-    setUploading(true);
     try {
       await Api.user.addUserImage(viewer.user_id, { image: file });
       await refreshViewer();
       message.success('Фотография загружена');
     } catch (e) {
       message.error('Не удалось загрузить фото');
-    } finally {
-      setUploading(false);
     }
-  };
-
-  const uploadProps: UploadProps = {
-    multiple: false,
-    accept: 'image/*',
-    showUploadList: false,
-    beforeUpload: async (file) => {
-      await uploadFile(file as RcFile);
-      return false;
-    },
   };
 
   const updateProfileField = async (
@@ -83,79 +63,48 @@ export default function Page() {
   };
 
   return (
-    <PageLayout title="Профиль">
-      <Flex gap="small" style={{ overflow: 'auto', width: '100%' }}>
-        <Card>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <Space
-              direction="vertical"
-              align="center"
-              style={{ width: '100%' }}
-            >
-              <Space direction="vertical" align="center">
-                <UserAvatarPreview
-                  photos={viewer.photos ?? []}
-                  preview={{ movable: false, toolbarRender: () => <></> }}
-                />
+    <PageLayout contentStyle={{ padding: 0 }}>
+      <Flex style={{ position: 'relative' }}>
+        <ProfileHero user={viewer} onUpload={uploadFile} />
+        <ProfileName user={viewer} />
+      </Flex>
 
-                <Upload {...uploadProps}>
-                  <Button loading={uploading} icon={<PlusOutlined />}>
-                    Добавить
-                  </Button>
-                </Upload>
-              </Space>
+      <Flex p={token.paddingSM} gap={token.paddingSM}>
+        <Form form={form} layout="vertical" initialValues={initialValues}>
+          <Form.Item name="description">
+            <ProfileDescription
+              onBlur={(e) =>
+                updateProfileField({ description: e.target.value })
+              }
+            />
+          </Form.Item>
 
-              <Space style={{ width: '100%' }}>
-                <Title level={5} style={{ margin: 0 }}>
-                  {formatUserFullName(viewer)}
-                </Title>
+          <Form.Item
+            name="is_private"
+            valuePropName="checked"
+            style={{ margin: 0 }}
+          >
+            <ProfileToggle
+              onChange={(checked) =>
+                updateProfileField({ is_private: checked })
+              }
+            />
+          </Form.Item>
+        </Form>
 
-                <UserTgLink readonly user={viewer} />
-              </Space>
-            </Space>
+        <Title level={4}>Действия</Title>
 
-            <Form form={form} layout="vertical" initialValues={initialValues}>
-              <Form.Item name="description">
-                <Input.TextArea
-                  placeholder="Расскажите о себе"
-                  autoSize={{ minRows: 3, maxRows: 6 }}
-                  onBlur={(e) =>
-                    updateProfileField({ description: e.target.value })
-                  }
-                />
-              </Form.Item>
-
-              <Form.Item name="is_private" valuePropName="checked">
-                <Checkbox
-                  onChange={(e) =>
-                    updateProfileField({ is_private: e.target.checked })
-                  }
-                >
-                  Скрыть профиль
-                </Checkbox>
-              </Form.Item>
-            </Form>
-          </Space>
-        </Card>
-
-        <Card>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <Title level={4} style={{ margin: 0 }}>
-              Действия
-            </Title>
-            <Space direction="vertical" style={{ width: '100%' }}>
-              <Button block onClick={() => navigate('/profile/masters')}>
-                Мои тренера
-              </Button>
-              <Button block onClick={() => navigate('/profile/gymmers')}>
-                Мои ученики
-              </Button>
-              <Button block onClick={() => navigate('/profile/requests')}>
-                Заявки на прикрепление
-              </Button>
-            </Space>
-          </Space>
-        </Card>
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <ActionListItem nav onClick={() => navigate('/profile/masters')}>
+            Список тренеров
+          </ActionListItem>
+          <ActionListItem nav onClick={() => navigate('/profile/gymmers')}>
+            Мои ученики
+          </ActionListItem>
+          <ActionListItem nav onClick={() => navigate('/profile/requests')}>
+            Заявки на прикрепление
+          </ActionListItem>
+        </Space>
       </Flex>
     </PageLayout>
   );

@@ -1,7 +1,8 @@
 import { useViewport } from '@/shared/lib/telegram';
+import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { Button, Spin } from 'antd';
-import { PropsWithChildren, ReactNode } from 'react';
+import { CSSProperties, PropsWithChildren, ReactNode } from 'react';
 import { useNavigation } from 'react-router';
 
 export type PageLayoutProps = {
@@ -10,6 +11,7 @@ export type PageLayoutProps = {
   onBackClick?: () => void;
   loading?: boolean;
   showLoadingIndicator?: boolean;
+  contentStyle?: CSSProperties;
 };
 
 export const PageLayout = ({
@@ -19,8 +21,10 @@ export const PageLayout = ({
   showLoadingIndicator = true,
   onBackClick,
   children,
+  contentStyle,
 }: PropsWithChildren<PageLayoutProps>) => {
   const { topBarOffset } = useViewport();
+  const { token } = useTheme();
 
   const hasHeader = Boolean(title || extra || onBackClick);
 
@@ -55,7 +59,11 @@ export const PageLayout = ({
         </Flex>
       )}
 
-      <Flex flex={1} style={{ overflow: 'hidden', minHeight: 0 }}>
+      <Flex
+        flex={1}
+        p={token.padding}
+        style={{ overflow: 'hidden', minHeight: 0, ...contentStyle }}
+      >
         <div style={{ position: 'relative', height: '100%' }}>
           {children}
 

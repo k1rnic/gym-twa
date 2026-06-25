@@ -2,7 +2,7 @@ import { stringToColor } from '@/shared/lib/string';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { Avatar, AvatarProps, Typography } from 'antd';
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import classes from './user-avatar-list-item-styles.module.css';
 
 const BORDER_WIDTH = 3;
@@ -33,6 +33,13 @@ export const UserAvatarListItem = forwardRef<
 
   const avatarFallback = stringAvatar(name || '');
 
+  const [avatarLoadError, setAvatarLoadError] = useState(false);
+
+  const handleErrorRaised = () => {
+    setAvatarLoadError(true);
+    return true;
+  };
+
   return (
     <Flex className={classes.root} width={containerSize}>
       <Flex
@@ -48,8 +55,11 @@ export const UserAvatarListItem = forwardRef<
           size={size}
           src={src}
           className={classes.avatar}
-          style={{ backgroundColor: avatarFallback.color }}
+          style={{
+            backgroundColor: avatarLoadError ? avatarFallback.color : undefined,
+          }}
           onClick={() => onItemClick?.()}
+          onError={handleErrorRaised}
         >
           {!props.disableFallback && avatarFallback.children}
         </Avatar>
