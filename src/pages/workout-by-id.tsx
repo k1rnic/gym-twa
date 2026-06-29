@@ -6,6 +6,7 @@ import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
 import { PageLayout } from '@/shared/ui/page-layout';
+import { SectionTitle } from '@/shared/ui/section-title';
 import { WorkoutExerciseList } from '@/widgets/workout-exercise-list';
 import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';
 import { Form, Input } from 'antd';
@@ -83,11 +84,16 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
             disabled={!permissions.modifyWorkout}
           >
             <Form.Item<FormValues> name="title">
-              <Input style={{ width: '100%' }} placeholder="Название" />
+              <Input
+                style={{ width: '100%' }}
+                placeholder="Название"
+                size="large"
+              />
             </Form.Item>
           </Form>
 
           <Flex gap={token.paddingXS}>
+            <SectionTitle>Упражнения</SectionTitle>
             <WorkoutExerciseList
               w={workout}
               data={workout.tasks ?? []}

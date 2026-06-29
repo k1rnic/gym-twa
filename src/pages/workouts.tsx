@@ -20,6 +20,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
   return await Api.taskGroup
     .listTaskGroup({
       gymer_id: +params.gId,
+      master_id: 6,
       status: params.status as TaskGroupStatus,
     })
     .then((data) => data.sort(sortByCreated()))
@@ -31,9 +32,6 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
 
   const viewer = viewerModel.useViewer();
   const status = params.status as TaskGroupStatus;
-  const currentGymmerId = +params.gId;
-
-  const reorderEnabled = currentGymmerId === viewer.gymer?.gymer_id;
 
   const createWorkout = async () => {
     const data = await Api.taskGroup.createTaskGroup({
@@ -64,7 +62,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
         onChange={filterWorkouts}
       />
 
-      <WorkoutList data={workouts} reorderEnabled={reorderEnabled} />
+      <WorkoutList reorderEnabled data={workouts} />
 
       <FloatButton icon={<PlusOutlined />} onClick={createWorkout} />
     </Flex>

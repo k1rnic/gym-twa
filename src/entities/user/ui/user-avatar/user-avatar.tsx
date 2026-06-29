@@ -27,7 +27,7 @@ export const UserAvatar = ({
   const src = useMemo(() => getDefaultUserPhoto(user), [user]);
 
   return (
-    <Flex gap={8} vertical={vertical}>
+    <Flex gap={8} vertical={vertical} align="center">
       <Avatar
         shape="circle"
         size={size}

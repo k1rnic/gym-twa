@@ -45,7 +45,7 @@ export const UserAvatarListItem = forwardRef<
       <Flex
         className={classes.avatarWrapper}
         style={{
-          borderColor: active ? token.colorSuccess : 'transparent',
+          borderColor: active ? token.colorPrimary : 'transparent',
           borderWidth: BORDER_WIDTH,
           padding: BORDER_OFFSET,
         }}

@@ -14,9 +14,11 @@ export const useWorkoutPermissions = (
 
   const isGymmer = w.gymer_id === gymer?.gymer_id;
   const isOwner = w.owner_id === user_id;
-  const isTaskOwner = task?.owner_id === user_id;
+  const isTaskOwner = task && task?.owner_id === user_id;
 
-  const modifyWorkout = isOwner && status.isPlanned;
+  const modifyWorkout =
+    (isOwner && isGymmer && !status.isFinished) ||
+    (isOwner && status.isPlanned);
 
   const runWorkout = isGymmer && status.isPlanned;
   const finishWorkout = isGymmer && status.isActive;

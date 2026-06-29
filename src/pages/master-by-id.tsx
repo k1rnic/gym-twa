@@ -1,20 +1,22 @@
-import { masterModel, MasterStatus } from '@/entities/master';
+import { masterModel } from '@/entities/master';
 import { viewerModel } from '@/entities/viewer';
 import { Api, GymerMasterStatus } from '@/shared/api';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Button, Card, Empty, message, Space, Typography } from 'antd';
+import { Button, Empty, message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { formatUserFullName, UserTgLink } from '@/entities/user';
-
-import { UserAvatarPreview } from '@/entities/user';
 import { useNavigateBack } from '@/shared/lib/router';
-
-const { Title, Paragraph } = Typography;
+import { useTheme } from '@/shared/lib/theme';
+import {
+  ProfileDescription,
+  ProfileHero,
+  ProfileName,
+} from '@/widgets/user-profile';
 
 export default function Page() {
+  const { token } = useTheme();
   const { masterId } = useParams();
   const goBack = useNavigateBack();
 
@@ -64,7 +66,13 @@ export default function Page() {
     switch (master?.status) {
       case GymerMasterStatus.CurrentMaster:
         return (
-          <Button danger block onClick={handleBreak} loading={actionLoading}>
+          <Button
+            danger
+            block
+            size="large"
+            onClick={handleBreak}
+            loading={actionLoading}
+          >
             Открепиться
           </Button>
         );
@@ -73,6 +81,7 @@ export default function Page() {
           <Button
             type="primary"
             block
+            size="large"
             onClick={handleSendRequest}
             loading={actionLoading}
           >
@@ -86,7 +95,7 @@ export default function Page() {
 
   if (!master && !loading) {
     return (
-      <PageLayout title="Информация" onBackClick={goBack} loading={loading}>
+      <PageLayout onBackClick={goBack} loading={loading}>
         <Flex height="100%" width="100%" align="center" justify="center">
           <Empty
             description="Тренер не найден"
@@ -98,38 +107,29 @@ export default function Page() {
   }
 
   return (
-    <PageLayout title="Информация" onBackClick={goBack} loading={loading}>
-      <Flex gap="small" style={{ overflow: 'auto', height: '100%' }}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Card loading={loading}>
-            <Space align="start" size="large">
-              <UserAvatarPreview
-                photos={master?.photos ?? []}
-                preview={{ toolbarRender: () => <></> }}
-              />
+    <PageLayout
+      onBackClick={goBack}
+      loading={loading}
+      contentStyle={{ padding: 0 }}
+    >
+      <Flex height="100%" style={{ overflowY: 'auto' }}>
+        {master && (
+          <Flex style={{ position: 'relative' }}>
+            <ProfileHero user={master} />
+            <ProfileName user={master} />
+          </Flex>
+        )}
 
-              <Space direction="vertical">
-                {master && (
-                  <Space direction="vertical">
-                    <Title level={3} style={{ margin: 0 }}>
-                      {formatUserFullName(master)}
-                    </Title>
+        <Flex p={token.paddingSM} gap={token.paddingSM}>
+          <ProfileDescription
+            value={master?.description || 'Описание отсутствует'}
+            disabled
+          />
+        </Flex>
 
-                    <UserTgLink user={master} />
-                  </Space>
-                )}
-
-                <MasterStatus status={master?.status} />
-
-                <Paragraph>
-                  {master?.description || 'Описание отсутствует'}
-                </Paragraph>
-              </Space>
-            </Space>
-          </Card>
-
+        <Flex flex={1} p={token.paddingSM}>
           {renderActions()}
-        </Space>
+        </Flex>
       </Flex>
     </PageLayout>
   );

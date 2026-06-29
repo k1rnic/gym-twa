@@ -5,7 +5,7 @@ import { Flex } from '@/shared/ui/flex';
 import { Typography } from 'antd';
 
 export type ProfileNameProps = {
-  user: User;
+  user: Omit<User, 'user_id'>;
   readOnly?: boolean;
 };
 
@@ -22,8 +22,14 @@ export const ProfileName = ({ user, readOnly = false }: ProfileNameProps) => {
         zIndex: 1,
       }}
     >
-      <Typography>{formatUserFullName(user)}</Typography>
-      <UserTgLink readOnly={readOnly} user={user} />
+      <Typography.Title style={{ margin: 0 }} level={2}>
+        {formatUserFullName(user)}
+      </Typography.Title>
+      <UserTgLink
+        readOnly={readOnly}
+        user={user}
+        style={{ fontSize: token.fontSizeHeading5 }}
+      />
     </Flex>
   );
 };

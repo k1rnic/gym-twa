@@ -11,6 +11,7 @@ export const ProfileDescription = (textAreaProps: ProfileDescriptionProps) => {
     <Input.TextArea
       placeholder="Расскажите о себе"
       autoSize={{ minRows: 3, maxRows: 6 }}
+      size="large"
       {...textAreaProps}
     />
   );

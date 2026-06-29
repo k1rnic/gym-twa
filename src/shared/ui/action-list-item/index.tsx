@@ -1,12 +1,9 @@
 import { ReactNode } from 'react';
 
 import { RightOutlined } from '@ant-design/icons';
-import { Typography } from 'antd';
 
 import { Flex } from '@/shared/ui/flex';
 import { ListItem, ListItemProps } from '@/shared/ui/list-item';
-
-const { Text } = Typography;
 
 type ActionListItemProps = {
   nav?: boolean;

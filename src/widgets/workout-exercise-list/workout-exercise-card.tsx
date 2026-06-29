@@ -1,5 +1,5 @@
 import { ExerciseAvatar } from '@/entities/exercise';
-import { formatUserFullName, UserAvatar } from '@/entities/user';
+import { UserAvatar } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
 import { useDeleteWorkoutExerciseAction } from '@/features/delete-exercise-instance';
 import { Set } from '@/shared/api';
@@ -57,9 +57,10 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
               {`${s.fact_value ?? 0} кг x ${s.fact_rep ?? 0} раз`}
             </Flex>
 
-            <Flex flex={1} align="flex-end">{`${s.plan_value ?? 0} кг x ${
-              s.plan_rep ?? 0
-            } раз`}</Flex>
+            <Flex
+              flex={1}
+              align={hasFinishedExercises(s) ? 'flex-end' : 'flex-start'}
+            >{`${s.plan_value ?? 0} кг x ${s.plan_rep ?? 0} раз`}</Flex>
           </Flex>
         ),
       })) ?? []),
@@ -74,19 +75,21 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
       avatar={<ExerciseAvatar exercise={ex.exercise!} size="large" />}
       actions={actions}
       footer={
-        <Flex vertical={false} justify="space-between">
-          <Flex gap={token.paddingXXS}>
+        <Flex vertical={false} justify="space-between" align="center">
+          {ex.owner && (
+            <UserAvatar user={ex.owner} size="small" compact={false} />
+          )}
+
+          <Flex gap={token.paddingXXS} align="flex-end">
+            <Typography hidden={contentVisible}>{`${exSets.length} ${plural(
+              ['подход', 'подхода', 'подходов'],
+              exSets.length,
+            )}`}</Typography>
+
             <Typography>{`Отдых: ${
               ex.task_properties?.rest || 0
             } сек`}</Typography>
-            {ex.owner && (
-              <UserAvatar user={ex.owner} size="small" compact={false} />
-            )}
           </Flex>
-          <Typography hidden={contentVisible}>{`${exSets.length} ${plural(
-            ['подход', 'подхода', 'подходов'],
-            exSets.length,
-          )}`}</Typography>
         </Flex>
       }
       collapsed
@@ -95,7 +98,9 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
       onClick={onClick}
     >
       {hasSets ? (
-        <Descriptions column={1} items={getExerciseDescriptions(ex)} />
+        <Flex px={token.paddingXXS} py={token.paddingSM}>
+          <Descriptions column={1} items={getExerciseDescriptions(ex)} />
+        </Flex>
       ) : null}
     </CardListItem>
   );

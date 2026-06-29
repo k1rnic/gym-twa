@@ -15,7 +15,7 @@ import { Keyboard, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 export type ProfileHeroProps = {
-  user: User;
+  user: Omit<User, 'user_id'>;
   onUpload?: (file: RcFile) => Promise<void>;
   onDeletePhoto?: (url: string) => Promise<void> | void;
 };
@@ -27,7 +27,9 @@ export const ProfileHero = ({
 }: ProfileHeroProps) => {
   const { token } = useTheme();
 
-  const [photos] = useState(user.photos ?? []);
+  const [photos] = useState(
+    user.photos ?? ([user.photo].filter(Boolean) as string[]),
+  );
   const [activeIndex, setActiveIndex] = useState(0);
 
   const currentPhoto = useMemo(
@@ -74,7 +76,7 @@ export const ProfileHero = ({
   return (
     <Swiper
       loop
-      style={{ width: '100%', height: '100vw', maxHeight: '40vh' }}
+      style={{ width: '100%', height: '100vw', maxHeight: '50vh' }}
       modules={[Pagination, Keyboard]}
       keyboard={{ enabled: true, pageUpDown: true, onlyInViewport: true }}
       pagination={{ clickable: true }}

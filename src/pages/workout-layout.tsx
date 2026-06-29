@@ -10,7 +10,7 @@ import { TaskGroupStatus } from '@/shared/api';
 import { useMatchExact } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Divider } from 'antd';
+import { Spin } from 'antd';
 import { useEffect, useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
@@ -20,7 +20,7 @@ const Page = () => {
 
   const isIndex = useMatchExact();
 
-  const { gymmers: masterGymmers } = gymmerModel.useGymmers(
+  const { gymmers: masterGymmers, loading } = gymmerModel.useGymmers(
     Number(master?.master_id),
   );
 
@@ -57,16 +57,19 @@ const Page = () => {
 
   return (
     <PageLayout>
-      <Flex height="100%" gap="small" style={{ overflow: 'hidden' }}>
-        <UserAvatarList
-          items={items}
-          selected={selectedItem}
-          onClick={navigateToGymmer}
-        />
-        <Divider />
+      {loading ? (
+        <Spin fullscreen />
+      ) : (
+        <Flex height="100%" gap="small" style={{ overflow: 'hidden' }}>
+          <UserAvatarList
+            items={items}
+            selected={selectedItem}
+            onClick={navigateToGymmer}
+          />
 
-        <Outlet />
-      </Flex>
+          <Outlet />
+        </Flex>
+      )}
     </PageLayout>
   );
 };

@@ -6,7 +6,7 @@ import {
 } from '@react-router/dev/routes';
 
 export default [
-  route('/', '../pages/main-layout.tsx', [
+  route('/', '../pages/layout.tsx', [
     ...prefix('workouts', [
       route('', '../pages/workout-layout.tsx', [
         route(':gId/:status', '../pages/workouts.tsx'),

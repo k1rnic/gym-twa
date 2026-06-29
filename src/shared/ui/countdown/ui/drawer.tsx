@@ -1,9 +1,66 @@
 import { useToggle } from '@/shared/lib/hooks';
+import { useTheme } from '@/shared/lib/theme';
 import { useCountDown } from '@/shared/ui/countdown/lib';
 import { Flex } from '@/shared/ui/flex';
 import { CaretRightOutlined, CloseOutlined } from '@ant-design/icons';
 import { Button, Drawer, Typography } from 'antd';
 import { useEffect, useState } from 'react';
+
+type Props = {
+  progress: number;
+  children?: React.ReactNode;
+};
+
+export const CircularProgress = ({ progress, children }: Props) => {
+  const { token } = useTheme();
+
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - progress);
+
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <svg width="100%" height="100%" viewBox="0 0 100 100">
+        <circle
+          cx="50"
+          cy="50"
+          r={radius}
+          fill="none"
+          stroke={token.colorBgBlur}
+          strokeWidth="2"
+        />
+
+        <circle
+          cx="50"
+          cy="50"
+          r={radius}
+          fill="none"
+          stroke={token.colorPrimary}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          transform="rotate(-90 50 50)"
+        />
+      </svg>
+
+      <Flex
+        align="center"
+        justify="center"
+        style={{ position: 'absolute', inset: 0 }}
+      >
+        {children}
+      </Flex>
+    </div>
+  );
+};
 
 export type CountDownDrawerProps = {
   disabled?: boolean;
@@ -11,6 +68,8 @@ export type CountDownDrawerProps = {
 };
 
 export const CountDownDrawer = (props: CountDownDrawerProps) => {
+  const { token } = useTheme();
+
   const [opened, toggle] = useToggle();
   const [countDownValue, setCountDownValue] = useState(props.value);
 
@@ -40,15 +99,16 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
   return (
     <>
       <Button
-        color="primary"
-        variant="filled"
+        block
+        size="middle"
+        type="primary"
         icon={<CaretRightOutlined />}
         disabled={props.disabled}
-        style={{ borderBottomLeftRadius: 0, borderTopLeftRadius: 0 }}
         onClick={close}
       >
         Запуск
       </Button>
+
       <Drawer
         title={
           <Flex
@@ -62,23 +122,36 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
             <CloseOutlined onClick={close} />
           </Flex>
         }
+        height="70vh"
         placement="bottom"
-        closable={false}
-        maskClosable={false}
         open={opened}
+        closable={false}
+        maskClosable
+        onClose={close}
         styles={{
           header: { flexDirection: 'row-reverse' },
-          content: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
+          body: { paddingTop: 0 },
+          content: {
+            borderTopLeftRadius: token.borderRadiusLG,
+            borderTopRightRadius: token.borderRadiusLG,
+          },
         }}
       >
-        <Flex height="100%" align="center" justify="center">
-          <Typography.Text
-            style={{ fontSize: 'clamp(96px, 10vw, 200px)', margin: 0, flex: 1 }}
-          >
-            {countdown.formatted}
-          </Typography.Text>
-
-          <Button block type="primary" onClick={restart}>
+        <Flex height="100%" width="100%" style={{ overflow: 'hidden' }}>
+          <CircularProgress progress={1 - countdown.remaining / countDownValue}>
+            <Flex style={{ alignItems: 'center' }}>
+              <Typography.Text
+                style={{
+                  fontSize: 'clamp(96px, 10vw, 200px)',
+                  margin: 0,
+                  flex: 1,
+                }}
+              >
+                {countdown.formatted}
+              </Typography.Text>
+            </Flex>
+          </CircularProgress>
+          <Button block size="large" type="primary" onClick={restart}>
             Перезапуск
           </Button>
         </Flex>

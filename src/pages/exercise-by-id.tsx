@@ -1,9 +1,8 @@
 import { exerciseModel } from '@/entities/exercise';
 import { useViewer } from '@/entities/viewer/model';
 import { useDeleteExerciseResource } from '@/features/exercise/delete-resource';
-import { useExerciseImagePicker } from '@/features/exercise/upload-image';
-import { ExerciseVideoUploadModal } from '@/features/exercise/upload-video';
-import { Api, ExerciseStatus, UrlPathType } from '@/shared/api';
+import { ExerciseUploadFileModal } from '@/features/exercise/upload-file/ui';
+import { Api, ExerciseStatus } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
 import { useNavigateBack } from '@/shared/lib/router';
 import { DeleteButton } from '@/shared/ui/delete-button';
@@ -11,9 +10,10 @@ import { Flex } from '@/shared/ui/flex';
 import { GridPreview } from '@/shared/ui/grid-preview';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Form, Space } from 'antd';
+import { Button, Form, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import Title from 'antd/lib/typography/Title';
+
+import { SectionTitle } from '@/shared/ui/section-title';
 import { useMemo } from 'react';
 import { Route } from './+types/exercise-by-id';
 
@@ -31,40 +31,21 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
     | exerciseModel.ExerciseDetailed
     | undefined;
 
-  const imageLinks = useMemo(
-    () =>
-      initialValues?.url_path_list?.filter(
-        (i) => i.url_path_type === UrlPathType.Image,
-      ) ?? [],
+  const files = useMemo(
+    () => initialValues?.url_path_list ?? [],
     [initialValues?.url_path_list],
   );
 
-  const imagesUrls = useMemo(
-    () => imageLinks.map((i) => i.url_path),
-    [imageLinks],
-  );
-
-  const videoLinks = useMemo(
+  const items = useMemo(
     () =>
-      initialValues?.url_path_list?.filter(
-        (i) => i.url_path_type === UrlPathType.Video,
-      ) ?? [],
-    [initialValues?.url_path_list],
-  );
-
-  const videosUrls = useMemo(
-    () => videoLinks.map((i) => i.url_path),
-    [videoLinks],
+      files.map((f) => ({ url: f.url_path, type: f.url_path_type, meta: f })),
+    [files],
   );
 
   const isMine = viewer.master?.master_id === initialValues.master_id;
   const canEdit = isMine && initialValues.status === ExerciseStatus.Active;
 
-  const uploadExerciseImage = useExerciseImagePicker(
-    initialValues.exercise_id!,
-  );
-
-  const [videoUploadOpened, toggleVideoUpload] = useToggle();
+  const [uploadModalOpened, toggleUploadModal] = useToggle();
 
   const deleteExerciseResource = useDeleteExerciseResource(
     initialValues.exercise_id!,
@@ -88,7 +69,6 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
 
   return (
     <PageLayout
-      title="Шаблон"
       onBackClick={saveChanges}
       extra={canEdit && <DeleteButton onDelete={deleteExercise} />}
     >
@@ -100,11 +80,12 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
           disabled={!canEdit}
         >
           <Form.Item<exerciseModel.ExerciseDetailed> name="exercise_name">
-            <TextArea autoSize placeholder="Название" />
+            <TextArea autoSize placeholder="Название" size="large" />
           </Form.Item>
 
           <Form.Item<exerciseModel.ExerciseDetailed> name="description">
             <TextArea
+              size="large"
               placeholder="Описание"
               autoSize={{ minRows: 3, maxRows: 6 }}
             />
@@ -113,41 +94,20 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
 
         <Space size={24} direction="vertical">
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Title level={4} style={{ margin: 0 }}>
-              Фото
-            </Title>
+            <SectionTitle>Файлы</SectionTitle>
 
             <GridPreview
+              items={items}
               readOnly={!canEdit}
-              itemType="image"
-              items={imagesUrls}
-              onAddClick={uploadExerciseImage}
+              onAddClick={toggleUploadModal}
               renderToolbar={(_, { current }) => (
-                <DeleteOutlined
+                <Button
+                  size="large"
+                  type="text"
+                  danger
+                  icon={<DeleteOutlined />}
                   hidden={!canEdit}
-                  style={{ fontSize: 24 }}
-                  onClick={() => deleteExerciseResource(imageLinks[current])}
-                />
-              )}
-            />
-          </Space>
-
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <Title level={4} style={{ margin: 0 }}>
-              Видео
-            </Title>
-
-            <GridPreview
-              visibleCount={2}
-              readOnly={!canEdit}
-              itemType="video"
-              items={videosUrls}
-              onAddClick={toggleVideoUpload}
-              renderToolbar={(_, { current }) => (
-                <DeleteOutlined
-                  hidden={!canEdit}
-                  style={{ fontSize: 24 }}
-                  onClick={() => deleteExerciseResource(videoLinks[current])}
+                  onClick={() => deleteExerciseResource(files[current])}
                 />
               )}
             />
@@ -155,10 +115,10 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
         </Space>
       </Flex>
 
-      <ExerciseVideoUploadModal
-        opened={videoUploadOpened}
+      <ExerciseUploadFileModal
+        opened={uploadModalOpened}
         exerciseId={initialValues.exercise_id!}
-        onClose={toggleVideoUpload}
+        onClose={toggleUploadModal}
       />
     </PageLayout>
   );

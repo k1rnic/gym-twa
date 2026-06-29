@@ -18,7 +18,7 @@ export default function Page() {
   const { masters, loading } = masterModel.useMasters(viewer.gymer?.gymer_id);
 
   return (
-    <PageLayout title="Тренеры" onBackClick={goBack} loading={loading}>
+    <PageLayout onBackClick={goBack} loading={loading}>
       <Flex height="100%" style={{ overflow: 'auto' }}>
         <List
           items={masters}

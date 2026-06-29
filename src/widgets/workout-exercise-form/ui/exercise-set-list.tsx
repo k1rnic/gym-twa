@@ -1,9 +1,11 @@
 import { Set } from '@/shared/api';
-import { Button, Form } from 'antd';
+import { Button, Divider, Form } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 
 import { viewerModel } from '@/entities/viewer';
 import { workoutModel } from '@/entities/workout';
+import { useTheme } from '@/shared/lib/theme';
+import { Flex } from '@/shared/ui/flex';
 import { useExercisePermissions } from '@/widgets/workout-exercise-form/lib/use-exercise-permissions';
 import { PlusOutlined } from '@ant-design/icons';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
@@ -32,6 +34,7 @@ export const ExerciseSetList = ({
 
   const valueType: ValueType = workoutStatus.isPlanned ? 'plan' : 'fact';
 
+  const { token } = useTheme();
   const form = useFormInstance<workoutModel.WorkoutExercise>();
 
   const getSetOwner = (index: number) =>
@@ -96,38 +99,55 @@ export const ExerciseSetList = ({
   };
 
   return (
-    <Form.List name={['task_properties', 'sets']}>
-      {(fields, operations) => (
-        <>
-          {fields.map((field, index) => (
-            <ExerciseSet
-              key={field.key}
-              index={index}
-              field={field}
-              valueType={valueType}
-              canEdit={permissions.editSetValues}
-              canRemove={getSetOwner(index) === viewerId}
-              showFillButton={workoutStatus.isActive && permissions.isGymmer}
-              valueOptions={getOptions('value', field.name)}
-              repOptions={getOptions('rep', field.name)}
-              valuePlaceholder={getFieldPlaceholder('value', field.name)}
-              repPlaceholder={getFieldPlaceholder('rep', field.name)}
-              onFillFromPlan={() => fillFromPlan(field.name)}
-              onRemove={() => operations.remove(field.name)}
-            />
-          ))}
+    <Flex flex={1} gap={token.paddingSM} style={{ overflow: 'hidden' }}>
+      <Form.List name={['task_properties', 'sets']}>
+        {(fields, operations) => (
+          <>
+            <Flex
+              hidden={!fields.length}
+              p={token.paddingSM}
+              style={{
+                overflowY: 'auto',
+                borderRadius: token.borderRadius,
+                backgroundColor: token.colorBgLayout,
+              }}
+            >
+              {fields.map(({ key, ...field }, index) => (
+                <>
+                  <ExerciseSet
+                    key={key}
+                    index={index}
+                    field={field}
+                    valueType={valueType}
+                    canEdit={permissions.editSetValues!}
+                    canRemove={getSetOwner(index) === viewerId}
+                    showFillButton={
+                      workoutStatus.isActive && permissions.isGymmer
+                    }
+                    valueOptions={getOptions('value', field.name)}
+                    repOptions={getOptions('rep', field.name)}
+                    valuePlaceholder={getFieldPlaceholder('value', field.name)}
+                    repPlaceholder={getFieldPlaceholder('rep', field.name)}
+                    onFillFromPlan={() => fillFromPlan(field.name)}
+                    onRemove={() => operations.remove(field.name)}
+                  />
+                  {index !== fields.length - 1 && <Divider />}
+                </>
+              ))}
+            </Flex>
 
-          <Button
-            hidden={!permissions.addTaskSet}
-            type="dashed"
-            size="large"
-            icon={<PlusOutlined />}
-            onClick={() => operations.add(getLastSetValues())}
-          >
-            Добавить подход
-          </Button>
-        </>
-      )}
-    </Form.List>
+            <Button
+              hidden={!permissions.addTaskSet}
+              type="dashed"
+              size="large"
+              icon={<PlusOutlined />}
+              onClick={() => operations.add(getLastSetValues())}
+            >
+              Добавить подход
+            </Button>
+          </>
+        )}
+      </Form.List>
+    </Flex>
   );
 };

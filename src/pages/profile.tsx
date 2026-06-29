@@ -63,48 +63,50 @@ export default function Page() {
   };
 
   return (
-    <PageLayout contentStyle={{ padding: 0 }}>
-      <Flex style={{ position: 'relative' }}>
-        <ProfileHero user={viewer} onUpload={uploadFile} />
-        <ProfileName user={viewer} />
-      </Flex>
+    <PageLayout pageStyle={{ paddingTop: 0 }} contentStyle={{ padding: 0 }}>
+      <Flex height="100%" style={{ overflowY: 'auto' }}>
+        <Flex style={{ position: 'relative' }}>
+          <ProfileHero user={viewer} onUpload={uploadFile} />
+          <ProfileName user={viewer} />
+        </Flex>
 
-      <Flex p={token.paddingSM} gap={token.paddingSM}>
-        <Form form={form} layout="vertical" initialValues={initialValues}>
-          <Form.Item name="description">
-            <ProfileDescription
-              onBlur={(e) =>
-                updateProfileField({ description: e.target.value })
-              }
-            />
-          </Form.Item>
+        <Flex p={token.paddingSM} gap={token.paddingSM}>
+          <Form form={form} layout="vertical" initialValues={initialValues}>
+            <Form.Item name="description">
+              <ProfileDescription
+                onBlur={(e) =>
+                  updateProfileField({ description: e.target.value })
+                }
+              />
+            </Form.Item>
 
-          <Form.Item
-            name="is_private"
-            valuePropName="checked"
-            style={{ margin: 0 }}
-          >
-            <ProfileToggle
-              onChange={(checked) =>
-                updateProfileField({ is_private: checked })
-              }
-            />
-          </Form.Item>
-        </Form>
+            <Form.Item
+              name="is_private"
+              valuePropName="checked"
+              style={{ margin: 0 }}
+            >
+              <ProfileToggle
+                onChange={(checked) =>
+                  updateProfileField({ is_private: checked })
+                }
+              />
+            </Form.Item>
+          </Form>
 
-        <Title level={4}>Действия</Title>
+          <Title level={4}>Действия</Title>
 
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <ActionListItem nav onClick={() => navigate('/profile/masters')}>
-            Список тренеров
-          </ActionListItem>
-          <ActionListItem nav onClick={() => navigate('/profile/gymmers')}>
-            Мои ученики
-          </ActionListItem>
-          <ActionListItem nav onClick={() => navigate('/profile/requests')}>
-            Заявки на прикрепление
-          </ActionListItem>
-        </Space>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <ActionListItem nav onClick={() => navigate('/profile/masters')}>
+              Список тренеров
+            </ActionListItem>
+            <ActionListItem nav onClick={() => navigate('/profile/gymmers')}>
+              Мои ученики
+            </ActionListItem>
+            <ActionListItem nav onClick={() => navigate('/profile/requests')}>
+              Заявки на прикрепление
+            </ActionListItem>
+          </Space>
+        </Flex>
       </Flex>
     </PageLayout>
   );

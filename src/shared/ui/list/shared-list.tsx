@@ -30,7 +30,7 @@ export const List = <T,>(props: ListProps<T>) => {
   const rowKey = itemKey ?? rowKeyProp;
 
   const containedItemStyle: CSSProperties = {
-    background: token.colorFillSecondary,
+    background: token.colorBgLayout,
     borderRadius: token.borderRadius,
     border: `1px solid ${token.colorBorderSecondary}`,
     padding: compact ? token.paddingSM : token.padding,

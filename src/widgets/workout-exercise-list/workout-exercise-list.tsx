@@ -46,7 +46,7 @@ export const WorkoutExerciseList = ({
   return (
     <CardList
       reorderEnabled={reorderEnabled}
-      emptyText="Нет упражнений"
+      showEmptyPlaceholder={false}
       items={innerTasks}
       itemKey="task_id"
       onReorder={handleReorder}

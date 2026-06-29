@@ -1,5 +1,7 @@
 import { workoutModel } from '@/entities/workout';
+import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
+import { SectionTitle } from '@/shared/ui/section-title';
 import { CheckOutlined } from '@ant-design/icons';
 import { Button, Form } from 'antd';
 import { FocusEvent, useEffect, useState } from 'react';
@@ -19,6 +21,7 @@ export type WorkoutExerciseFormProps = {
 };
 
 export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
+  const { token } = useTheme();
   const { workout, exercise } = props;
 
   const { form, formValues, initialValues, mergeValues } =
@@ -34,10 +37,11 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
 
   const handleInputFocusChange = (e: FocusEvent<HTMLFormElement, Element>) => {
     const id = e.target.id;
-    const keyboardVisible = id === 'exercise_id' || /_(rep|value)$/.test(id);
+    const isFocusedTargetInputs =
+      (id === 'exercise_id' || /_(rep|value)$/.test(id)) && e.type === 'focus';
 
-    setCountDownVisible(!keyboardVisible);
-    setKeyboardToolbarVisible(keyboardVisible);
+    setCountDownVisible(!isFocusedTargetInputs);
+    setKeyboardToolbarVisible(isFocusedTargetInputs);
   };
 
   useEffect(() => {
@@ -45,36 +49,41 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
   }, [formValues]);
 
   return (
-    <Form
-      form={form}
-      initialValues={initialValues}
-      disabled={workoutStatus.isFinished}
-      onFocus={handleInputFocusChange}
-      onBlur={handleInputFocusChange}
-    >
-      <Flex height="100%">
-        <Form.Item name="exercise_id" style={{ margin: 0 }}>
-          <ExerciseSelector />
-        </Form.Item>
+    <Flex height="100%">
+      <Form
+        form={form}
+        style={{ flex: 1, overflow: 'hidden' }}
+        initialValues={initialValues}
+        disabled={workoutStatus.isFinished}
+        onFocus={handleInputFocusChange}
+        onBlur={handleInputFocusChange}
+      >
+        <Flex height="100%" gap={token.paddingSM}>
+          <Form.Item name="exercise_id" style={{ margin: 0 }}>
+            <ExerciseSelector />
+          </Form.Item>
 
-        <ExerciseSetList
-          formValues={formValues}
-          workoutStatus={workoutStatus}
-          permissions={permissions}
-        />
+          <SectionTitle>Подходы</SectionTitle>
 
-        <ExerciseToolbar
-          visible={countDownVisible}
-          runEnabled={workoutStatus.isActive && permissions.isGymmer}
-        />
+          <ExerciseSetList
+            formValues={formValues}
+            workoutStatus={workoutStatus}
+            permissions={permissions}
+          />
 
-        <Button
-          hidden={!keyboardToolbarVisible}
-          icon={<CheckOutlined />}
-          shape="round"
-          type="primary"
-        />
-      </Flex>
-    </Form>
+          <ExerciseToolbar
+            visible={countDownVisible}
+            runEnabled={workoutStatus.isActive && permissions.isGymmer}
+          />
+
+          <Button
+            hidden={!keyboardToolbarVisible}
+            icon={<CheckOutlined />}
+            shape="round"
+            type="primary"
+          />
+        </Flex>
+      </Form>
+    </Flex>
   );
 };

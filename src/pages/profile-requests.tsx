@@ -59,11 +59,7 @@ export default function Page() {
   const navigate = useNavigate();
 
   return (
-    <PageLayout
-      title="Заявки на прикрепление"
-      onBackClick={goBack}
-      loading={loading}
-    >
+    <PageLayout onBackClick={goBack} loading={loading}>
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
           items={requests}
@@ -122,13 +118,13 @@ export default function Page() {
                     Отклонить
                   </Button>,
                 ]}
-                nav={Boolean(gymerId)}
-                onClick={() =>
-                  gymerId &&
-                  navigate(`/profile/gymmers/${gymerId}`, {
-                    state: { senderUser: item.sender_user },
-                  })
-                }
+                // nav={Boolean(gymerId)}
+                // onClick={() =>
+                //   gymerId &&
+                //   navigate(`/profile/gymmers/${gymerId}`, {
+                //     state: { senderUser: item.sender_user },
+                //   })
+                // }
               />
             );
           }}

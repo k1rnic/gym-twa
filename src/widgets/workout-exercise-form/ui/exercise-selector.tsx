@@ -59,6 +59,7 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
   return (
     <Select
       showSearch
+      size="large"
       ref={selectRef}
       virtual={false}
       placeholder="Упражнение"
@@ -72,7 +73,10 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
           label
         ) : (
           <Flex vertical={false} gap={8} align="center" py={4}>
-            <ExerciseAvatar exercise={exerciseMap.get(value)} />
+            <ExerciseAvatar
+              exercise={exerciseMap.get(value)}
+              onClick={goToExercise}
+            />
             <Typography.Text style={{ whiteSpace: 'normal' }}>
               {label}
             </Typography.Text>

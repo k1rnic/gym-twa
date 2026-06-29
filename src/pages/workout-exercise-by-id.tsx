@@ -1,6 +1,5 @@
 import { Api } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
-import { DeleteButton } from '@/shared/ui/delete-button';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExerciseForm } from '@/widgets/workout-exercise-form';
 import { normalizeSetValues } from '@/widgets/workout-exercise-form/lib/normalize-set-values';
@@ -22,13 +21,6 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
 
   const [formValues, setFormValues] = useState(exercise);
 
-  const deleteExercise = async () => {
-    if (formValues) {
-      await Api.task.deleteTask(formValues.task_id);
-      goBack();
-    }
-  };
-
   const saveChanges = async () => {
     if (formValues) {
       await Api.task.updateTask(normalizeSetValues(formValues));
@@ -37,10 +29,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
   };
 
   return (
-    <PageLayout
-      onBackClick={saveChanges}
-      extra={<DeleteButton onDelete={deleteExercise} />}
-    >
+    <PageLayout onBackClick={saveChanges}>
       {formValues ? (
         <WorkoutExerciseForm
           exercise={exercise!}

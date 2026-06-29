@@ -1,17 +1,17 @@
 import { gymmerModel } from '@/entities/gymmer';
-import { formatUserFullName, UserAvatarPreview } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, type User } from '@/shared/api';
 import { useNavigateBack } from '@/shared/lib/router';
+import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Button, Card, Empty, message, Space, Typography } from 'antd';
+import { ProfileHero, ProfileName } from '@/widgets/user-profile';
+import { Button, Empty, message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 
-const { Title, Paragraph } = Typography;
-
 export default function Page() {
+  const { token } = useTheme();
   const { gymerId } = useParams();
   const location = useLocation();
   const goBack = useNavigateBack();
@@ -71,46 +71,33 @@ export default function Page() {
     : senderUser?.photos ?? (senderUser?.photo ? [senderUser.photo] : []);
 
   return (
-    <PageLayout title="Информация" onBackClick={goBack} loading={loading}>
-      <Flex gap="small" style={{ overflow: 'auto', height: '100%' }}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Card loading={loading}>
-            <Space align="start" size="large">
-              <UserAvatarPreview
-                photos={photos}
-                preview={{ toolbarRender: () => <></> }}
-              />
+    <PageLayout
+      onBackClick={goBack}
+      loading={loading}
+      contentStyle={{ padding: 0 }}
+    >
+      <Flex height="100%" style={{ overflowY: 'auto' }}>
+        {gymmer && (
+          <Flex style={{ position: 'relative' }}>
+            <ProfileHero user={gymmer} />
+            <ProfileName user={gymmer} />
+          </Flex>
+        )}
 
-              <Space direction="vertical">
-                {detailsUser && (
-                  <Space direction="vertical">
-                    <Title level={3} style={{ margin: 0 }}>
-                      {formatUserFullName(detailsUser)}
-                    </Title>
-
-                    <Paragraph>
-                      {detailsUser.username
-                        ? `@${detailsUser.username}`
-                        : 'Псевдоним отсутствует'}
-                    </Paragraph>
-                  </Space>
-                )}
-
-                <Paragraph>
-                  {isAttached
-                    ? 'Ученик у вас в списке'
-                    : 'Ученик пока не прикреплён'}
-                </Paragraph>
-              </Space>
-            </Space>
-          </Card>
-
+        <Flex flex={1} p={token.paddingSM}>
           {isAttached && (
-            <Button danger block loading={actionLoading} onClick={handleBreak}>
+            <Button
+              danger
+              block
+              type="primary"
+              size="large"
+              loading={actionLoading}
+              onClick={handleBreak}
+            >
               Открепить
             </Button>
           )}
-        </Space>
+        </Flex>
       </Flex>
     </PageLayout>
   );

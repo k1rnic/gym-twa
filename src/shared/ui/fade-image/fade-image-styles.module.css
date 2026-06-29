@@ -16,7 +16,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 120px;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--fade-bg));
+  height: 200px;
+
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.2) 40%,
+    rgba(0, 0, 0, 0.6) 70%,
+    var(--fade-bg) 100%
+  );
 }

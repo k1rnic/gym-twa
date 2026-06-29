@@ -38,11 +38,7 @@ export default function Page() {
   };
 
   return (
-    <PageLayout
-      title="Мои ученики"
-      onBackClick={goBack}
-      loading={gymmerApi.loading || isBreaking}
-    >
+    <PageLayout onBackClick={goBack} loading={gymmerApi.loading || isBreaking}>
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
           items={gymmers}

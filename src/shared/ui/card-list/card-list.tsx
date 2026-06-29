@@ -31,6 +31,7 @@ export type CardListProps<T> = {
   reorderEnabled?: boolean;
   loading?: boolean;
   emptyText?: string;
+  showEmptyPlaceholder?: boolean;
   onReorder?: (items: T[]) => void;
   renderItem: (item: T, props: RenderItemProps, idx: number) => React.ReactNode;
 };
@@ -38,7 +39,8 @@ export type CardListProps<T> = {
 export const CardList = <T,>({
   items,
   loading,
-  emptyText = 'Нет данный',
+  emptyText = 'Нет данных',
+  showEmptyPlaceholder = true,
   itemKey,
   reorderEnabled,
   onReorder,
@@ -69,7 +71,7 @@ export const CardList = <T,>({
     onReorder?.(reordered);
   };
 
-  return noData ? (
+  return noData && showEmptyPlaceholder ? (
     <Empty description={emptyText} image={Empty.PRESENTED_IMAGE_SIMPLE} />
   ) : (
     <DndContext

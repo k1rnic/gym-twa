@@ -7,11 +7,13 @@ import { Exercise } from '../model';
 type ExerciseAvatarProps = {
   size?: AvatarSize;
   exercise?: Exercise;
+  onClick?: (ex: Exercise) => void;
 };
 
 export const ExerciseAvatar = ({
   size = 'default',
   exercise,
+  onClick,
 }: ExerciseAvatarProps) => {
   const { token } = useTheme();
 
@@ -21,6 +23,10 @@ export const ExerciseAvatar = ({
         ?.url_path,
     [exercise],
   );
+
+  if (!exercise) {
+    return null;
+  }
 
   return (
     <Avatar
@@ -34,6 +40,10 @@ export const ExerciseAvatar = ({
         justifyContent: 'center',
       }}
       src={src}
+      onClick={(e) => {
+        if (onClick) e?.stopPropagation();
+        onClick?.(exercise);
+      }}
     />
   );
 };

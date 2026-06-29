@@ -1,6 +1,5 @@
 import { viewerModel } from '@/entities/viewer';
 import { useMatchExact } from '@/shared/lib/router';
-import { useViewport } from '@/shared/lib/telegram';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { AppToolbar } from '@/widgets/app-toolbar';
@@ -10,7 +9,6 @@ import { Outlet, useNavigate } from 'react-router';
 
 export default function Page() {
   const { token } = useTheme();
-  const { topBarOffset } = useViewport();
 
   const navigate = useNavigate();
   const match = useMatchExact();
@@ -29,8 +27,7 @@ export default function Page() {
       width="100%"
       style={{
         backgroundColor: token.colorBgContainer,
-        paddingBottom: 0,
-        paddingTop: topBarOffset,
+        paddingBottom: token.paddingLG,
       }}
     >
       <Flex flex={1} style={{ overflow: 'hidden' }}>

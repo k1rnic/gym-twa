@@ -1,5 +1,4 @@
 import { Flex } from '@/shared/ui/flex';
-import { FLOAT_BUTTON_SIZE } from '@/shared/ui/float-button';
 import { Input } from 'antd';
 import { ReactNode, useState } from 'react';
 import { useExerciseFilter } from '../../lib/use-exercise-filter';
@@ -28,7 +27,7 @@ export const ExerciseList = ({
 
   return (
     <Flex height="100%" style={{ overflow: 'hidden' }} gap={8}>
-      <Search
+      <Input
         allowClear
         size="large"
         placeholder={searchPlaceholder}
@@ -45,10 +44,6 @@ export const ExerciseList = ({
           title="Базовые"
           data={grouped.basic}
           onSelect={(ex) => onSelect?.(ex)}
-          listItemStyle={(_, idx) => ({
-            marginBottom:
-              idx === grouped.basic.length - 1 ? FLOAT_BUTTON_SIZE : 0,
-          })}
         />
       </Flex>
     </Flex>

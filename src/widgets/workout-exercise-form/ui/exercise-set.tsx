@@ -1,10 +1,19 @@
+import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { CloseOutlined, FormOutlined } from '@ant-design/icons';
-import { AutoComplete, Button, Form, FormListFieldData, Input } from 'antd';
+import {
+  AutoComplete,
+  Button,
+  Divider,
+  Form,
+  FormListFieldData,
+  Input,
+  Typography,
+} from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 
 type Props = {
-  field: FormListFieldData;
+  field: Omit<FormListFieldData, 'key'>;
   index: number;
   valueType: 'fact' | 'plan';
   canEdit: boolean;
@@ -19,6 +28,7 @@ type Props = {
 };
 
 export const ExerciseSet = ({
+  index,
   field,
   valueType,
   canEdit,
@@ -30,53 +40,77 @@ export const ExerciseSet = ({
   showFillButton,
   onFillFromPlan,
   onRemove,
-}: Props) => (
-  <Flex vertical={false} align="start" gap={8}>
-    <Flex vertical={false} gap={8} flex={1}>
+}: Props) => {
+  const { token } = useTheme();
+
+  return (
+    <Flex
+      height={50}
+      vertical={false}
+      align="center"
+      style={{ backgroundColor: token.colorBgLayout }}
+    >
+      <Typography style={{ margin: `0 ${token.paddingXS}px` }}>
+        {index + 1}
+      </Typography>
+
+      <Divider type="vertical" style={{ height: '60%' }} />
+
       <Form.Item
         {...field}
         name={[field.name, `${valueType}_value`]}
-        style={{ flex: 1 }}
+        style={{ margin: 0, flex: 1 }}
       >
         <AutoComplete
           disabled={!canEdit}
           options={valueOptions}
           placeholder={valuePlaceholder}
         >
-          <Input suffix="кг" inputMode="decimal" />
+          <Input
+            suffix="кг"
+            inputMode="decimal"
+            style={{ borderRadius: 0, backgroundColor: 'transparent' }}
+          />
         </AutoComplete>
       </Form.Item>
+
+      <Divider type="vertical" style={{ height: '60%' }} />
 
       <Form.Item
         {...field}
         name={[field.name, `${valueType}_rep`]}
-        style={{ flex: 1 }}
+        style={{ margin: 0, flex: 1 }}
       >
         <AutoComplete
           disabled={!canEdit}
           options={repOptions}
           placeholder={repPlaceholder}
         >
-          <Input suffix="раз" inputMode="decimal" />
+          <Input
+            suffix="раз"
+            inputMode="decimal"
+            style={{ borderRadius: 0, backgroundColor: 'transparent' }}
+          />
         </AutoComplete>
       </Form.Item>
-    </Flex>
 
-    <Flex vertical={false}>
-      <Button
-        hidden={!showFillButton}
-        icon={<FormOutlined />}
-        type="primary"
-        variant="filled"
-        onClick={onFillFromPlan}
-      />
+      <Divider type="vertical" style={{ height: '60%' }} />
 
-      <Button
-        hidden={!canRemove}
-        icon={<CloseOutlined />}
-        type="text"
-        onClick={onRemove}
-      />
+      <Flex vertical={false} gap={token.paddingSM}>
+        <Button
+          hidden={!showFillButton}
+          icon={<FormOutlined />}
+          type="text"
+          onClick={onFillFromPlan}
+        />
+
+        <Button
+          hidden={!canRemove}
+          icon={<CloseOutlined />}
+          type="text"
+          onClick={onRemove}
+        />
+      </Flex>
     </Flex>
-  </Flex>
-);
+  );
+};
