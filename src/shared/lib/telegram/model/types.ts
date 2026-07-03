@@ -1,6 +1,6 @@
-import { RetrieveLPResult } from '@telegram-apps/sdk-react';
+import { RetrieveLaunchParamsResult } from '@tma.js/sdk-react';
 
-export type TgLaunchParams = RetrieveLPResult;
+export type TgLaunchParams = RetrieveLaunchParamsResult;
 export type TgWebAppData = Required<TgLaunchParams>['tgWebAppData'];
 export type TgWebAppThemeParams =
   Required<TgLaunchParams>['tgWebAppThemeParams'];

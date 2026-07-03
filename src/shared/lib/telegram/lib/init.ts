@@ -1,16 +1,12 @@
 import {
-  bindThemeParamsCssVars,
-  bindViewportCssVars,
+  backButton,
   closingBehavior,
+  initData,
   init as initSDK,
-  mountBackButton,
-  mountMiniAppSync,
-  mountSwipeBehavior,
-  mountViewport,
-  requestFullscreen,
-  restoreInitData,
   setDebug,
-} from '@telegram-apps/sdk-react';
+  swipeBehavior,
+  viewport,
+} from '@tma.js/sdk-react';
 
 if (import.meta.env.DEV) {
   await import('./mock-env.client');
@@ -20,21 +16,16 @@ export async function init(): Promise<void> {
   setDebug(import.meta.env.DEV);
   initSDK();
 
-  mountBackButton.ifAvailable();
-  mountSwipeBehavior.ifAvailable();
+  initData.restore();
 
-  restoreInitData();
-
-  if (mountMiniAppSync.isAvailable()) {
-    mountMiniAppSync();
-    bindThemeParamsCssVars();
-  }
-  if (mountViewport.isAvailable()) {
-    await mountViewport();
-    bindViewportCssVars();
-    await requestFullscreen.ifAvailable();
-  }
+  await viewport.mount();
+  viewport.requestFullscreen();
 
   closingBehavior.mount();
   closingBehavior.enableConfirmation();
+
+  swipeBehavior.mount();
+  swipeBehavior.disableVertical();
+
+  backButton.mount();
 }

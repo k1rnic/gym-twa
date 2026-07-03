@@ -1,7 +1,7 @@
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { CreateWorkoutExerciseButton } from '@/features/create-exercise-instance';
 import { Api, TaskGroupStatus } from '@/shared/api';
-import { useNavigateBack } from '@/shared/lib/router';
+import { useTelegramBackButton } from '@/shared/lib/router';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
@@ -22,7 +22,6 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 const Page = ({ loaderData: workout }: Route.ComponentProps) => {
   const { revalidate } = useRevalidator();
-  const goBack = useNavigateBack();
 
   const { token } = useTheme();
 
@@ -70,8 +69,10 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
     };
   }, []);
 
+  useTelegramBackButton();
+
   return (
-    <PageLayout onBackClick={goBack}>
+    <PageLayout>
       {workout && (
         <Flex
           height="100%"

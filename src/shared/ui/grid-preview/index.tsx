@@ -62,7 +62,7 @@ export type GridPreviewProps = {
 
 export const GridPreview = (props: GridPreviewProps) => {
   const { token } = useTheme();
-  const { topBarOffset } = useViewport();
+  const { topSafeArea } = useViewport();
 
   const {
     gutter = [8, 8],
@@ -230,7 +230,7 @@ export const GridPreview = (props: GridPreviewProps) => {
         open={previewVisible}
         onClose={() => setPreviewVisible(false)}
         placement="bottom"
-        height={`calc(95% - ${topBarOffset}px)`}
+        height={`calc(95% - ${topSafeArea}px)`}
         styles={{
           header: { flexDirection: 'row-reverse', padding: 0 },
           body: { padding: 0 },

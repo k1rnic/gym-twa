@@ -1,2 +1,2 @@
-export * from './use-navigate-back';
+export * from './use-back-button';
 export * from './use-match-exact';

@@ -1,4 +1,4 @@
-import { useLaunchParams } from '@telegram-apps/sdk-react';
+import { useLaunchParams } from '@tma.js/sdk-react';
 import { TgWebAppData } from '../model';
 
 const emptyTgWebAppData: TgWebAppData = {

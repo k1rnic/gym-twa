@@ -1,24 +1,22 @@
 import { masterModel, MasterStatus } from '@/entities/master';
 import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
-import { useNavigateBack } from '@/shared/lib/router';
+import { useTelegramBackButton } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Typography } from 'antd';
 import { useNavigate } from 'react-router';
-
-const { Text } = Typography;
 
 export default function Page() {
   const viewer = viewerModel.useViewer();
   const navigate = useNavigate();
-  const goBack = useNavigateBack();
 
   const { masters, loading } = masterModel.useMasters(viewer.gymer?.gymer_id);
 
+  useTelegramBackButton();
+
   return (
-    <PageLayout onBackClick={goBack} loading={loading}>
+    <PageLayout loading={loading}>
       <Flex height="100%" style={{ overflow: 'auto' }}>
         <List
           items={masters}
