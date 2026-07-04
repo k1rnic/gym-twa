@@ -1,20 +1,23 @@
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { Radio } from 'antd';
-import { RadioChangeEvent } from 'antd/lib';
+import { FireOutlined, ReadOutlined, UserOutlined } from '@ant-design/icons';
+import { ConfigProvider, Segmented } from 'antd';
+import { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import styles from './app-toolbar-styles.module.css';
 
 export const APP_TOOLBAR_HEIGHT = 48;
 
 interface Item {
-  label: string;
+  label?: ReactNode;
   value: string;
+  icon: ReactNode;
 }
 
 const items: Item[] = [
-  { label: 'Тренировки', value: '/workouts' },
-  { label: 'Упражнения', value: '/exercises' },
-  { label: 'Профиль', value: '/profile' },
+  { value: '/workouts', icon: <FireOutlined /> },
+  { value: '/exercises', icon: <ReadOutlined /> },
+  { value: '/profile', icon: <UserOutlined /> },
 ];
 
 export const AppToolbar = () => {
@@ -25,33 +28,27 @@ export const AppToolbar = () => {
 
   const navigate = useNavigate();
 
-  const handleChange = (e: RadioChangeEvent) => {
-    navigate(e.target.value);
+  const handleChange = (value: string) => {
+    navigate(value);
   };
 
   return (
-    <Flex
-      height={APP_TOOLBAR_HEIGHT}
-      align="center"
-      justify="flex-start"
-      width="100%"
-      style={{ paddingTop: 8 }}
+    <ConfigProvider
+      theme={{
+        components: { Segmented: { itemSelectedBg: token.colorPrimary } },
+      }}
     >
-      <Radio.Group
-        block
-        value={activeItem?.value}
-        size="middle"
-        optionType="button"
-        buttonStyle="solid"
-        style={{ width: '100%', borderRadius: token.borderRadiusLG }}
-        onChange={handleChange}
-      >
-        {items.map((item) => (
-          <Radio.Button key={item.value} value={item.value}>
-            {item.label}
-          </Radio.Button>
-        ))}
-      </Radio.Group>
-    </Flex>
+      <Flex px={token.padding}>
+        <Segmented
+          block
+          shape="round"
+          size="large"
+          className={styles.container}
+          options={items}
+          value={activeItem?.value}
+          onChange={handleChange}
+        />
+      </Flex>
+    </ConfigProvider>
   );
 };

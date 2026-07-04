@@ -27,6 +27,7 @@ export default function Page() {
     <Flex
       height="100%"
       width="100%"
+      gap={token.paddingSM}
       style={{
         backgroundColor: token.colorBgContainer,
         paddingBottom: bottomSafeArea,
@@ -35,9 +36,8 @@ export default function Page() {
       <Flex flex={1} style={{ overflow: 'hidden' }}>
         <Outlet />
       </Flex>
-      <Flex px={token.padding}>
-        <AppToolbar />
-      </Flex>
+
+      <AppToolbar />
     </Flex>
   );
 }

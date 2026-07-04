@@ -18,8 +18,7 @@ export async function init(): Promise<void> {
 
   initData.restore();
 
-  await viewport.mount();
-  viewport.requestFullscreen();
+  viewport.mount().then(() => viewport.requestFullscreen());
 
   closingBehavior.mount();
   closingBehavior.enableConfirmation();
