@@ -1,7 +1,7 @@
 import { exerciseModel } from '@/entities/exercise';
 import { useViewer } from '@/entities/viewer/model';
 import { useDeleteExerciseResource } from '@/features/exercise/delete-resource';
-import { ExerciseUploadFileModal } from '@/features/exercise/upload-file/ui';
+import { ExerciseUploadFileModal } from '@/features/exercise/upload-file';
 import { Api, ExerciseStatus } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
 import {

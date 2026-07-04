@@ -1,8 +1,17 @@
 import { Api, UrlPathType } from '@/shared/api';
 import { useFilePicker } from '@/shared/lib/file';
+import { useTheme } from '@/shared/lib/theme';
 import { isVideoUrl } from '@/shared/lib/video';
 import { Flex } from '@/shared/ui/flex';
-import { Button, Input, message, Modal, Radio, RadioChangeEvent } from 'antd';
+import {
+  Button,
+  Input,
+  message,
+  Modal,
+  Radio,
+  RadioChangeEvent,
+  Typography,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { useRevalidator } from 'react-router';
 
@@ -15,6 +24,7 @@ export type ExerciseUploadFileModalProps = {
 export const ExerciseUploadFileModal = (
   props: ExerciseUploadFileModalProps,
 ) => {
+  const { token } = useTheme();
   const { revalidate } = useRevalidator();
 
   const [mode, setMode] = useState<'link' | 'file'>('link');
@@ -68,13 +78,15 @@ export const ExerciseUploadFileModal = (
 
   return (
     <Modal
+      centered
+      height="400"
       title="Добавить файл"
       open={props.opened}
       onCancel={props.onClose}
       okButtonProps={{ hidden: true }}
       cancelButtonProps={{ hidden: true }}
     >
-      <Flex vertical gap={12}>
+      <Flex vertical gap={token.paddingSM} py={token.paddingContentVertical}>
         <Radio.Group
           value={mode}
           onChange={(e: RadioChangeEvent) => setMode(e.target.value)}
@@ -84,9 +96,9 @@ export const ExerciseUploadFileModal = (
         </Radio.Group>
 
         {mode === 'link' ? (
-          <Flex align="center" gap={8}>
+          <Flex align="center" gap={token.paddingSM} vertical={false}>
             <Input
-              placeholder="Ссылка на изображение или видео"
+              placeholder="Вставьте ссылку"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
@@ -95,10 +107,22 @@ export const ExerciseUploadFileModal = (
             </Button>
           </Flex>
         ) : (
-          <Flex align="center" gap={8}>
-            <Button onClick={openFilePicker}>Выбрать файл</Button>
-            <div style={{ flex: 1 }}>{files[0]?.name}</div>
-            <Button type="primary" disabled={!files[0]} onClick={onSubmitFile}>
+          <Flex align="flex-start" gap={token.paddingSM} vertical={false}>
+            <Flex flex={1} gap={token.paddingSM}>
+              <Button block onClick={openFilePicker}>
+                Выбрать файл
+              </Button>
+              <Typography.Text hidden={!files.length}>
+                Файл: {files[0]?.name}
+              </Typography.Text>
+            </Flex>
+
+            <Button
+              type="primary"
+              size="small"
+              disabled={!files[0]}
+              onClick={onSubmitFile}
+            >
               Загрузить
             </Button>
           </Flex>
