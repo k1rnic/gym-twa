@@ -1,14 +1,13 @@
 import { useViewport } from '@/shared/lib/telegram';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { Button, Spin, Typography } from 'antd';
+import { Spin, Typography } from 'antd';
 import { CSSProperties, PropsWithChildren, ReactNode } from 'react';
 import { useNavigation } from 'react-router';
 
 export type PageLayoutProps = {
   title?: ReactNode;
   extra?: ReactNode;
-  onBackClick?: () => void;
   loading?: boolean;
   showLoadingIndicator?: boolean;
   contentStyle?: CSSProperties;
@@ -20,15 +19,14 @@ export const PageLayout = ({
   extra,
   loading,
   showLoadingIndicator = true,
-  onBackClick,
   children,
   contentStyle,
   pageStyle,
 }: PropsWithChildren<PageLayoutProps>) => {
-  const { topBarOffset } = useViewport();
+  const { topSafeArea } = useViewport();
   const { token } = useTheme();
 
-  const hasHeader = Boolean(title || extra || onBackClick);
+  const hasHeader = Boolean(title || extra);
 
   const navigation = useNavigation();
 
@@ -41,7 +39,7 @@ export const PageLayout = ({
       height="100%"
       width="100%"
       vertical
-      style={{ overflow: 'hidden', paddingTop: topBarOffset, ...pageStyle }}
+      style={{ overflow: 'hidden', paddingTop: topSafeArea, ...pageStyle }}
     >
       {hasHeader && (
         <Flex
@@ -51,14 +49,6 @@ export const PageLayout = ({
           style={{ width: '100%', flexShrink: 0 }}
           px={token.paddingMD}
         >
-          {onBackClick ? (
-            <Button type="link" onClick={onBackClick}>
-              Назад
-            </Button>
-          ) : (
-            <span style={{ width: 64 }} />
-          )}
-
           <Flex flex={1} justify="center" style={{ textAlign: 'center' }}>
             <Typography.Title level={3} style={{ margin: 0 }}>
               {title}

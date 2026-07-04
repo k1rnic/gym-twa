@@ -2,7 +2,7 @@ import { gymmerModel } from '@/entities/gymmer';
 import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, MastersGymer } from '@/shared/api';
-import { useNavigateBack } from '@/shared/lib/router';
+import { useTelegramBackButton } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
@@ -11,7 +11,6 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export default function Page() {
-  const goBack = useNavigateBack();
   const navigate = useNavigate();
 
   const viewer = viewerModel.useViewer();
@@ -37,8 +36,10 @@ export default function Page() {
     }
   };
 
+  useTelegramBackButton();
+
   return (
-    <PageLayout onBackClick={goBack} loading={gymmerApi.loading || isBreaking}>
+    <PageLayout loading={gymmerApi.loading || isBreaking}>
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
           items={gymmers}

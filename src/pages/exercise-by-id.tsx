@@ -4,7 +4,10 @@ import { useDeleteExerciseResource } from '@/features/exercise/delete-resource';
 import { ExerciseUploadFileModal } from '@/features/exercise/upload-file/ui';
 import { Api, ExerciseStatus } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
-import { useNavigateBack } from '@/shared/lib/router';
+import {
+  useNavigateBackButton,
+  useTelegramBackButton,
+} from '@/shared/lib/router';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { GridPreview } from '@/shared/ui/grid-preview';
@@ -22,7 +25,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 };
 
 const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
-  const goBack = useNavigateBack();
+  const goBack = useNavigateBackButton();
 
   const viewer = useViewer();
   const [form] = Form.useForm<exerciseModel.ExerciseDetailed>();
@@ -59,7 +62,6 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
         exercise_name: formValues?.exercise_name ?? '',
       });
     }
-    goBack();
   };
 
   const deleteExercise = async () => {
@@ -67,11 +69,10 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
     goBack();
   };
 
+  useTelegramBackButton({ beforeUnmount: saveChanges });
+
   return (
-    <PageLayout
-      onBackClick={saveChanges}
-      extra={canEdit && <DeleteButton onDelete={deleteExercise} />}
-    >
+    <PageLayout extra={canEdit && <DeleteButton onDelete={deleteExercise} />}>
       <Flex height="100%" style={{ overflowY: 'auto' }}>
         <Form<exerciseModel.ExerciseDetailed>
           form={form}

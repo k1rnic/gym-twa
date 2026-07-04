@@ -1,5 +1,5 @@
 import { Api } from '@/shared/api';
-import { useNavigateBack } from '@/shared/lib/router';
+import { useTelegramBackButton } from '@/shared/lib/router';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExerciseForm } from '@/widgets/workout-exercise-form';
 import { normalizeSetValues } from '@/widgets/workout-exercise-form/lib/normalize-set-values';
@@ -15,8 +15,6 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 };
 
 const Page = ({ loaderData }: Route.ComponentProps) => {
-  const goBack = useNavigateBack();
-
   const { workout, exercise } = loaderData;
 
   const [formValues, setFormValues] = useState(exercise);
@@ -24,12 +22,13 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
   const saveChanges = async () => {
     if (formValues) {
       await Api.task.updateTask(normalizeSetValues(formValues));
-      goBack();
     }
   };
 
+  useTelegramBackButton({ beforeUnmount: saveChanges });
+
   return (
-    <PageLayout onBackClick={saveChanges}>
+    <PageLayout>
       {formValues ? (
         <WorkoutExerciseForm
           exercise={exercise!}

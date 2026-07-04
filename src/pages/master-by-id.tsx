@@ -7,7 +7,7 @@ import { Button, Empty, message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { useNavigateBack } from '@/shared/lib/router';
+import { useTelegramBackButton } from '@/shared/lib/router';
 import { useTheme } from '@/shared/lib/theme';
 import {
   ProfileDescription,
@@ -18,7 +18,6 @@ import {
 export default function Page() {
   const { token } = useTheme();
   const { masterId } = useParams();
-  const goBack = useNavigateBack();
 
   const viewer = viewerModel.useViewer();
 
@@ -93,9 +92,11 @@ export default function Page() {
     }
   }, [master?.status, actionLoading]);
 
+  useTelegramBackButton();
+
   if (!master && !loading) {
     return (
-      <PageLayout onBackClick={goBack} loading={loading}>
+      <PageLayout loading={loading}>
         <Flex height="100%" width="100%" align="center" justify="center">
           <Empty
             description="Тренер не найден"
@@ -107,11 +108,7 @@ export default function Page() {
   }
 
   return (
-    <PageLayout
-      onBackClick={goBack}
-      loading={loading}
-      contentStyle={{ padding: 0 }}
-    >
+    <PageLayout loading={loading} contentStyle={{ padding: 0 }}>
       <Flex height="100%" style={{ overflowY: 'auto' }}>
         {master && (
           <Flex style={{ position: 'relative' }}>

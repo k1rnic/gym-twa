@@ -1,7 +1,7 @@
 import { gymmerModel } from '@/entities/gymmer';
 import { viewerModel } from '@/entities/viewer';
 import { Api, type User } from '@/shared/api';
-import { useNavigateBack } from '@/shared/lib/router';
+import { useTelegramBackButton } from '@/shared/lib/router';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
@@ -14,7 +14,6 @@ export default function Page() {
   const { token } = useTheme();
   const { gymerId } = useParams();
   const location = useLocation();
-  const goBack = useNavigateBack();
 
   const viewer = viewerModel.useViewer();
   const { gymmers, refresh, loading } = gymmerModel.useGymmers(
@@ -51,9 +50,11 @@ export default function Page() {
     }
   }, [gymmer, refresh, viewer.master]);
 
+  useTelegramBackButton();
+
   if (!detailsUser && !loading) {
     return (
-      <PageLayout title="Информация" onBackClick={goBack} loading={loading}>
+      <PageLayout title="Информация" loading={loading}>
         <Flex height="100%" width="100%" align="center" justify="center">
           <Empty
             description="Ученик не найден"
@@ -64,18 +65,8 @@ export default function Page() {
     );
   }
 
-  const photos = gymmer
-    ? gymmer.photo
-      ? [gymmer.photo]
-      : []
-    : senderUser?.photos ?? (senderUser?.photo ? [senderUser.photo] : []);
-
   return (
-    <PageLayout
-      onBackClick={goBack}
-      loading={loading}
-      contentStyle={{ padding: 0 }}
-    >
+    <PageLayout loading={loading} contentStyle={{ padding: 0 }}>
       <Flex height="100%" style={{ overflowY: 'auto' }}>
         {gymmer && (
           <Flex style={{ position: 'relative' }}>

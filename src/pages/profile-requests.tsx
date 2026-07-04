@@ -2,19 +2,16 @@ import { masterModel } from '@/entities/master';
 import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
-import { useNavigateBack } from '@/shared/lib/router';
+import { useTelegramBackButton } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Button, message, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
 
 const { Paragraph } = Typography;
 
 export default function Page() {
-  const goBack = useNavigateBack();
-
   const viewer = viewerModel.useViewer();
 
   const { refresh: refreshMasters } = masterModel.useMasters(
@@ -56,10 +53,10 @@ export default function Page() {
     }
   };
 
-  const navigate = useNavigate();
+  useTelegramBackButton();
 
   return (
-    <PageLayout onBackClick={goBack} loading={loading}>
+    <PageLayout loading={loading}>
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
           items={requests}
@@ -118,13 +115,6 @@ export default function Page() {
                     Отклонить
                   </Button>,
                 ]}
-                // nav={Boolean(gymerId)}
-                // onClick={() =>
-                //   gymerId &&
-                //   navigate(`/profile/gymmers/${gymerId}`, {
-                //     state: { senderUser: item.sender_user },
-                //   })
-                // }
               />
             );
           }}
