@@ -20,7 +20,11 @@ const items: Item[] = [
   { value: '/profile', icon: <UserOutlined /> },
 ];
 
-export const AppToolbar = () => {
+export type AppToolbarProps = {
+  hidden?: boolean;
+};
+
+export const AppToolbar = ({ hidden = false }: AppToolbarProps) => {
   const { token } = useTheme();
   const { pathname } = useLocation();
 
@@ -38,12 +42,12 @@ export const AppToolbar = () => {
         components: { Segmented: { itemSelectedBg: token.colorPrimary } },
       }}
     >
-      <Flex px={token.padding}>
+      <Flex hidden={hidden} px={token.padding} className={styles.container}>
         <Segmented
           block
           shape="round"
           size="large"
-          className={styles.container}
+          className={styles.segmented}
           options={items}
           value={activeItem?.value}
           onChange={handleChange}

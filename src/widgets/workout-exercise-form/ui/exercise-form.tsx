@@ -1,15 +1,15 @@
 import { workoutModel } from '@/entities/workout';
+import { useVirtualKeyboardOpened } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { SectionTitle } from '@/shared/ui/section-title';
-import { CheckOutlined } from '@ant-design/icons';
-import { Button, Form } from 'antd';
-import { FocusEvent, useEffect, useState } from 'react';
+import { Form } from 'antd';
+import { FocusEvent, useEffect, useMemo, useState } from 'react';
 import { useExerciseForm } from '../lib/use-exercise-form';
 import { useExercisePermissions } from '../lib/use-exercise-permissions';
+import { ExerciseCountDown } from './exercise-countdown';
 import { ExerciseSelector } from './exercise-selector';
 import { ExerciseSetList } from './exercise-set-list';
-import { ExerciseToolbar } from './exercise-toolbar';
 
 type FormValues = workoutModel.WorkoutExercise;
 
@@ -24,6 +24,8 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
   const { token } = useTheme();
   const { workout, exercise } = props;
 
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+
   const { form, formValues, initialValues, mergeValues } =
     useExerciseForm(exercise);
 
@@ -32,16 +34,22 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
     exercise,
   );
 
-  const [countDownVisible, setCountDownVisible] = useState(true);
-  const [keyboardToolbarVisible, setKeyboardToolbarVisible] = useState(false);
+  const virtualKeyboardOpened = useVirtualKeyboardOpened();
+
+  const isFormFocused = Boolean(focusedField);
+
+  const isFocusedSetValues = useMemo(
+    () => isFormFocused && /_(rep|value)$/.test(focusedField!),
+    [isFormFocused, focusedField],
+  );
+
+  const isFocusedCountdown = useMemo(
+    () => isFormFocused && /_(rest)$/.test(focusedField!),
+    [isFormFocused, focusedField],
+  );
 
   const handleInputFocusChange = (e: FocusEvent<HTMLFormElement, Element>) => {
-    const id = e.target.id;
-    const isFocusedTargetInputs =
-      (id === 'exercise_id' || /_(rep|value)$/.test(id)) && e.type === 'focus';
-
-    setCountDownVisible(!isFocusedTargetInputs);
-    setKeyboardToolbarVisible(isFocusedTargetInputs);
+    setFocusedField(e.type === 'focus' ? e.target.id : null);
   };
 
   useEffect(() => {
@@ -65,22 +73,29 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
 
           <SectionTitle>Подходы</SectionTitle>
 
-          <ExerciseSetList
-            formValues={formValues}
-            workoutStatus={workoutStatus}
-            permissions={permissions}
-          />
+          <Flex
+            height="100%"
+            flex={1}
+            gap={token.paddingSM}
+            style={{ overflow: 'hidden' }}
+          >
+            <Form.List name={['task_properties', 'sets']}>
+              {(fields, operations) => (
+                <ExerciseSetList
+                  fields={fields}
+                  operations={operations}
+                  compact={virtualKeyboardOpened && isFocusedSetValues}
+                  formValues={formValues}
+                  workoutStatus={workoutStatus}
+                  permissions={permissions}
+                />
+              )}
+            </Form.List>
+          </Flex>
 
-          <ExerciseToolbar
-            visible={countDownVisible}
+          <ExerciseCountDown
+            hidden={virtualKeyboardOpened && !isFocusedCountdown}
             runEnabled={workoutStatus.isActive && permissions.isGymmer}
-          />
-
-          <Button
-            hidden={!keyboardToolbarVisible}
-            icon={<CheckOutlined />}
-            shape="round"
-            type="primary"
           />
         </Flex>
       </Form>

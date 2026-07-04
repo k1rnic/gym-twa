@@ -95,7 +95,9 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
 
         <Space size={24} direction="vertical">
           <Space direction="vertical" style={{ width: '100%' }}>
-            <SectionTitle>Файлы</SectionTitle>
+            <SectionTitle hidden={!canEdit && !items.length}>
+              Файлы
+            </SectionTitle>
 
             <GridPreview
               items={items}

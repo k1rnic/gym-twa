@@ -1,12 +1,10 @@
 import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
-import { useSelectKeyboardDistance, useToggle } from '@/shared/lib/hooks';
 import { Flex } from '@/shared/ui/flex';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Divider, Select, SelectProps, Typography } from 'antd';
-import { RefSelectProps } from 'antd/es/select';
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 type Props = Pick<
@@ -15,18 +13,13 @@ type Props = Pick<
 >;
 
 export const ExerciseSelector = ({ ...selectProps }: Props) => {
+  const navigate = useNavigate();
+
   const { master } = viewerModel.useViewer();
 
   const masterId = master!.master_id!;
 
   const { data: exercises } = exerciseModel.useExercises(masterId);
-
-  const selectRef = useRef<RefSelectProps>(null);
-  const distance = useSelectKeyboardDistance(selectRef);
-
-  const [searchFocused, toggleSearch] = useToggle();
-
-  const navigate = useNavigate();
 
   const exerciseMap = useMemo(
     () => exercises.reduce((acc, ex) => acc.set(ex.exercise_id, ex), new Map()),
@@ -60,29 +53,21 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
     <Select
       showSearch
       size="large"
-      ref={selectRef}
-      virtual={false}
       placeholder="Упражнение"
       optionFilterProp="label"
       options={options}
       style={{ height: 'max-content' }}
-      onFocus={toggleSearch}
-      onBlur={toggleSearch}
-      labelRender={({ label, value }) =>
-        searchFocused ? (
-          label
-        ) : (
-          <Flex vertical={false} gap={8} align="center" py={4}>
-            <ExerciseAvatar
-              exercise={exerciseMap.get(value)}
-              onClick={goToExercise}
-            />
-            <Typography.Text style={{ whiteSpace: 'normal' }}>
-              {label}
-            </Typography.Text>
-          </Flex>
-        )
-      }
+      labelRender={({ label, value }) => (
+        <Flex vertical={false} gap={8} align="center" py={4}>
+          <ExerciseAvatar
+            exercise={exerciseMap.get(value)}
+            onClick={goToExercise}
+          />
+          <Typography.Text style={{ whiteSpace: 'normal' }}>
+            {label}
+          </Typography.Text>
+        </Flex>
+      )}
       optionRender={({ label, value }) => (
         <Flex vertical={false} gap={8} align="center">
           <ExerciseAvatar exercise={exerciseMap.get(value)} />
@@ -90,7 +75,7 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
         </Flex>
       )}
       popupRender={(menu) => (
-        <Flex style={{ maxHeight: distance - 16 }}>
+        <Flex>
           <Flex flex={1} style={{ overflowY: 'auto' }}>
             {menu}
           </Flex>
@@ -98,7 +83,7 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
           <Divider style={{ margin: '8px 0' }} />
           <Button
             block
-            variant="filled"
+            type="primary"
             color="primary"
             icon={<PlusOutlined />}
             onClick={createExercise}

@@ -1,4 +1,5 @@
 import { viewerModel } from '@/entities/viewer';
+import { useVirtualKeyboardOpened } from '@/shared/lib/hooks';
 import { useMatchExact } from '@/shared/lib/router';
 import { useViewport } from '@/shared/lib/telegram';
 import { useTheme } from '@/shared/lib/theme';
@@ -11,6 +12,8 @@ import { Outlet, useNavigate } from 'react-router';
 export default function Page() {
   const { token } = useTheme();
   const { bottomSafeArea } = useViewport();
+
+  const virtualKeyboardOpened = useVirtualKeyboardOpened();
 
   const navigate = useNavigate();
   const match = useMatchExact();
@@ -37,7 +40,7 @@ export default function Page() {
         <Outlet />
       </Flex>
 
-      <AppToolbar />
+      <AppToolbar hidden={virtualKeyboardOpened} />
     </Flex>
   );
 }

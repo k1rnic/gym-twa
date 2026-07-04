@@ -48,7 +48,7 @@ export const ExerciseSet = ({
       height={50}
       vertical={false}
       align="center"
-      style={{ backgroundColor: token.colorBgLayout }}
+      style={{ backgroundColor: token.colorBgLayout, flexShrink: 0 }}
     >
       <Typography style={{ margin: `0 ${token.paddingXS}px` }}>
         {index + 1}

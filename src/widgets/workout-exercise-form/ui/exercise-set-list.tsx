@@ -1,16 +1,18 @@
 import { Set } from '@/shared/api';
-import { Button, Divider, Form } from 'antd';
+import { Button, Divider, FormListOperation } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 
 import { viewerModel } from '@/entities/viewer';
 import { workoutModel } from '@/entities/workout';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { useExercisePermissions } from '@/widgets/workout-exercise-form/lib/use-exercise-permissions';
-import { PlusOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import { NamePath } from 'antd/es/form/interface';
+import { FormListFieldData } from 'antd/lib';
 import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
+import { useExercisePermissions } from '../lib/use-exercise-permissions';
+import ExerciseKeyboardToolbarItem from './exercise-keyboard-toolbar-item';
 import { ExerciseSet } from './exercise-set';
 
 type ValueType = 'fact' | 'plan';
@@ -22,23 +24,32 @@ const FIELD_PLACEHOLDERS = {
 };
 
 type Props = {
+  compact?: boolean;
   formValues?: workoutModel.WorkoutExercise;
+  fields: FormListFieldData[];
+  operations: FormListOperation;
 } & ReturnType<typeof useExercisePermissions>;
 
 export const ExerciseSetList = ({
+  compact = false,
   formValues,
   workoutStatus,
   permissions,
+  operations,
+  fields,
 }: Props) => {
   const { user_id: viewerId } = viewerModel.useViewer();
 
   const valueType: ValueType = workoutStatus.isPlanned ? 'plan' : 'fact';
+  const repField = `${valueType}_rep` as const;
+  const weightField = `${valueType}_value` as const;
 
   const { token } = useTheme();
   const form = useFormInstance<workoutModel.WorkoutExercise>();
 
-  const getSetOwner = (index: number) =>
-    formValues?.task_properties?.sets?.[index]?.owner_id ?? null;
+  const getSetOwner = (index: number) => {
+    return formValues?.task_properties?.sets?.[index]?.owner_id ?? null;
+  };
 
   const getFieldPath = (
     type: ValueType,
@@ -83,8 +94,8 @@ export const ExerciseSetList = ({
 
     return {
       owner_id: viewerId,
-      [`${valueType}_rep`]: last?.[`${valueType}_rep`] ?? null,
-      [`${valueType}_value`]: last?.[`${valueType}_value`] ?? null,
+      [repField]: last?.[repField] ?? null,
+      [weightField]: last?.[weightField] ?? null,
     };
   };
 
@@ -98,56 +109,75 @@ export const ExerciseSetList = ({
     });
   };
 
-  return (
-    <Flex flex={1} gap={token.paddingSM} style={{ overflow: 'hidden' }}>
-      <Form.List name={['task_properties', 'sets']}>
-        {(fields, operations) => (
-          <>
-            <Flex
-              hidden={!fields.length}
-              p={token.paddingSM}
-              style={{
-                overflowY: 'auto',
-                borderRadius: token.borderRadius,
-                backgroundColor: token.colorBgLayout,
-              }}
-            >
-              {fields.map(({ key, ...field }, index) => (
-                <>
-                  <ExerciseSet
-                    key={key}
-                    index={index}
-                    field={field}
-                    valueType={valueType}
-                    canEdit={permissions.editSetValues!}
-                    canRemove={getSetOwner(index) === viewerId}
-                    showFillButton={
-                      workoutStatus.isActive && permissions.isGymmer
-                    }
-                    valueOptions={getOptions('value', field.name)}
-                    repOptions={getOptions('rep', field.name)}
-                    valuePlaceholder={getFieldPlaceholder('value', field.name)}
-                    repPlaceholder={getFieldPlaceholder('rep', field.name)}
-                    onFillFromPlan={() => fillFromPlan(field.name)}
-                    onRemove={() => operations.remove(field.name)}
-                  />
-                  {index !== fields.length - 1 && <Divider />}
-                </>
-              ))}
-            </Flex>
+  const focusNextSet = (index: number) => {
+    setTimeout(() => {
+      form.focusField(['task_properties', 'sets', index, weightField]);
+    }, 0);
+  };
 
-            <Button
-              hidden={!permissions.addTaskSet}
-              type="dashed"
-              size="large"
-              icon={<PlusOutlined />}
-              onClick={() => operations.add(getLastSetValues())}
-            >
-              Добавить подход
-            </Button>
+  const addNewSet = () => {
+    operations.add(getLastSetValues());
+    focusNextSet(fields.length);
+  };
+
+  return (
+    <>
+      <Flex
+        hidden={!fields.length}
+        p={token.paddingSM}
+        style={{
+          overflowY: 'auto',
+          borderRadius: token.borderRadius,
+          backgroundColor: token.colorBgLayout,
+        }}
+      >
+        {fields.map(({ key, ...field }, index) => (
+          <>
+            <ExerciseSet
+              key={key}
+              index={index}
+              field={field}
+              valueType={valueType}
+              canEdit={permissions.editSetValues!}
+              canRemove={getSetOwner(index) === viewerId}
+              showFillButton={workoutStatus.isActive && permissions.isGymmer}
+              valueOptions={getOptions('value', field.name)}
+              repOptions={getOptions('rep', field.name)}
+              valuePlaceholder={getFieldPlaceholder('value', field.name)}
+              repPlaceholder={getFieldPlaceholder('rep', field.name)}
+              onFillFromPlan={() => fillFromPlan(field.name)}
+              onRemove={() => operations.remove(field.name)}
+            />
+            {index !== fields.length - 1 && <Divider />}
           </>
-        )}
-      </Form.List>
-    </Flex>
+        ))}
+      </Flex>
+
+      <Button
+        hidden={!permissions.addTaskSet || compact}
+        type="dashed"
+        size="large"
+        icon={<PlusOutlined />}
+        onClick={addNewSet}
+        style={{ flexShrink: 0 }}
+      >
+        Добавить подход
+      </Button>
+
+      <ExerciseKeyboardToolbarItem hidden={!compact} left={token.padding}>
+        <Button icon={<DownOutlined />} type="text" />
+      </ExerciseKeyboardToolbarItem>
+
+      <ExerciseKeyboardToolbarItem hidden={!compact} right={token.padding}>
+        <Button
+          size="small"
+          icon={<PlusOutlined />}
+          type="primary"
+          onPointerDown={addNewSet}
+        >
+          Добавить подход
+        </Button>
+      </ExerciseKeyboardToolbarItem>
+    </>
   );
 };
