@@ -32,7 +32,7 @@ export const PageLayout = ({
 
   const pageLoading = navigation.state === 'loading';
 
-  const showSpinner = (pageLoading || loading) && showLoadingIndicator;
+  const spinning = Boolean((pageLoading || loading) && showLoadingIndicator);
 
   return (
     <Flex
@@ -69,10 +69,13 @@ export const PageLayout = ({
           ...contentStyle,
         }}
       >
-        <div style={{ position: 'relative', height: '100%' }}>
-          {children}
-          {showSpinner && <Spin fullscreen delay={250} />}
-        </div>
+        {children}
+        <Spin
+          fullscreen
+          spinning={spinning}
+          className="page-spinner"
+          delay={250}
+        />
       </Flex>
     </Flex>
   );

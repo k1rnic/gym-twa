@@ -5,6 +5,14 @@
   display: none;
 }
 
+.ant-modal-content {
+  border: 1px solid var(--ant-color-border-secondary) !important;
+}
+
+.page-spinner > .ant-spin-dot-holder {
+  color: var(--ant-color-primary) !important;
+}
+
 .ant-input-number-affix-wrapper {
   color: var(--ant-color-text-quaternary);
 }

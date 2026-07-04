@@ -10,12 +10,12 @@ export const FadeImage = ({ image, bg }: FadeImageProps) => {
     <div className={styles.container}>
       <div
         className={styles.image}
-        style={{ backgroundImage: `url("${image}")` }}
-      />
-
-      <div
-        className={styles.fade}
-        style={{ '--fade-bg': bg } as React.CSSProperties}
+        style={
+          {
+            backgroundImage: `url("${image}")`,
+            '--fade-bg': bg,
+          } as React.CSSProperties
+        }
       />
     </div>
   );

@@ -10,7 +10,6 @@ import { TaskGroupStatus } from '@/shared/api';
 import { useMatchExact } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Spin } from 'antd';
 import { useEffect, useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
@@ -56,20 +55,16 @@ const Page = () => {
   }, [isIndex, gymer]);
 
   return (
-    <PageLayout>
-      {loading ? (
-        <Spin fullscreen />
-      ) : (
-        <Flex height="100%" gap="small" style={{ overflow: 'hidden' }}>
-          <UserAvatarList
-            items={items}
-            selected={selectedItem}
-            onClick={navigateToGymmer}
-          />
+    <PageLayout loading={loading}>
+      <Flex height="100%" gap="small" style={{ overflow: 'hidden' }}>
+        <UserAvatarList
+          items={items}
+          selected={selectedItem}
+          onClick={navigateToGymmer}
+        />
 
-          <Outlet />
-        </Flex>
-      )}
+        <Outlet />
+      </Flex>
     </PageLayout>
   );
 };

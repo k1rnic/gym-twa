@@ -26,6 +26,8 @@ export const CountDown = ({
       align="center"
       p={token.paddingXS}
       style={{
+        zIndex: 999,
+        position: 'relative',
         backgroundColor: token.colorBgLayout,
         borderRadius: token.borderRadiusLG,
       }}
