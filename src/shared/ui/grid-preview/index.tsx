@@ -9,7 +9,7 @@ import {
   PlusOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Button, Col, Drawer, Image, Row, Skeleton } from 'antd';
+import { Button, Col, Drawer, Image, Row, Skeleton, Typography } from 'antd';
 import { RowProps } from 'antd/lib';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
@@ -256,6 +256,7 @@ export const GridPreview = (props: GridPreviewProps) => {
             style={{ height: '100%', width: '100%' }}
             icon={<PlusOutlined />}
             onClick={handleAddClick}
+            className={classes.addButton}
           />
         </Col>
       </Row>
@@ -266,10 +267,11 @@ export const GridPreview = (props: GridPreviewProps) => {
         open={previewVisible}
         onClose={() => setPreviewVisible(false)}
         placement="bottom"
-        height={`calc(95% - ${topSafeArea}px)`}
+        height="80%"
         styles={{ header: { padding: 0 }, body: { padding: 0 } }}
         title={
           <Flex
+            align="center"
             vertical={false}
             justify="space-between"
             style={{ textAlign: 'center' }}
@@ -280,6 +282,10 @@ export const GridPreview = (props: GridPreviewProps) => {
               onClick={() => setPreviewVisible(false)}
               icon={<CloseOutlined />}
             />
+
+            <Typography.Title level={5} style={{ margin: 0 }}>{`${
+              previewIndex + 1
+            } из ${items.length}`}</Typography.Title>
 
             {renderToolbar && renderToolbar(<></>, { current: previewIndex })}
           </Flex>

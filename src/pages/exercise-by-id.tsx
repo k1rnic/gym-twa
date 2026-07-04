@@ -97,7 +97,10 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
         </Form>
 
         <Space size={24} direction="vertical">
-          <Space direction="vertical" style={{ width: '100%' }}>
+          <Space
+            direction="vertical"
+            style={{ width: '100%', overflow: 'hidden' }}
+          >
             <SectionTitle hidden={!canEdit && !items.length}>
               Файлы
             </SectionTitle>

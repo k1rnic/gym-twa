@@ -1,6 +1,10 @@
 @layer reset, antd;
 @import url(antd/dist/reset.css) layer(reset);
 
+body {
+  overflow: hidden;
+}
+
 *::-webkit-scrollbar {
   display: none;
 }

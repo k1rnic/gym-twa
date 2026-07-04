@@ -66,7 +66,11 @@ export default function Page() {
     <PageLayout pageStyle={{ paddingTop: 0 }} contentStyle={{ padding: 0 }}>
       <Flex height="100%" style={{ overflowY: 'auto' }}>
         <Flex style={{ position: 'relative' }}>
-          <ProfileHero user={viewer} onUpload={uploadFile} />
+          <ProfileHero
+            user={viewer}
+            toolbarHidden={false}
+            onUpload={uploadFile}
+          />
           <ProfileName user={viewer} />
         </Flex>
 
@@ -99,9 +103,11 @@ export default function Page() {
             <ActionListItem nav onClick={() => navigate('/profile/masters')}>
               Список тренеров
             </ActionListItem>
+
             <ActionListItem nav onClick={() => navigate('/profile/gymmers')}>
               Мои ученики
             </ActionListItem>
+
             <ActionListItem nav onClick={() => navigate('/profile/requests')}>
               Заявки на прикрепление
             </ActionListItem>
