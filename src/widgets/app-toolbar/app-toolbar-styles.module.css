@@ -1,0 +1,19 @@
+.container {
+  position: relative;
+  z-index: 1;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -64px;
+  height: 56px;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    var(--ant-color-bg-container),
+    transparent
+  );
+}
