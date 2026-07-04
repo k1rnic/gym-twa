@@ -5,10 +5,8 @@ import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import {
   CloseOutlined,
-  LeftOutlined,
   PictureOutlined,
   PlusOutlined,
-  RightOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
 import { Button, Col, Drawer, Image, Row, Skeleton } from 'antd';
@@ -16,7 +14,7 @@ import { RowProps } from 'antd/lib';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import 'swiper/css';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 import classes from './styles.module.css';
 
 const Player = ReactPlayer;
@@ -30,12 +28,59 @@ const baseTileStyles: CSSProperties = {
 
 const SkeletonTile = () => (
   <Skeleton.Image
-    active
+    className={classes.skeleton}
     style={{ width: '100%', height: '100%', ...baseTileStyles }}
   />
 );
 
-const DEFAULT_MAX_VISIBLE = 18;
+type TileProps = {
+  item: GridFileItem;
+  onClick?: () => void;
+  previewSrc: string;
+  selected?: boolean;
+};
+
+const Tile = ({ item, previewSrc, selected, onClick }: TileProps) => {
+  const { token } = useTheme();
+
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        borderRadius: token.borderRadius,
+        border: selected ? `2px solid ${token.colorPrimary}` : 'none',
+      }}
+    >
+      <div style={{ position: 'relative' }}>
+        {previewSrc ? (
+          <Image
+            src={previewSrc}
+            placeholder={<SkeletonTile />}
+            preview={false}
+            width="100%"
+            height="100%"
+            style={baseTileStyles}
+          />
+        ) : (
+          <SkeletonTile />
+        )}
+      </div>
+
+      <div className={classes.overlayIcon}>
+        {item.type === UrlPathType.Video ? (
+          <VideoCameraOutlined />
+        ) : (
+          <PictureOutlined />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const DEFAULT_MAX_VISIBLE = 10;
 const DEFAULT_COLS = 4;
 const GRID_SIZE = 24;
 
@@ -82,15 +127,17 @@ export const GridPreview = (props: GridPreviewProps) => {
   const [thumbs, setThumbs] = useState<Record<string, string | null>>({});
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
-  const [openPreviewOnNextItemsChange, setOpenPreviewOnNextItemsChange] =
-    useState(false);
-  const prevItemsLengthRef = useRef(items.length);
 
   const tileSpan = GRID_SIZE / cols;
   const visibleItems = visible;
-  const previewCount = hasHidden
-    ? visibleItems.length + 1
-    : visibleItems.length;
+
+  const getPreviewSrc = (item: GridFileItem) => {
+    if (item.type !== UrlPathType.Video) {
+      return item.url ?? '';
+    }
+
+    return thumbs[item.url] ?? '';
+  };
 
   const openPreview = (index: number) => {
     setPreviewIndex(index);
@@ -98,7 +145,6 @@ export const GridPreview = (props: GridPreviewProps) => {
   };
 
   const handleAddClick = () => {
-    setOpenPreviewOnNextItemsChange(true);
     props.onAddClick?.();
   };
 
@@ -107,19 +153,6 @@ export const GridPreview = (props: GridPreviewProps) => {
       setPreviewIndex(Math.max(items.length - 1, 0));
     }
   }, [items.length, previewIndex]);
-
-  useEffect(() => {
-    if (
-      openPreviewOnNextItemsChange &&
-      items.length > prevItemsLengthRef.current
-    ) {
-      setPreviewIndex(items.length - 1);
-      setPreviewVisible(true);
-      setOpenPreviewOnNextItemsChange(false);
-    }
-
-    prevItemsLengthRef.current = items.length;
-  }, [items.length, openPreviewOnNextItemsChange]);
 
   useEffect(() => {
     const videoItems = items
@@ -134,36 +167,39 @@ export const GridPreview = (props: GridPreviewProps) => {
     });
   }, [items, getThumbnails, thumbs]);
 
+  const mainSwiperRef = useRef<SwiperClass | null>(null);
+  const thumbsSwiperRef = useRef<SwiperClass | null>(null);
+
+  const syncToIndex = (index: number) => {
+    setPreviewIndex(index);
+
+    if (mainSwiperRef.current?.activeIndex !== index) {
+      mainSwiperRef.current?.slideTo(index);
+    }
+
+    if (thumbsSwiperRef.current) {
+      thumbsSwiperRef.current.slideTo(index);
+    }
+  };
+
+  useEffect(() => {
+    if (!previewVisible) return;
+    requestAnimationFrame(() => {
+      mainSwiperRef.current?.slideTo(previewIndex, 0);
+      thumbsSwiperRef.current?.slideTo(previewIndex, 0);
+    });
+  }, [previewVisible]);
+
   return (
     <>
       <Row gutter={gutter}>
         {visibleItems.map((item, index) => (
           <Col span={tileSpan} key={item.url || index}>
-            <div
-              style={{ position: 'relative', width: '100%', height: '100%' }}
-            >
-              <Image
-                src={
-                  item.type === UrlPathType.Video
-                    ? thumbs[item.url] ?? item.url
-                    : item.url
-                }
-                placeholder={<SkeletonTile />}
-                preview={false}
-                width="100%"
-                height="100%"
-                style={baseTileStyles}
-                onClick={() => openPreview(index)}
-              />
-
-              <div className={classes.overlayIcon}>
-                {item.type === UrlPathType.Video ? (
-                  <VideoCameraOutlined />
-                ) : (
-                  <PictureOutlined />
-                )}
-              </div>
-            </div>
+            <Tile
+              item={item}
+              previewSrc={getPreviewSrc(item)}
+              onClick={() => openPreview(index)}
+            />
           </Col>
         ))}
 
@@ -231,14 +267,7 @@ export const GridPreview = (props: GridPreviewProps) => {
         onClose={() => setPreviewVisible(false)}
         placement="bottom"
         height={`calc(95% - ${topSafeArea}px)`}
-        styles={{
-          header: { flexDirection: 'row-reverse', padding: 0 },
-          body: { padding: 0 },
-          content: {
-            borderTopLeftRadius: token.borderRadiusLG,
-            borderTopRightRadius: token.borderRadiusLG,
-          },
-        }}
+        styles={{ header: { padding: 0 }, body: { padding: 0 } }}
         title={
           <Flex
             vertical={false}
@@ -257,90 +286,65 @@ export const GridPreview = (props: GridPreviewProps) => {
         }
       >
         <Flex vertical height="100%">
-          <div className={classes.viewerMain}>
-            <Button
-              shape="circle"
-              icon={<LeftOutlined />}
-              disabled={previewIndex === 0}
-              className={classes.navButtonLeft}
-              onClick={() =>
-                setPreviewIndex((value) => (value > 0 ? value - 1 : value))
+          <Swiper
+            style={{ width: '100%', flex: 1 }}
+            onSwiper={(swiper) => {
+              mainSwiperRef.current = swiper;
+            }}
+            onSlideChange={(swiper) => {
+              if (swiper.activeIndex !== previewIndex) {
+                syncToIndex(swiper.activeIndex);
               }
-            />
+            }}
+          >
+            {items.map((item, index) => (
+              <SwiperSlide key={item.url + index}>
+                {item?.type === UrlPathType.Video ? (
+                  <Player
+                    controls
+                    color="red"
+                    src={item.url}
+                    width="100%"
+                    height="100%"
+                  />
+                ) : (
+                  <Image
+                    src={item?.url}
+                    width="100%"
+                    height="100%"
+                    style={{ objectFit: 'contain' }}
+                    preview={false}
+                  />
+                )}
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-            {items[previewIndex]?.type === UrlPathType.Video ? (
-              <Player
-                key={items[previewIndex].url}
-                src={items[previewIndex].url}
-                controls
-                width="100%"
-                height="100%"
-              />
-            ) : (
-              <Image
-                src={items[previewIndex]?.url}
-                width="100%"
-                height="100%"
-                style={{ objectFit: 'contain' }}
-                preview={false}
-              />
-            )}
-
-            <Button
-              shape="circle"
-              icon={<RightOutlined />}
-              disabled={previewIndex === items.length - 1}
-              className={classes.navButtonRight}
-              onClick={() =>
-                setPreviewIndex((value) =>
-                  value < items.length - 1 ? value + 1 : value,
-                )
-              }
-            />
-          </div>
-
-          <div className={classes.thumbnailStrip}>
-            <Swiper
-              slidesPerView="auto"
-              spaceBetween={6}
-              style={{
-                width: '100%',
-                height: '100%',
-                paddingBottom: token.paddingXL,
-              }}
-            >
-              {items.map((it, i) => (
-                <SwiperSlide
-                  key={it.url + i}
-                  style={{
-                    width: 'auto',
-                    minWidth: 68,
-                    maxWidth: 68,
-                    height: 68,
-                  }}
-                >
-                  <div
-                    onClick={() => setPreviewIndex(i)}
-                    className={classes.thumbnailItem}
-                    style={{
-                      border:
-                        i === previewIndex
-                          ? `2px solid ${token.colorPrimary}`
-                          : 'none',
-                    }}
-                  >
-                    <Image
-                      src={thumbs[it.url] ?? it.url}
-                      width="100%"
-                      height="100%"
-                      style={{ objectFit: 'cover', borderRadius: 4 }}
-                      preview={false}
-                    />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+          <Swiper
+            slidesPerView="auto"
+            spaceBetween={6}
+            onSwiper={(swiper) => {
+              thumbsSwiperRef.current = swiper;
+            }}
+            style={{
+              width: '100%',
+              padding: `${token.paddingXL}px ${token.paddingSM}px`,
+            }}
+          >
+            {items.map((item, index) => (
+              <SwiperSlide
+                key={item.url + index}
+                style={{ width: 68, height: 68 }}
+              >
+                <Tile
+                  item={item}
+                  selected={index === previewIndex}
+                  previewSrc={getPreviewSrc(item)}
+                  onClick={() => syncToIndex(index)}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </Flex>
       </Drawer>
     </>

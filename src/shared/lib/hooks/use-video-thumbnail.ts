@@ -20,9 +20,9 @@ export function useVideoThumbnail(): (url: string) => Promise<Result> {
     try {
       const thumb = await getVideoThumb(url);
 
-      if (thumb) return { url, thumb, error: null };
+      cache.current[url] = thumb ?? null;
 
-      return { url, thumb: null, error: 'Unsupported format' };
+      return { url, thumb, error: thumb ? null : 'Unsupported format' };
     } catch {
       cache.current[url] = null;
       return { url, thumb: null, error: 'Failed to load' };

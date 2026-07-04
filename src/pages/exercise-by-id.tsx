@@ -8,7 +8,6 @@ import {
   useNavigateBackButton,
   useTelegramBackButton,
 } from '@/shared/lib/router';
-import { DeleteButton } from '@/shared/ui/delete-button';
 import { Flex } from '@/shared/ui/flex';
 import { GridPreview } from '@/shared/ui/grid-preview';
 import { PageLayout } from '@/shared/ui/page-layout';
@@ -16,6 +15,8 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { Button, Form, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
+import { useTheme } from '@/shared/lib/theme';
+import { DeleteButton } from '@/shared/ui/delete-button';
 import { SectionTitle } from '@/shared/ui/section-title';
 import { useMemo } from 'react';
 import { Route } from './+types/exercise-by-id';
@@ -25,6 +26,8 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 };
 
 const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
+  const { token } = useTheme();
+
   const goBack = useNavigateBackButton();
 
   const viewer = useViewer();
@@ -72,7 +75,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   useTelegramBackButton({ beforeUnmount: saveChanges });
 
   return (
-    <PageLayout extra={canEdit && <DeleteButton onDelete={deleteExercise} />}>
+    <PageLayout>
       <Flex height="100%" style={{ overflowY: 'auto' }}>
         <Form<exerciseModel.ExerciseDetailed>
           form={form}
@@ -117,6 +120,13 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
           </Space>
         </Space>
       </Flex>
+
+      <DeleteButton
+        hidden={!canEdit}
+        onDelete={deleteExercise}
+        size="middle"
+        style={{ marginBottom: token.marginSM, zIndex: 999 }}
+      />
 
       <ExerciseUploadFileModal
         opened={uploadModalOpened}

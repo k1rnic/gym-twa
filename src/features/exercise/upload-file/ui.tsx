@@ -53,7 +53,7 @@ export const ExerciseUploadFileModal = (
         link: url,
         type_link: detectedType,
       });
-      message.success('Ссылка добавлена');
+
       revalidate();
       props.onClose?.();
     } catch (e) {
@@ -67,7 +67,7 @@ export const ExerciseUploadFileModal = (
       await Api.exercise.addExerciseImage(props.exerciseId, {
         image: files[0],
       });
-      message.success('Файл загружен');
+
       revalidate();
       clearFileList();
       props.onClose?.();

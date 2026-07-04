@@ -31,35 +31,70 @@ function captureFrame(url: string): Promise<string | null> {
   return new Promise((resolve) => {
     const video = document.createElement('video');
     video.crossOrigin = 'anonymous';
-    video.src = url;
+    video.preload = 'auto';
     video.muted = true;
     video.playsInline = true;
 
-    video.addEventListener('loadedmetadata', () => {
-      try {
-        video.currentTime = video.duration / 2;
-      } catch {
-        resolve(null);
-      }
-    });
+    const cleanup = () => {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    };
 
-    video.addEventListener('seeked', () => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+    const fail = (e?: unknown) => {
+      console.error('Failed to generate video thumbnail', e);
+      cleanup();
+      resolve(null);
+    };
 
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return resolve(null);
+    video.addEventListener(
+      'loadeddata',
 
-        ctx.drawImage(video, 0, 0);
-        resolve(canvas.toDataURL('image/png'));
-      } catch {
-        resolve(null);
-      }
-    });
+      () => {
+        try {
+          const time =
+            Number.isFinite(video.duration) && video.duration > 1
+              ? Math.min(video.duration / 2, 1)
+              : 0;
 
-    video.addEventListener('error', () => resolve(null));
+          video.currentTime = time;
+        } catch (e) {
+          fail(e);
+        }
+      },
+
+      { once: true },
+    );
+
+    video.addEventListener(
+      'seeked',
+
+      () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const ctx = canvas.getContext('2d');
+
+          if (!ctx) {
+            return fail();
+          }
+
+          ctx.drawImage(video, 0, 0);
+          const image = canvas.toDataURL('image/png');
+          cleanup();
+          resolve(image);
+        } catch (e) {
+          fail(e);
+        }
+      },
+
+      { once: true },
+    );
+
+    video.addEventListener('error', fail, { once: true });
+    video.src = url;
+    video.load();
   });
 }
 

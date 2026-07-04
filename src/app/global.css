@@ -28,3 +28,13 @@
 .ant-select-item-option-content {
   white-space: normal !important;
 }
+
+.ant-drawer-header {
+  border: none !important;
+  flex-direction: row-reverse;
+}
+
+.ant-drawer-content {
+  border-top-left-radius: var(--ant-border-radius-lg) !important;
+  border-top-right-radius: var(--ant-border-radius-lg) !important;
+}

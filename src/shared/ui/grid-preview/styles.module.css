@@ -96,3 +96,7 @@
   overflow: hidden;
   cursor: pointer;
 }
+
+.skeleton {
+  width: 100% !important;
+}

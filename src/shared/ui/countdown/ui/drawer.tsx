@@ -128,14 +128,7 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
         closable={false}
         maskClosable
         onClose={close}
-        styles={{
-          header: { flexDirection: 'row-reverse' },
-          body: { paddingTop: 0 },
-          content: {
-            borderTopLeftRadius: token.borderRadiusLG,
-            borderTopRightRadius: token.borderRadiusLG,
-          },
-        }}
+        styles={{ body: { paddingTop: 0 } }}
       >
         <Flex height="100%" width="100%" style={{ overflow: 'hidden' }}>
           <CircularProgress progress={1 - countdown.remaining / countDownValue}>
