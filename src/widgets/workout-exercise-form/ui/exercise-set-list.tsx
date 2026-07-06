@@ -10,6 +10,7 @@ import { CaretDownIcon, PlusIcon } from '@phosphor-icons/react';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import { NamePath } from 'antd/es/form/interface';
 import { FormListFieldData } from 'antd/lib';
+import { Fragment } from 'react/jsx-runtime';
 import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
 import { useExercisePermissions } from '../lib/use-exercise-permissions';
 import ExerciseKeyboardToolbarItem from './exercise-keyboard-toolbar-item';
@@ -133,7 +134,7 @@ export const ExerciseSetList = ({
         }}
       >
         {fields.map(({ key, ...field }, index) => (
-          <>
+          <Fragment key={key}>
             <ExerciseSet
               key={key}
               index={index}
@@ -150,7 +151,7 @@ export const ExerciseSetList = ({
               onRemove={() => operations.remove(field.name)}
             />
             {index !== fields.length - 1 && <Divider />}
-          </>
+          </Fragment>
         ))}
       </Flex>
 

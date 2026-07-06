@@ -187,7 +187,7 @@ export const GridPreview = (props: GridPreviewProps) => {
     <>
       <Row gutter={gutter}>
         {visibleItems.map((item, index) => (
-          <Col span={tileSpan} key={item.url || index}>
+          <Col span={tileSpan} key={item.url + index}>
             <Tile
               item={item}
               previewSrc={getPreviewSrc(item)}
