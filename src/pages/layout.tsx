@@ -1,4 +1,5 @@
 import { viewerModel } from '@/entities/viewer';
+import { NavigationListener } from '@/processes/navigation-listener';
 import { useVirtualKeyboardOpened } from '@/shared/lib/hooks';
 import { useMatchExact } from '@/shared/lib/router';
 import { useViewport } from '@/shared/lib/telegram';
@@ -36,6 +37,7 @@ export default function Page() {
         paddingBottom: bottomSafeArea,
       }}
     >
+      <NavigationListener />
       <Flex flex={1} style={{ overflow: 'hidden' }}>
         <Outlet />
       </Flex>

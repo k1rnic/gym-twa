@@ -7,7 +7,6 @@ import { Button, Empty, message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
-import { useTelegramBackButton } from '@/shared/lib/router';
 import { useTheme } from '@/shared/lib/theme';
 import {
   ProfileDescription,
@@ -90,8 +89,6 @@ export default function Page() {
         return null;
     }
   }, [master?.status, actionLoading]);
-
-  useTelegramBackButton();
 
   if (!master && !loading) {
     return (

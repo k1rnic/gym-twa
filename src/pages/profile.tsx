@@ -6,10 +6,12 @@ import { PageLayout } from '@/shared/ui/page-layout';
 import { Form, message, Space, Typography } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router';
+import { RouteHandle, useNavigate } from 'react-router';
 
 import { useTheme } from '@/shared/lib/theme';
 import { ActionListItem } from '@/shared/ui/action-list-item';
+
+export const handle: RouteHandle = { root: true };
 
 import {
   ProfileDescription,

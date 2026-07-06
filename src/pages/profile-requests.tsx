@@ -2,7 +2,6 @@ import { masterModel } from '@/entities/master';
 import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
-import { useTelegramBackButton } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
@@ -52,8 +51,6 @@ export default function Page() {
       setActionId(null);
     }
   };
-
-  useTelegramBackButton();
 
   return (
     <PageLayout loading={loading}>

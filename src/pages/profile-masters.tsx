@@ -1,7 +1,6 @@
 import { masterModel, MasterStatus } from '@/entities/master';
 import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
-import { useTelegramBackButton } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
@@ -12,8 +11,6 @@ export default function Page() {
   const navigate = useNavigate();
 
   const { masters, loading } = masterModel.useMasters(viewer.gymer?.gymer_id);
-
-  useTelegramBackButton();
 
   return (
     <PageLayout loading={loading}>

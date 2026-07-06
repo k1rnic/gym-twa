@@ -7,8 +7,10 @@ import { WorkoutList } from '@/widgets/workout-list';
 import { PlusIcon } from '@phosphor-icons/react';
 import { Segmented } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
-import { useNavigate } from 'react-router';
+import { RouteHandle, useNavigate } from 'react-router';
 import { Route } from './+types/workouts';
+
+export const handle: RouteHandle = { root: true };
 
 const FILTERS: SegmentedOptions<TaskGroupStatus> = [
   { label: 'новые', value: TaskGroupStatus.Planned },

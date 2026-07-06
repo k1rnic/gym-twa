@@ -1,7 +1,6 @@
 import { gymmerModel } from '@/entities/gymmer';
 import { viewerModel } from '@/entities/viewer';
 import { Api, type User } from '@/shared/api';
-import { useTelegramBackButton } from '@/shared/lib/router';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
@@ -49,8 +48,6 @@ export default function Page() {
       setActionLoading(false);
     }
   }, [gymmer, refresh, viewer.master]);
-
-  useTelegramBackButton();
 
   if (!detailsUser && !loading) {
     return (

@@ -11,7 +11,9 @@ import { useMatchExact } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { useEffect, useMemo } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router';
+import { Outlet, RouteHandle, useLocation, useNavigate } from 'react-router';
+
+export const handle: RouteHandle = { root: true };
 
 const Page = () => {
   const { master, gymer } = viewerModel.useViewer();

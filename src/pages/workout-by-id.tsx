@@ -1,7 +1,6 @@
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { CreateWorkoutExerciseButton } from '@/features/create-exercise-instance';
 import { Api, TaskGroupStatus } from '@/shared/api';
-import { useTelegramBackButton } from '@/shared/lib/router';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
@@ -68,8 +67,6 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
       submitChanges();
     };
   }, []);
-
-  useTelegramBackButton();
 
   return (
     <PageLayout>

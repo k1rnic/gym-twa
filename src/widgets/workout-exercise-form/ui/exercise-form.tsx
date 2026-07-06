@@ -1,3 +1,4 @@
+import { exerciseModel } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { useVirtualKeyboardOpened } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
@@ -5,6 +6,7 @@ import { Flex } from '@/shared/ui/flex';
 import { SectionTitle } from '@/shared/ui/section-title';
 import { Form } from 'antd';
 import { FocusEvent, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useExerciseForm } from '../lib/use-exercise-form';
 import { useExercisePermissions } from '../lib/use-exercise-permissions';
 import { ExerciseCountDown } from './exercise-countdown';
@@ -17,17 +19,17 @@ export type WorkoutExerciseFormProps = {
   exercise: FormValues;
   workout: workoutModel.Workout;
   onSubmit?: (values: FormValues) => void;
-  onChange?: (values: FormValues) => void;
 };
 
 export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
   const { token } = useTheme();
   const { workout, exercise } = props;
 
+  const navigate = useNavigate();
+
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  const { form, formValues, initialValues, mergeValues } =
-    useExerciseForm(exercise);
+  const { form, formValues, initialValues } = useExerciseForm(exercise);
 
   const { permissions, workoutStatus } = useExercisePermissions(
     workout,
@@ -57,9 +59,18 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
     setFocusedField(e.type === 'focus' ? e.target.id : null);
   };
 
+  const handleExerciseCreated = (ex: exerciseModel.Exercise) => {
+    form.setFieldValue('exercise_id', ex.exercise_id);
+    requestAnimationFrame(() => {
+      navigate(`/exercises/${ex.exercise_id}`);
+    });
+  };
+
   useEffect(() => {
-    props.onChange?.(mergeValues());
-  }, [formValues]);
+    return () => {
+      props.onSubmit?.(form.getFieldsValue(true));
+    };
+  }, []);
 
   return (
     <Flex height="100%">
@@ -73,7 +84,7 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
       >
         <Flex height="100%" gap={token.paddingSM}>
           <Form.Item name="exercise_id" style={{ margin: 0 }}>
-            <ExerciseSelector onChange={() => form.focusField(null)} />
+            <ExerciseSelector onCreated={handleExerciseCreated} />
           </Form.Item>
 
           <Flex

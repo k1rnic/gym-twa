@@ -98,8 +98,8 @@ export const ProfileHero = ({
             icon={<GearSixIcon weight="fill" />}
             style={{
               position: 'absolute',
-              right: 16,
-              bottom: 16,
+              right: token.padding,
+              bottom: token.padding,
               zIndex: 10,
               background: alpha(token.colorBgContainer, 0.5),
               backdropFilter: 'blur(4px)',

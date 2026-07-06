@@ -117,12 +117,7 @@ export const ExerciseUploadFileModal = (
               </Typography.Text>
             </Flex>
 
-            <Button
-              type="primary"
-              size="small"
-              disabled={!files[0]}
-              onClick={onSubmitFile}
-            >
+            <Button type="primary" disabled={!files[0]} onClick={onSubmitFile}>
               Загрузить
             </Button>
           </Flex>

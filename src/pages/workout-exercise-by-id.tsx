@@ -1,10 +1,10 @@
+import { workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
-import { useTelegramBackButton } from '@/shared/lib/router';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExerciseForm } from '@/widgets/workout-exercise-form';
 import { normalizeSetValues } from '@/widgets/workout-exercise-form/lib/normalize-set-values';
 import { Empty } from 'antd';
-import { useState } from 'react';
+import { useRevalidator } from 'react-router';
 import { Route } from './+types/workout-exercise-by-id';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
@@ -16,24 +16,24 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 const Page = ({ loaderData }: Route.ComponentProps) => {
   const { workout, exercise } = loaderData;
+  const { revalidate } = useRevalidator();
 
-  const [formValues, setFormValues] = useState(exercise);
-
-  const saveChanges = async () => {
-    if (formValues) {
-      await Api.task.updateTask(normalizeSetValues(formValues));
+  const saveChanges = async (values: workoutModel.WorkoutExercise) => {
+    try {
+      await Api.task.updateTask(normalizeSetValues(values));
+      revalidate();
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  useTelegramBackButton({ beforeUnmount: saveChanges });
-
   return (
     <PageLayout>
-      {formValues ? (
+      {workout && exercise ? (
         <WorkoutExerciseForm
-          exercise={exercise!}
-          workout={workout!}
-          onChange={setFormValues}
+          exercise={exercise}
+          workout={workout}
+          onSubmit={saveChanges}
         />
       ) : (
         <Empty description="Упражнение не найдено" />

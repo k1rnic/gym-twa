@@ -5,7 +5,9 @@ import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { PlusIcon } from '@phosphor-icons/react';
-import { useNavigate } from 'react-router';
+import { RouteHandle, useNavigate } from 'react-router';
+
+export const handle: RouteHandle = { root: true };
 
 const Page = () => {
   const navigate = useNavigate();

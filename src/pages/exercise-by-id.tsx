@@ -4,10 +4,7 @@ import { useDeleteExerciseResource } from '@/features/exercise/delete-resource';
 import { ExerciseUploadFileModal } from '@/features/exercise/upload-file';
 import { Api, ExerciseStatus } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
-import {
-  useNavigateBackButton,
-  useTelegramBackButton,
-} from '@/shared/lib/router';
+import { useNavigateBackButton } from '@/shared/lib/router';
 import { Flex } from '@/shared/ui/flex';
 import { GridPreview } from '@/shared/ui/grid-preview';
 import { PageLayout } from '@/shared/ui/page-layout';
@@ -72,8 +69,6 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
     goBack();
   };
 
-  useTelegramBackButton({ beforeUnmount: saveChanges });
-
   return (
     <PageLayout>
       <Flex height="100%" style={{ overflowY: 'auto' }}>
@@ -82,6 +77,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
           initialValues={initialValues}
           size="middle"
           disabled={!canEdit}
+          onBlur={saveChanges}
         >
           <Form.Item<exerciseModel.ExerciseDetailed>
             name="exercise_name"

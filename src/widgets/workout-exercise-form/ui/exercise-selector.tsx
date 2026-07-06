@@ -1,24 +1,25 @@
 import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
-import { Api } from '@/shared/api';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { CaretDownIcon, PlusIcon } from '@phosphor-icons/react';
 import { Button, Divider, Select, SelectProps, Typography } from 'antd';
-import { useMemo, useRef } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
+import { Api } from '@/shared/api';
 import classes from './exercise-selector-styles.module.css';
 
-type Props = Pick<
+type Props = {
+  onCreated?: (ex: exerciseModel.Exercise) => void;
+} & Pick<
   SelectProps<number>,
   'value' | 'onChange' | 'style' | 'styles' | 'disabled'
 >;
 
-export const ExerciseSelector = ({ ...selectProps }: Props) => {
+export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
   const navigate = useNavigate();
-
-  const selectRef = useRef(null);
+  const [open, setOpen] = useState(false);
 
   const { token } = useTheme();
   const { master } = viewerModel.useViewer();
@@ -46,30 +47,23 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
   };
 
   const createExercise = async () => {
+    setOpen(false);
+
     const ex = await Api.exercise.createExercise({
       master_id: masterId,
       exercise_name: '',
       description: '',
       link_ids: [],
     });
-    goToExercise(ex);
-  };
 
-  const handleChange = (value: number) => {
-    selectProps.onChange?.(value);
-    requestAnimationFrame(() => {
-      const active = document.activeElement;
-
-      if (active instanceof HTMLElement) {
-        active.blur();
-      }
-    });
+    onCreated?.(ex);
   };
 
   return (
     <Select
       showSearch
-      ref={selectRef}
+      open={open}
+      onOpenChange={setOpen}
       size="large"
       placeholder="Упражнение"
       optionFilterProp="label"
@@ -119,7 +113,6 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
         </Flex>
       )}
       {...selectProps}
-      onChange={handleChange}
     />
   );
 };
