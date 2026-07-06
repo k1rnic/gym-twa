@@ -44,7 +44,6 @@ export const BASE_THEME_CONFIG: ThemeConfig = {
     Drawer: {
       colorBgElevated: BG_SECONDARY,
     },
-    List: {},
   },
   token: {
     fontFamily:
