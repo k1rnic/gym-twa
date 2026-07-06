@@ -707,7 +707,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.7.0
+ * @version 2.8.0
  */
 export class Endpoints<
   SecurityDataType extends unknown,
@@ -743,6 +743,24 @@ export class Endpoints<
     getUserDataByTelegramId: (telegramId: number, params: RequestParams = {}) =>
       this.request<User, HTTPValidationError>({
         path: `/gym/user/${telegramId}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name GetUserDataByUserId
+     * @summary Getting user data by user_id
+     * @request GET:/gym/user/user_by_id/{user_id}
+     * @secure
+     */
+    getUserDataByUserId: (userId: number, params: RequestParams = {}) =>
+      this.request<User, HTTPValidationError>({
+        path: `/gym/user/user_by_id/${userId}`,
         method: "GET",
         secure: true,
         format: "json",
