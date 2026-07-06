@@ -1,4 +1,5 @@
 import { Flex } from '@/shared/ui/flex';
+import { XCircleIcon } from '@phosphor-icons/react';
 import { Input } from 'antd';
 import { ReactNode, useState } from 'react';
 import { useExerciseFilter } from '../../lib/use-exercise-filter';
@@ -28,7 +29,7 @@ export const ExerciseList = ({
   return (
     <Flex height="100%" style={{ overflow: 'hidden' }} gap={8}>
       <Input
-        allowClear
+        allowClear={{ clearIcon: <XCircleIcon weight="fill" /> }}
         size="large"
         placeholder={searchPlaceholder}
         onChange={(e) => setQuery(e.target.value)}
