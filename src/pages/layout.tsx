@@ -1,0 +1,48 @@
+import { viewerModel } from '@/entities/viewer';
+import { NavigationListener } from '@/processes/navigation-listener';
+import { useVirtualKeyboardOpened } from '@/shared/lib/hooks';
+import { useMatchExact } from '@/shared/lib/router';
+import { useViewport } from '@/shared/lib/telegram';
+import { useTheme } from '@/shared/lib/theme';
+import { Flex } from '@/shared/ui/flex';
+import { AppToolbar } from '@/widgets/app-toolbar';
+import { useEffect } from 'react';
+
+import { Outlet, useNavigate } from 'react-router';
+
+export default function Page() {
+  const { token } = useTheme();
+  const { bottomSafeArea } = useViewport();
+
+  const virtualKeyboardOpened = useVirtualKeyboardOpened();
+
+  const navigate = useNavigate();
+  const match = useMatchExact();
+
+  const viewer = viewerModel.useViewer();
+
+  useEffect(() => {
+    if (match) {
+      navigate(`/workouts`);
+    }
+  }, [match, viewer]);
+
+  return (
+    <Flex
+      height="100%"
+      width="100%"
+      gap={token.paddingSM}
+      style={{
+        backgroundColor: token.colorBgContainer,
+        paddingBottom: bottomSafeArea,
+      }}
+    >
+      <NavigationListener />
+      <Flex flex={1} style={{ overflow: 'hidden' }}>
+        <Outlet />
+      </Flex>
+
+      <AppToolbar hidden={virtualKeyboardOpened} />
+    </Flex>
+  );
+}

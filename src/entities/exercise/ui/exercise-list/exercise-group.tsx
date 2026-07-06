@@ -1,11 +1,8 @@
-import { Flex } from '@/shared/ui/flex';
-import { RightOutlined } from '@ant-design/icons';
-import { Divider, List, Typography } from 'antd';
+import { List, ListItem } from '@/shared/ui/list';
+import { Divider } from 'antd';
 import React from 'react';
 import { Exercise } from '../../model';
 import { ExerciseAvatar } from '../exercise-avatar';
-
-const { Text, Paragraph } = Typography;
 
 interface ExerciseGroupProps {
   title: string;
@@ -26,35 +23,20 @@ export const ExerciseGroup: React.FC<ExerciseGroupProps> = ({
     <>
       <Divider>{title}</Divider>
       <List
-        itemLayout="horizontal"
-        dataSource={data}
-        renderItem={(item, idx) => (
-          <List.Item
-            onClick={() => onSelect(item)}
-            style={{
-              cursor: 'pointer',
-              paddingLeft: 0,
-              paddingRight: 0,
-              ...listItemStyle?.(item, idx),
-            }}
-          >
-            <Flex vertical={false} width="100%">
-              <List.Item.Meta
-                avatar={<ExerciseAvatar exercise={item} />}
-                title={<Text strong>{item.exercise_name}</Text>}
-                description={
-                  <Paragraph
-                    type="secondary"
-                    ellipsis={{ rows: 1, tooltip: item.description }}
-                    style={{ marginBottom: 0 }}
-                  >
-                    {item.description}
-                  </Paragraph>
-                }
-              />
-              <RightOutlined style={{ marginLeft: 8 }} />
-            </Flex>
-          </List.Item>
+        items={data}
+        itemKey="exercise_id"
+        variant="contained"
+        size="small"
+        emptyText="Упражнения пока не добавлены"
+        renderItem={(task, idx) => (
+          <ListItem
+            nav
+            avatar={<ExerciseAvatar exercise={task} />}
+            header={task.exercise_name}
+            description={task.description}
+            onClick={() => onSelect(task)}
+            style={listItemStyle?.(task, idx)}
+          />
         )}
       />
     </>

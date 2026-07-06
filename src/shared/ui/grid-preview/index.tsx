@@ -1,11 +1,18 @@
+import { UrlPathType } from '@/shared/api';
 import { useLimitedList, useVideoThumbnail } from '@/shared/lib/hooks';
+import { useViewport } from '@/shared/lib/telegram';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, Image, Row, Skeleton } from 'antd';
+import { ImageIcon, PlusIcon, VideoIcon, XIcon } from '@phosphor-icons/react';
+import { Button, Col, Drawer, Image, Row, Skeleton, Typography } from 'antd';
 import { RowProps } from 'antd/lib';
-import { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
+import ReactPlayer from 'react-player';
+import 'swiper/css';
+import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 import classes from './styles.module.css';
+
+const Player = ReactPlayer;
 
 const baseTileStyles: CSSProperties = {
   cursor: 'pointer',
@@ -16,21 +23,72 @@ const baseTileStyles: CSSProperties = {
 
 const SkeletonTile = () => (
   <Skeleton.Image
-    active
+    className={classes.skeleton}
     style={{ width: '100%', height: '100%', ...baseTileStyles }}
   />
 );
 
-const DEFAUlT_MAX_VISIBLE = 6;
+type TileProps = {
+  item: GridFileItem;
+  onClick?: () => void;
+  previewSrc: string;
+  selected?: boolean;
+};
+
+const Tile = ({ item, previewSrc, selected, onClick }: TileProps) => {
+  const { token } = useTheme();
+
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        borderRadius: token.borderRadius,
+        border: selected ? `2px solid ${token.colorPrimary}` : 'none',
+      }}
+    >
+      <div style={{ position: 'relative' }}>
+        {previewSrc ? (
+          <Image
+            src={previewSrc}
+            placeholder={<SkeletonTile />}
+            preview={false}
+            width="100%"
+            height="100%"
+            style={baseTileStyles}
+          />
+        ) : (
+          <SkeletonTile />
+        )}
+      </div>
+
+      <div className={classes.overlayIcon}>
+        {item.type === UrlPathType.Video ? (
+          <VideoIcon weight="light" size={18} />
+        ) : (
+          <ImageIcon weight="light" size={18} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const DEFAULT_MAX_VISIBLE = 10;
 const DEFAULT_COLS = 4;
 const GRID_SIZE = 24;
 
+export type GridFileItem = {
+  url: string;
+  type?: UrlPathType | string | null;
+};
+
 export type GridPreviewProps = {
-  itemType: 'image' | 'video';
-  items: string[];
+  items: GridFileItem[];
   cols?: number;
   visibleCount?: number;
-  readonly?: boolean;
+  readOnly?: boolean;
   renderToolbar?: (
     origin: React.ReactElement,
     params: { current: number },
@@ -44,12 +102,13 @@ export type GridPreviewProps = {
 
 export const GridPreview = (props: GridPreviewProps) => {
   const { token } = useTheme();
+  const { topSafeArea } = useViewport();
+
   const {
     gutter = [8, 8],
     cols = DEFAULT_COLS,
-    visibleCount = DEFAUlT_MAX_VISIBLE,
+    visibleCount = DEFAULT_MAX_VISIBLE,
     items,
-    itemType,
     renderToolbar,
   } = props;
 
@@ -60,75 +119,80 @@ export const GridPreview = (props: GridPreviewProps) => {
 
   const getThumbnails = useVideoThumbnail();
 
-  const [visiblePreviews, setVisiblePreviews] = useState<string[]>([]);
-  const [hiddenThumbPreview, setHiddenThumbPreview] = useState<string>('');
-
-  const tileSpan = GRID_SIZE / cols;
-
-  const visibleItems = itemType === 'video' ? visiblePreviews : visible;
-  const hiddenItems = itemType === 'video' ? hiddenThumbPreview : hidden[0];
-
-  const previewCount = hasHidden
-    ? visibleItems.length + 1
-    : visibleItems.length;
-
+  const [thumbs, setThumbs] = useState<Record<string, string | null>>({});
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
+
+  const tileSpan = GRID_SIZE / cols;
+  const visibleItems = visible;
+
+  const getPreviewSrc = (item: GridFileItem) => {
+    if (item.type !== UrlPathType.Video) {
+      return item.url ?? '';
+    }
+
+    return thumbs[item.url] ?? '';
+  };
 
   const openPreview = (index: number) => {
     setPreviewIndex(index);
     setPreviewVisible(true);
   };
 
+  const handleAddClick = () => {
+    props.onAddClick?.();
+  };
+
   useEffect(() => {
     if (items.length <= previewIndex) {
-      setPreviewIndex(items.length - 1);
+      setPreviewIndex(Math.max(items.length - 1, 0));
     }
   }, [items.length, previewIndex]);
 
   useEffect(() => {
-    if (itemType !== 'video') return;
-    Promise.all(visible.map(getThumbnails)).then((res) => {
-      setVisiblePreviews(res.map(({ thumb }) => thumb ?? ''));
+    const videoItems = items
+      .filter((i) => i?.type === UrlPathType.Video)
+      .map((i) => i.url);
+
+    videoItems.forEach((url) => {
+      if (thumbs[url] !== undefined) return;
+      getThumbnails(url).then(({ thumb }) => {
+        setThumbs((prev) => ({ ...prev, [url]: thumb ?? null }));
+      });
     });
-  }, [visible, hidden, itemType, getThumbnails]);
+  }, [items, getThumbnails, thumbs]);
+
+  const mainSwiperRef = useRef<SwiperClass | null>(null);
+  const thumbsSwiperRef = useRef<SwiperClass | null>(null);
+
+  const syncToIndex = (index: number) => {
+    setPreviewIndex(index);
+
+    if (mainSwiperRef.current?.activeIndex !== index) {
+      mainSwiperRef.current?.slideTo(index);
+    }
+
+    if (thumbsSwiperRef.current) {
+      thumbsSwiperRef.current.slideTo(index);
+    }
+  };
 
   useEffect(() => {
-    if (!hasHidden) return;
-    getThumbnails(hidden[0]).then(({ thumb }) => {
-      setHiddenThumbPreview(thumb ?? '');
+    if (!previewVisible) return;
+    requestAnimationFrame(() => {
+      mainSwiperRef.current?.slideTo(previewIndex, 0);
+      thumbsSwiperRef.current?.slideTo(previewIndex, 0);
     });
-  }, [hasHidden, hidden]);
+  }, [previewVisible]);
 
   return (
-    <Row gutter={gutter}>
-      <Image.PreviewGroup
-        items={items}
-        preview={{
-          movable: false,
-          visible: previewVisible && items.length > 0,
-          current: previewIndex,
-          closeIcon: null,
-          onVisibleChange: setPreviewVisible,
-          onChange: setPreviewIndex,
-          toolbarRender: renderToolbar,
-          imageRender:
-            props.renderPreview || itemType === 'video'
-              ? (_, { current }) => (
-                  <video autoPlay width="100%" controls src={items[current]} />
-                )
-              : undefined,
-        }}
-      >
-        {visibleItems.map((src, index) => (
-          <Col span={tileSpan} key={src}>
-            <Image
-              src={src}
-              placeholder={<SkeletonTile />}
-              preview={{ mask: false }}
-              width="100%"
-              height="100%"
-              style={baseTileStyles}
+    <>
+      <Row gutter={gutter}>
+        {visibleItems.map((item, index) => (
+          <Col span={tileSpan} key={item.url || index}>
+            <Tile
+              item={item}
+              previewSrc={getPreviewSrc(item)}
               onClick={() => openPreview(index)}
             />
           </Col>
@@ -137,7 +201,7 @@ export const GridPreview = (props: GridPreviewProps) => {
         {hasHidden && (
           <Col span={tileSpan}>
             <div
-              onClick={() => openPreview(DEFAUlT_MAX_VISIBLE)}
+              onClick={() => openPreview(DEFAULT_MAX_VISIBLE)}
               style={{
                 cursor: 'pointer',
                 position: 'relative',
@@ -146,9 +210,13 @@ export const GridPreview = (props: GridPreviewProps) => {
               }}
             >
               <Image
-                src={hiddenItems}
+                src={
+                  (hidden[0]?.type === UrlPathType.Video &&
+                    thumbs[hidden[0].url]) ||
+                  hidden[0]?.url
+                }
                 placeholder={<SkeletonTile />}
-                preview={{ mask: false }}
+                preview={false}
                 width="100%"
                 height="100%"
                 style={{ ...baseTileStyles, filter: 'blur(4px)' }}
@@ -170,21 +238,117 @@ export const GridPreview = (props: GridPreviewProps) => {
             </div>
           </Col>
         )}
-      </Image.PreviewGroup>
 
-      <Col
-        hidden={props.readonly}
-        span={tileSpan}
-        className={classes.filePickerContainer}
-        style={{ aspectRatio: previewCount === cols ? '1/1' : undefined }}
+        <Col
+          hidden={props.readOnly}
+          span={tileSpan}
+          className={classes.filePickerContainer}
+          style={{ aspectRatio: '1/1' }}
+        >
+          <Button
+            size="large"
+            type="dashed"
+            style={{ height: '100%', width: '100%' }}
+            icon={<PlusIcon />}
+            onClick={handleAddClick}
+            className={classes.addButton}
+          />
+        </Col>
+      </Row>
+
+      <Drawer
+        destroyOnHidden
+        closable={false}
+        open={previewVisible}
+        onClose={() => setPreviewVisible(false)}
+        placement="bottom"
+        height={`calc(90% - ${topSafeArea}px)`}
+        styles={{ header: { padding: 0 }, body: { padding: 0 } }}
+        title={
+          <Flex
+            align="center"
+            vertical={false}
+            justify="space-between"
+            style={{ textAlign: 'center' }}
+            py={token.padding}
+          >
+            <Button
+              size="large"
+              type="text"
+              onClick={() => setPreviewVisible(false)}
+              icon={<XIcon />}
+            />
+
+            <Typography.Title level={5} style={{ margin: 0 }}>{`${
+              previewIndex + 1
+            } из ${items.length}`}</Typography.Title>
+
+            {renderToolbar && renderToolbar(<></>, { current: previewIndex })}
+          </Flex>
+        }
       >
-        <Button
-          size="large"
-          type="dashed"
-          icon={<PlusOutlined />}
-          onClick={props.onAddClick}
-        />
-      </Col>
-    </Row>
+        <Flex vertical height="100%">
+          <Swiper
+            style={{ width: '100%', flex: 1 }}
+            onSwiper={(swiper) => {
+              mainSwiperRef.current = swiper;
+            }}
+            onSlideChange={(swiper) => {
+              if (swiper.activeIndex !== previewIndex) {
+                syncToIndex(swiper.activeIndex);
+              }
+            }}
+          >
+            {items.map((item, index) => (
+              <SwiperSlide key={item.url + index}>
+                {item?.type === UrlPathType.Video ? (
+                  <Player
+                    controls
+                    color="red"
+                    src={item.url}
+                    width="100%"
+                    height="100%"
+                  />
+                ) : (
+                  <Image
+                    src={item?.url}
+                    width="100%"
+                    height="100%"
+                    style={{ objectFit: 'cover', aspectRatio: '1 / 1' }}
+                    preview={false}
+                  />
+                )}
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          <Swiper
+            slidesPerView="auto"
+            spaceBetween={6}
+            onSwiper={(swiper) => {
+              thumbsSwiperRef.current = swiper;
+            }}
+            style={{
+              width: '100%',
+              padding: `${token.paddingXL}px ${token.paddingSM}px`,
+            }}
+          >
+            {items.map((item, index) => (
+              <SwiperSlide
+                key={item.url + index}
+                style={{ width: 68, height: 68 }}
+              >
+                <Tile
+                  item={item}
+                  selected={index === previewIndex}
+                  previewSrc={getPreviewSrc(item)}
+                  onClick={() => syncToIndex(index)}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </Flex>
+      </Drawer>
+    </>
   );
 };

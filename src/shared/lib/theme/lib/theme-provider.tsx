@@ -7,11 +7,8 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
   return (
     <ConfigProvider
       locale={ruLocale}
-      componentSize="small"
-      input={{ variant: 'filled' }}
-      inputNumber={{ variant: 'filled' }}
-      textArea={{ variant: 'filled' }}
-      select={{ variant: 'filled' }}
+      componentSize="middle"
+      variant="filled"
       theme={BASE_THEME_CONFIG}
       renderEmpty={() => <></>}
     >

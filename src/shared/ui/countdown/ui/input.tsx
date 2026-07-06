@@ -1,25 +1,20 @@
-import { FieldTimeOutlined } from '@ant-design/icons';
+import { useTheme } from '@/shared/lib/theme';
+import { TimerIcon } from '@phosphor-icons/react';
 import { InputNumber, InputNumberProps } from 'antd';
 
-export type CountDownInputProps = {
-  runEnabled?: boolean;
-} & InputNumberProps;
+export type CountDownInputProps = InputNumberProps;
 
-export const CountDownInput = ({
-  runEnabled,
-  ...props
-}: CountDownInputProps) => {
+export const CountDownInput = ({ ...props }: CountDownInputProps) => {
+  const { token } = useTheme();
+
   return (
     <InputNumber
       inputMode="numeric"
       controls={false}
-      prefix={<FieldTimeOutlined />}
+      prefix={<TimerIcon color={token.colorText} />}
+      size="middle"
       suffix="сек"
-      style={{
-        width: '100%',
-        borderTopRightRadius: runEnabled ? 0 : undefined,
-        borderBottomRightRadius: runEnabled ? 0 : undefined,
-      }}
+      style={{ width: '100%', height: '100%' }}
       {...props}
     />
   );

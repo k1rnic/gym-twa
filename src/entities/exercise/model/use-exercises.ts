@@ -4,10 +4,16 @@ import { useEffect, useState } from 'react';
 
 export const useExercises = (masterId: number) => {
   const [data, setData] = useState<exerciseModel.Exercise[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Api.exercise.getListOfExercise(masterId).then(setData);
+    setLoading(true);
+
+    Api.exercise
+      .getListOfExercise(masterId)
+      .then(setData)
+      .finally(() => setLoading(false));
   }, [masterId]);
 
-  return data;
+  return { data, loading } as const;
 };

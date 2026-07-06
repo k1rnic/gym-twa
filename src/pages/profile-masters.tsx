@@ -1,22 +1,10 @@
 import { masterModel, MasterStatus } from '@/entities/master';
+import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
-import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
 import { Flex } from '@/shared/ui/flex';
-import { RightOutlined } from '@ant-design/icons';
-import { Avatar, List, Typography } from 'antd';
-import { useMemo } from 'react';
+import { List, ListItem } from '@/shared/ui/list';
+import { PageLayout } from '@/shared/ui/page-layout';
 import { useNavigate } from 'react-router';
-
-const { Text } = Typography;
-
-const formatName = (
-  first?: string | null,
-  last?: string | null,
-  username?: string | null,
-) => {
-  const fio = `${first ?? ''} ${last ?? ''}`.trim();
-  return fio || username || 'Без имени';
-};
 
 export default function Page() {
   const viewer = viewerModel.useViewer();
@@ -24,51 +12,25 @@ export default function Page() {
 
   const { masters, loading } = masterModel.useMasters(viewer.gymer?.gymer_id);
 
-  const data = useMemo(
-    () =>
-      masters.map((m) => ({
-        ...m,
-        displayName: formatName(m.first_name, m.last_name, m.username),
-        avatar: m.photos?.[0],
-      })),
-    [masters],
-  );
-
   return (
-    <Flex gap={24} height="100%" style={{ overflow: 'hidden' }}>
-      <Breadcrumbs
-        items={[{ path: '/profile', title: 'Профиль' }, { title: 'Тренеры' }]}
-      />
-
+    <PageLayout loading={loading}>
       <Flex height="100%" style={{ overflow: 'auto' }}>
         <List
-          loading={loading}
-          dataSource={data}
-          locale={{ emptyText: 'Тренеров пока нет' }}
-          renderItem={(item) => (
-            <List.Item
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate(`/profile/masters/${item.master_id}`)}
-            >
-              <Flex vertical={false} width="100%">
-                <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      size={64}
-                      style={{ backgroundColor: '#f0f0f0' }}
-                      src={item.avatar}
-                    />
-                  }
-                  title={<Text strong>{item.displayName}</Text>}
-                  description={<MasterStatus status={item.status} />}
-                />
-
-                <RightOutlined style={{ marginLeft: 8 }} />
-              </Flex>
-            </List.Item>
+          items={masters}
+          itemKey="master_id"
+          emptyText={loading ? '' : 'Тренеров пока нет'}
+          variant="contained"
+          renderItem={(m) => (
+            <ListItem
+              avatar={m && <UserAvatar size="large" user={m} />}
+              header={formatUserFullName(m) || m.username}
+              description={<MasterStatus status={m.status} />}
+              nav
+              onClick={() => navigate(`/profile/masters/${m.master_id}`)}
+            />
           )}
         />
       </Flex>
-    </Flex>
+    </PageLayout>
   );
 }

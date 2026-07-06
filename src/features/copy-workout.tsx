@@ -1,26 +1,29 @@
+import { workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
-import { CopyOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+import { CopySimpleIcon } from '@phosphor-icons/react';
+import { ItemType } from 'antd/es/menu/interface';
+import { useCallback, useMemo } from 'react';
 import { useRevalidator } from 'react-router';
 
-export type CopyWorkoutButtonProps = {
-  workoutId: number;
-};
-
-export const CopyWorkoutButton = (props: CopyWorkoutButtonProps) => {
+export const useCopyWorkoutAction = (w: workoutModel.Workout, key: string) => {
   const { revalidate } = useRevalidator();
 
-  const copyWorkout = async () => {
-    await Api.taskGroup.copyTaskGroup(props.workoutId);
-    revalidate();
-  };
+  const copyWorkout = useCallback(async () => {
+    try {
+      await Api.taskGroup.copyTaskGroup(w.task_group_id);
+      revalidate();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [w.task_group_id]);
 
-  return (
-    <Button
-      icon={<CopyOutlined />}
-      onClick={copyWorkout}
-      type="dashed"
-      size="small"
-    />
+  return useMemo<ItemType>(
+    () => ({
+      key,
+      label: 'Дублировать',
+      icon: <CopySimpleIcon />,
+      onClick: copyWorkout,
+    }),
+    [key, copyWorkout],
   );
 };

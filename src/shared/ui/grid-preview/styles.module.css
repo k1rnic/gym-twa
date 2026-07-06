@@ -4,12 +4,102 @@
   justify-content: center;
 }
 
-.filePicker {
-  height: 40px;
-  width: 40px;
+.overlayIcon {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ant-padding-xxs);
+  border-radius: var(--ant-border-radius);
+}
 
-  & > * {
-    width: 100% !important;
-    height: 100% !important;
+.viewerMain {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 8px 12px;
+}
+
+@media (min-width: 768px) {
+  .viewerMain {
+    padding: 16px 56px;
   }
+}
+
+.drawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  color: white;
+  z-index: 10;
+  gap: 12px;
+}
+
+.drawerHeader button {
+  padding: 4px 8px !important;
+  min-width: 32px !important;
+  height: 32px !important;
+}
+
+.viewerToolbar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 20;
+}
+
+.navButtonLeft,
+.navButtonRight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+@media (min-width: 768px) {
+  .navButtonLeft,
+  .navButtonRight {
+    width: 48px !important;
+    height: 48px !important;
+  }
+}
+
+.navButtonLeft {
+  left: 8px;
+}
+
+.navButtonRight {
+  right: 8px;
+}
+
+.thumbnailStrip {
+  padding: 6px 6px 8px;
+  max-height: 100px;
+}
+
+.thumbnailItem {
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.skeleton {
+  width: 100% !important;
+}
+
+.addButton {
+  border-color: var(--ant-color-border);
 }

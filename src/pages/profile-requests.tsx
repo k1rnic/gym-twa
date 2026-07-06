@@ -1,15 +1,18 @@
 import { masterModel } from '@/entities/master';
-import { formatUserDisplayName } from '@/entities/user';
+import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
-import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
 import { Flex } from '@/shared/ui/flex';
-import { Avatar, Button, List, Space, Typography, message } from 'antd';
+import { List, ListItem } from '@/shared/ui/list';
+import { PageLayout } from '@/shared/ui/page-layout';
+import { Button, message, Typography } from 'antd';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 const { Paragraph } = Typography;
 
 export default function Page() {
+  const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
 
   const { refresh: refreshMasters } = masterModel.useMasters(
@@ -52,71 +55,73 @@ export default function Page() {
   };
 
   return (
-    <Flex gap="small" style={{ height: '100%', overflow: 'hidden' }}>
-      <Breadcrumbs
-        items={[
-          { path: '/profile', title: 'Профиль' },
-          { title: 'Заявки на прикрепление' },
-        ]}
-      />
-
+    <PageLayout loading={loading}>
       <Flex style={{ height: '100%', overflow: 'auto' }}>
         <List
-          loading={loading}
-          dataSource={requests}
-          locale={{ emptyText: 'Заявок пока нет' }}
-          itemLayout="vertical"
-          renderItem={(item) => (
-            <List.Item
-              styles={{ actions: { marginLeft: 0 } }}
-              actions={[
-                <Button
-                  key="accept"
-                  type="primary"
-                  size="small"
-                  loading={actionId === item.notification_id}
-                  onClick={() => handleRequest(item.notification_id, true)}
-                >
-                  Принять
-                </Button>,
-                <Button
-                  key="reject"
-                  danger
-                  size="small"
-                  loading={actionId === item.notification_id}
-                  onClick={() => handleRequest(item.notification_id, false)}
-                >
-                  Отклонить
-                </Button>,
-              ]}
-            >
-              <List.Item.Meta
+          items={requests}
+          itemKey="notification_id"
+          emptyText={loading ? '' : 'Заявок пока нет'}
+          variant="contained"
+          renderItem={(item) => {
+            const gymerId = item.sender_user?.gymer?.gymer_id;
+
+            return (
+              <ListItem
+                nav
+                onClick={() => navigate(`/profile/gymmers/${gymerId}`)}
                 avatar={
-                  <Avatar
-                    size={64}
-                    style={{ backgroundColor: '#f0f0f0' }}
-                    src={item.sender_user?.photos?.[0]}
-                  />
+                  item.sender_user && (
+                    <UserAvatar size="large" user={item.sender_user} />
+                  )
                 }
-                title="Заявка на прикрепление"
+                header={
+                  item.sender_user
+                    ? formatUserFullName(item.sender_user)
+                    : String(item.sender)
+                }
                 description={
-                  <Space direction="vertical">
-                    <Paragraph style={{ margin: 0 }}>
-                      Пользователь{' '}
-                      <b>
-                        {item.sender_user
-                          ? formatUserDisplayName(item.sender_user)
-                          : item.sender}
-                      </b>{' '}
-                      хочет прикрепиться к вам
-                    </Paragraph>
-                  </Space>
+                  <Paragraph style={{ margin: 0 }}>
+                    Пользователь{' '}
+                    <b>
+                      {item.sender_user
+                        ? formatUserFullName(item.sender_user)
+                        : item.sender}
+                    </b>{' '}
+                    хочет прикрепиться к вам
+                  </Paragraph>
                 }
+                actions={[
+                  <Button
+                    key="accept"
+                    type="primary"
+                    size="small"
+                    loading={actionId === item.notification_id}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleRequest(item.notification_id, true);
+                    }}
+                  >
+                    Принять
+                  </Button>,
+                  <Button
+                    key="reject"
+                    danger
+                    type="primary"
+                    size="small"
+                    loading={actionId === item.notification_id}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleRequest(item.notification_id, false);
+                    }}
+                  >
+                    Отклонить
+                  </Button>,
+                ]}
               />
-            </List.Item>
-          )}
+            );
+          }}
         />
       </Flex>
-    </Flex>
+    </PageLayout>
   );
 }

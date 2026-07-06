@@ -1,5 +1,5 @@
 import { RefSelectProps } from 'antd';
-import { RefObject, useEffect, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 
 export const useKeyboardHeight = () => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -44,4 +44,33 @@ export const useSelectKeyboardDistance = (ref: RefObject<RefSelectProps>) => {
   }, [ref]);
 
   return distance;
+};
+
+export const useVirtualKeyboardOpened = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const initialHeight = useRef<number>();
+
+  useEffect(() => {
+    const viewport = window.visualViewport;
+
+    if (!viewport) return;
+
+    initialHeight.current = viewport.height;
+
+    const handleResize = () => {
+      const keyboardHeight =
+        (initialHeight.current ?? viewport.height) - viewport.height;
+
+      setIsOpen(keyboardHeight > 150);
+    };
+
+    viewport.addEventListener('resize', handleResize);
+
+    return () => {
+      viewport.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return isOpen;
 };

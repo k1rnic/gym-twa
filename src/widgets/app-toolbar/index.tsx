@@ -1,57 +1,76 @@
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { Radio } from 'antd';
-import { RadioChangeEvent } from 'antd/lib';
+import {
+  BarbellIcon,
+  IconProps,
+  NotepadIcon,
+  UserIcon,
+} from '@phosphor-icons/react';
+import { Segmented } from 'antd';
+import { ComponentType, ReactNode, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import styles from './app-toolbar-styles.module.css';
 
-export const APP_TOOLBAR_HEIGHT = 72;
+const IconContainer = ({ Icon }: { Icon: ComponentType<IconProps> }) => (
+  <Flex>
+    <Icon weight="fill" />
+  </Flex>
+);
 
 interface Item {
-  label: string;
+  label: ReactNode;
   value: string;
+  className?: string;
 }
 
 const items: Item[] = [
-  { label: 'Тренировки', value: '/workouts' },
-  { label: 'Упражнения', value: '/exercises' },
-  { label: 'Профиль', value: '/profile' },
+  {
+    value: '/workouts',
+    label: <IconContainer Icon={BarbellIcon} />,
+    className: styles.segmentedItem,
+  },
+  {
+    value: '/exercises',
+    label: <IconContainer Icon={NotepadIcon} />,
+    className: styles.segmentedItem,
+  },
+  {
+    value: '/profile',
+    label: <IconContainer Icon={UserIcon} />,
+    className: styles.segmentedItem,
+  },
 ];
 
-export const AppToolbar = () => {
+export type AppToolbarProps = {
+  hidden?: boolean;
+};
+
+export const AppToolbar = ({ hidden = false }: AppToolbarProps) => {
   const { token } = useTheme();
   const { pathname } = useLocation();
 
-  const activeItem = items.find((item) => pathname.startsWith(item.value));
+  const defaultActiveItem = items[0].value;
+
+  const activeItem = useMemo(
+    () => items.find((item) => pathname.startsWith(item.value)),
+    [pathname],
+  );
 
   const navigate = useNavigate();
-
-  const handleChange = (e: RadioChangeEvent) => {
-    navigate(e.target.value);
-  };
+  const handleChange = (value: string) => navigate(value);
 
   return (
-    <Flex
-      height={APP_TOOLBAR_HEIGHT}
-      align="center"
-      justify="flex-start"
-      width="100%"
-      style={{ paddingTop: 8 }}
-    >
-      <Radio.Group
+    <Flex hidden={hidden} px={token.padding} className={styles.container}>
+      <Segmented
         block
-        value={activeItem?.value}
-        size="middle"
-        optionType="button"
-        buttonStyle="solid"
-        style={{ width: '100%', borderRadius: token.borderRadiusLG }}
+        shape="round"
+        size="large"
+        className={styles.segmented}
+        options={items}
+        value={activeItem?.value ?? defaultActiveItem}
         onChange={handleChange}
-      >
-        {items.map((item) => (
-          <Radio.Button key={item.value} value={item.value}>
-            {item.label}
-          </Radio.Button>
-        ))}
-      </Radio.Group>
+        onTouchEnd={() => activeItem && navigate(activeItem.value)}
+      />
     </Flex>
   );
 };

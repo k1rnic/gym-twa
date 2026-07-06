@@ -1,8 +1,43 @@
 @layer reset, antd;
 @import url(antd/dist/reset.css) layer(reset);
 
+@font-face {
+  font-family: 'Oswald';
+  src: url('/fonts/Oswald-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Oswald';
+  src: url('/fonts/Oswald-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Oswald';
+  src: url('/fonts/Oswald-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+body {
+  overflow: hidden;
+}
+
 *::-webkit-scrollbar {
   display: none;
+}
+
+.ant-modal-content,
+.ant-dropdown-menu,
+.ant-select-dropdown {
+  border: 1px solid var(--ant-color-border-secondary) !important;
+}
+
+.page-spinner > .ant-spin-dot-holder {
+  color: var(--ant-color-primary) !important;
 }
 
 .ant-input-number-affix-wrapper {
@@ -19,4 +54,19 @@
 
 .ant-select-item-option-content {
   white-space: normal !important;
+}
+
+.ant-drawer-header {
+  border: none !important;
+  flex-direction: row-reverse;
+}
+
+.ant-drawer-content {
+  border-top: 1px solid var(--ant-color-border-secondary);
+  border-top-left-radius: calc(var(--ant-border-radius-lg) * 2) !important;
+  border-top-right-radius: calc(var(--ant-border-radius-lg) * 2) !important;
+}
+
+.ant-btn-icon {
+  display: inline-flex;
 }

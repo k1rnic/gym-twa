@@ -1,0 +1,46 @@
+.container {
+  position: relative;
+  z-index: 1;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -48px;
+  height: 40px;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    var(--ant-color-bg-container),
+    transparent
+  );
+}
+
+.segmented {
+  border: 1px solid var(--ant-color-border-secondary);
+  & :global(.ant-segmented-thumb) {
+    background-color: color-mix(
+      in srgb,
+      var(--ant-color-primary) 30%,
+      transparent
+    );
+  }
+}
+
+.segmentedItem {
+  &:global(.ant-segmented-item-selected) {
+    background-color: color-mix(
+      in srgb,
+      var(--ant-color-primary) 30%,
+      transparent
+    );
+  }
+
+  & :global(.ant-segmented-item-label) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

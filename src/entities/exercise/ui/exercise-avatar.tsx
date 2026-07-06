@@ -1,18 +1,21 @@
-import { exerciseModel } from '@/entities/exercise';
+import { useTheme } from '@/shared/lib/theme';
 import { Avatar } from 'antd';
-import { MouseEvent, useMemo } from 'react';
-import { useNavigate } from 'react-router';
+import { AvatarSize } from 'antd/es/avatar/AvatarContext';
+import { useMemo } from 'react';
+import { Exercise } from '../model';
 
 type ExerciseAvatarProps = {
-  size?: number;
-  exercise?: exerciseModel.Exercise;
+  size?: AvatarSize;
+  exercise?: Exercise;
+  onClick?: (ex: Exercise) => void;
 };
 
 export const ExerciseAvatar = ({
-  size = 50,
+  size = 'default',
   exercise,
+  onClick,
 }: ExerciseAvatarProps) => {
-  const navigate = useNavigate();
+  const { token } = useTheme();
 
   const src = useMemo(
     () =>
@@ -21,10 +24,9 @@ export const ExerciseAvatar = ({
     [exercise],
   );
 
-  const goToExercise = (e?: MouseEvent<HTMLElement>) => {
-    e?.stopPropagation();
-    navigate(`/exercises/${exercise?.exercise_id}`);
-  };
+  if (!exercise) {
+    return null;
+  }
 
   return (
     <Avatar
@@ -32,14 +34,16 @@ export const ExerciseAvatar = ({
       size={size}
       style={{
         flexShrink: 0,
-        backgroundColor: '#f0f0f0',
-        color: '#888',
+        backgroundColor: token.colorSplit,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
       }}
       src={src}
-      onClick={goToExercise}
+      onClick={(e) => {
+        if (onClick) e?.stopPropagation();
+        onClick?.(exercise);
+      }}
     />
   );
 };

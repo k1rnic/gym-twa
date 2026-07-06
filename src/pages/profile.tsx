@@ -2,26 +2,24 @@ import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
 
 import { Flex } from '@/shared/ui/flex';
-import { PlusOutlined } from '@ant-design/icons';
+import { PageLayout } from '@/shared/ui/page-layout';
+import { Form, message, Space, Typography } from 'antd';
+import { RcFile } from 'antd/es/upload';
+import { useMemo } from 'react';
+import { RouteHandle, useNavigate } from 'react-router';
+
+import { useTheme } from '@/shared/lib/theme';
+import { ActionListItem } from '@/shared/ui/action-list-item';
+
+export const handle: RouteHandle = { root: true };
+
 import {
-  Button,
-  Card,
-  Checkbox,
-  Form,
-  Input,
-  message,
-  Space,
-  Typography,
-  Upload,
-} from 'antd';
-import { RcFile, UploadProps } from 'antd/es/upload';
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
-
-import { formatUserDisplayName, UserTgLink } from '@/entities/user';
-import { AvatarPreview } from '@/shared/ui/avatar';
-import { Breadcrumbs } from '@/shared/ui/breadcrumbs';
-
+  ProfileDescription,
+  ProfileHero,
+  ProfileName,
+  ProfileToggle,
+} from '@/widgets/user-profile';
+import { BellIcon, UsersThreeIcon } from '@phosphor-icons/react';
 const { Title } = Typography;
 
 const mapInitialValues = (
@@ -32,12 +30,12 @@ const mapInitialValues = (
 });
 
 export default function Page() {
+  const { token } = useTheme();
+
   const viewer = viewerModel.useViewer();
   const setViewer = viewerModel.useSetViewer();
   const navigate = useNavigate();
   const [form] = Form.useForm<ReturnType<typeof mapInitialValues>>();
-
-  const [uploading, setUploading] = useState(false);
 
   const initialValues = useMemo(() => mapInitialValues(viewer), [viewer]);
 
@@ -51,103 +49,86 @@ export default function Page() {
   };
 
   const uploadFile = async (file: RcFile) => {
-    setUploading(true);
     try {
       await Api.user.addUserImage(viewer.user_id, { image: file });
       await refreshViewer();
       message.success('Фотография загружена');
     } catch (e) {
       message.error('Не удалось загрузить фото');
-    } finally {
-      setUploading(false);
     }
   };
 
-  const uploadProps: UploadProps = {
-    multiple: false,
-    accept: 'image/*',
-    showUploadList: false,
-    beforeUpload: async (file) => {
-      await uploadFile(file as RcFile);
-      return false;
-    },
-  };
-
-  const saveProfile = async () => {
-    const values = form.getFieldsValue();
-    await Api.user.updateMasterProfile(viewer.master!.master_id!, {
-      description: values.description ?? '',
-      is_private: !!values.is_private,
-    });
+  const updateProfileField = async (
+    payload: Parameters<typeof Api.user.updateMasterProfile>[1],
+  ) => {
+    await Api.user.updateMasterProfile(viewer.master!.master_id!, payload);
     await refreshViewer();
-    message.success('Профиль обновлён');
   };
 
   return (
-    <Flex gap="small" style={{ overflow: 'auto', width: '100%' }}>
-      <Breadcrumbs items={[{ title: 'Профиль' }]} />
-      <Card>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Space direction="vertical" align="center" style={{ width: '100%' }}>
-            <Space direction="vertical" align="center">
-              <AvatarPreview
-                photos={viewer.photos ?? []}
-                preview={{ movable: false, toolbarRender: () => <></> }}
-              />
+    <PageLayout pageStyle={{ paddingTop: 0 }} contentStyle={{ padding: 0 }}>
+      <Flex height="100%" style={{ overflowY: 'auto' }}>
+        <Flex style={{ position: 'relative' }}>
+          <ProfileHero
+            user={viewer}
+            toolbarHidden={false}
+            onUpload={uploadFile}
+          />
+          <ProfileName user={viewer} />
+        </Flex>
 
-              <Upload {...uploadProps}>
-                <Button loading={uploading} icon={<PlusOutlined />}>
-                  Добавить
-                </Button>
-              </Upload>
-            </Space>
-
-            <Space style={{ width: '100%' }}>
-              <Title level={5} style={{ margin: 0 }}>
-                {formatUserDisplayName(viewer)}
-              </Title>
-
-              <UserTgLink readonly user={viewer} />
-            </Space>
-          </Space>
-
+        <Flex p={token.paddingSM} gap={token.paddingSM}>
           <Form form={form} layout="vertical" initialValues={initialValues}>
             <Form.Item name="description">
-              <Input.TextArea
-                placeholder="Расскажите о себе"
-                autoSize={{ minRows: 3, maxRows: 6 }}
+              <ProfileDescription
+                onBlur={(e) =>
+                  updateProfileField({ description: e.target.value })
+                }
               />
             </Form.Item>
 
-            <Form.Item name="is_private" valuePropName="checked">
-              <Checkbox>Скрыть профиль</Checkbox>
+            <Form.Item
+              name="is_private"
+              valuePropName="checked"
+              style={{ margin: 0 }}
+            >
+              <ProfileToggle
+                onChange={(checked) =>
+                  updateProfileField({ is_private: checked })
+                }
+              />
             </Form.Item>
-
-            <Button block size="large" type="primary" onClick={saveProfile}>
-              Сохранить изменения
-            </Button>
           </Form>
-        </Space>
-      </Card>
 
-      <Card>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Title level={4} style={{ margin: 0 }}>
-            Действия
-          </Title>
+          <Title level={4}>Действия</Title>
+
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Button block onClick={() => navigate('/profile/masters')}>
-              Мои тренера
-            </Button>
-            <Button block onClick={() => navigate('/profile/gymmers')}>
+            <ActionListItem
+              nav
+              icon={<UsersThreeIcon weight="fill" size={28} />}
+              onClick={() => navigate('/profile/masters')}
+            >
+              Список тренеров
+            </ActionListItem>
+
+            <ActionListItem
+              nav
+              icon={<UsersThreeIcon weight="fill" size={28} />}
+              onClick={() => navigate('/profile/gymmers')}
+            >
               Мои ученики
-            </Button>
-            <Button block onClick={() => navigate('/profile/requests')}>
+            </ActionListItem>
+
+            <ActionListItem
+              nav
+              icon={<BellIcon weight="fill" size={28} />}
+              onClick={() => navigate('/profile/requests')}
+            >
               Заявки на прикрепление
-            </Button>
+            </ActionListItem>
           </Space>
-        </Space>
-      </Card>
-    </Flex>
+        </Flex>
+      </Flex>
+    </PageLayout>
   );
 }
