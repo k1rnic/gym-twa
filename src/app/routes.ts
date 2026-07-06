@@ -29,7 +29,7 @@ export default [
       route('requests', '../pages/profile-requests.tsx'),
       ...prefix('gymmers', [
         index('../pages/profile-gymmers.tsx'),
-        route(':gymerId', '../pages/gymmer-by-id.tsx'),
+        route(':userId', '../pages/gymmer-by-id.tsx'),
       ]),
     ]),
   ]),

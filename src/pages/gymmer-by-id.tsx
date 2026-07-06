@@ -1,45 +1,46 @@
 import { gymmerModel } from '@/entities/gymmer';
 import { viewerModel } from '@/entities/viewer';
-import { Api, type User } from '@/shared/api';
+import { Api } from '@/shared/api';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { ProfileHero, ProfileName } from '@/widgets/user-profile';
 import { Button, Empty, message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { Route } from './+types/gymmer-by-id';
 
-export default function Page() {
+export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
+  return await Api.user.getUserDataByUserId(+params.userId);
+};
+
+export default function Page({ loaderData: user }: Route.ComponentProps) {
   const { token } = useTheme();
-  const { gymerId } = useParams();
-  const location = useLocation();
 
   const viewer = viewerModel.useViewer();
-  const { gymmers, refresh, loading } = gymmerModel.useGymmers(
-    viewer.master?.master_id,
-  );
+  const {
+    gymmers: masterGymmers,
+    refresh,
+    loading,
+  } = gymmerModel.useGymmers(viewer.master?.master_id);
   const [actionLoading, setActionLoading] = useState(false);
 
-  const gymmer = useMemo(
-    () => gymmers.find((item) => item.gymer_id === Number(gymerId)),
-    [gymmers, gymerId],
+  const masterGymmer = useMemo(
+    () =>
+      masterGymmers.find(
+        (item) => item.gymer_id === Number(user.gymer?.gymer_id),
+      ),
+    [masterGymmers, user.gymer?.gymer_id],
   );
 
-  const senderUser = useMemo(() => {
-    const state = location.state as { senderUser?: User } | null;
-    return state?.senderUser;
-  }, [location.state]);
-
-  const detailsUser = gymmer ?? senderUser;
-  const isAttached = Boolean(gymmer);
+  const isAttached = Boolean(masterGymmer);
 
   const handleBreak = useCallback(async () => {
-    if (!gymmer) return;
+    if (!masterGymmer) return;
     setActionLoading(true);
 
     try {
       await Api.user.masterGymerBreak({
-        gymer_id: gymmer.gymer_id,
+        gymer_id: masterGymmer.gymer_id,
         master_id: viewer.master!.master_id!,
       });
       message.success('Успешно откреплено');
@@ -47,9 +48,9 @@ export default function Page() {
     } finally {
       setActionLoading(false);
     }
-  }, [gymmer, refresh, viewer.master]);
+  }, [masterGymmer, refresh, viewer.master]);
 
-  if (!detailsUser && !loading) {
+  if (!user && !loading) {
     return (
       <PageLayout title="Информация" loading={loading}>
         <Flex height="100%" width="100%" align="center" justify="center">
@@ -65,12 +66,10 @@ export default function Page() {
   return (
     <PageLayout loading={loading} contentStyle={{ padding: 0 }}>
       <Flex height="100%" gap={token.paddingSM} style={{ overflowY: 'auto' }}>
-        {gymmer && (
-          <Flex style={{ position: 'relative' }}>
-            <ProfileHero user={gymmer} />
-            <ProfileName user={gymmer} />
-          </Flex>
-        )}
+        <Flex style={{ position: 'relative' }}>
+          <ProfileHero user={user} />
+          <ProfileName user={user} />
+        </Flex>
 
         <Flex flex={1} p={token.paddingSM}>
           {isAttached && (

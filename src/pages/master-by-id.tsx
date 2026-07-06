@@ -67,7 +67,7 @@ export default function Page() {
           <Button
             danger
             block
-            size="large"
+            type="primary"
             onClick={handleBreak}
             loading={actionLoading}
           >
@@ -78,6 +78,7 @@ export default function Page() {
         return (
           <Button
             block
+            type="primary"
             onClick={handleSendRequest}
             loading={actionLoading}
             style={{ backgroundColor: token.colorInfo }}

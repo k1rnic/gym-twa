@@ -7,10 +7,12 @@ import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Button, message, Typography } from 'antd';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 const { Paragraph } = Typography;
 
 export default function Page() {
+  const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
 
   const { refresh: refreshMasters } = masterModel.useMasters(
@@ -65,6 +67,8 @@ export default function Page() {
 
             return (
               <ListItem
+                nav
+                onClick={() => navigate(`/profile/gymmers/${gymerId}`)}
                 avatar={
                   item.sender_user && (
                     <UserAvatar size="large" user={item.sender_user} />
@@ -102,6 +106,7 @@ export default function Page() {
                   <Button
                     key="reject"
                     danger
+                    type="primary"
                     size="small"
                     loading={actionId === item.notification_id}
                     onClick={(event) => {

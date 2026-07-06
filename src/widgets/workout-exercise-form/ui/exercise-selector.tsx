@@ -63,6 +63,7 @@ export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
     <Select
       showSearch
       open={open}
+      virtual={false}
       onOpenChange={setOpen}
       size="large"
       placeholder="Упражнение"
