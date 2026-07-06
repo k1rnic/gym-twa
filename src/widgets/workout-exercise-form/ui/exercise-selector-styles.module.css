@@ -1,0 +1,6 @@
+.root {
+  & :global(.ant-select-selection-search-input) {
+    height: 100% !important;
+    padding-left: calc(var(--ant-control-height) + 8px) !important;
+  }
+}

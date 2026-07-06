@@ -1,7 +1,11 @@
 import { useSortableList } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { DownOutlined, EllipsisOutlined, UpOutlined } from '@ant-design/icons';
+import {
+  CaretDownIcon,
+  CaretUpIcon,
+  DotsThreeIcon,
+} from '@phosphor-icons/react';
 
 import { Card, CardProps, Divider, Dropdown, Space, Typography } from 'antd';
 import { MenuProps } from 'antd/lib';
@@ -23,8 +27,10 @@ export type CardListItemProps = {
   footer?: ReactNode;
   collapsible?: boolean;
   collapsed?: boolean;
+  onClick?: () => void;
+  onAvatarClick?: () => void;
   onToggle?: (state: boolean) => void;
-} & Pick<CardProps, 'style' | 'onClick'>;
+} & Pick<CardProps, 'style'>;
 
 export const CardListItem = (props: PropsWithChildren<CardListItemProps>) => {
   const {
@@ -37,6 +43,7 @@ export const CardListItem = (props: PropsWithChildren<CardListItemProps>) => {
     collapsible,
     collapsed = true,
     onClick,
+    onAvatarClick,
     onToggle,
     children,
     ...cardProps
@@ -53,6 +60,10 @@ export const CardListItem = (props: PropsWithChildren<CardListItemProps>) => {
 
   const [collapsedInner, setCollapsedInner] = useState(collapsed);
 
+  const handleAvatarClick = () => {
+    onAvatarClick?.() || onClick?.();
+  };
+
   const toggleClicked = () => {
     setCollapsedInner((prev) => {
       onToggle?.(prev);
@@ -61,7 +72,7 @@ export const CardListItem = (props: PropsWithChildren<CardListItemProps>) => {
   };
 
   const ToggleIcon = useMemo(
-    () => (collapsedInner ? UpOutlined : DownOutlined),
+    () => (collapsedInner ? CaretUpIcon : CaretDownIcon),
     [collapsedInner],
   );
 
@@ -76,7 +87,11 @@ export const CardListItem = (props: PropsWithChildren<CardListItemProps>) => {
         <Flex vertical={false} align="center">
           {draggable && handler}
 
-          {avatar && <Flex p={token.paddingXXS}>{avatar}</Flex>}
+          {avatar && (
+            <Flex p={token.paddingXXS} onClick={handleAvatarClick}>
+              {avatar}
+            </Flex>
+          )}
 
           <Flex
             flex={1}
@@ -102,7 +117,7 @@ export const CardListItem = (props: PropsWithChildren<CardListItemProps>) => {
         <Space size={token.padding}>
           {hasActions && (
             <Dropdown menu={{ items: actions }} trigger={['click']}>
-              <EllipsisOutlined />
+              <DotsThreeIcon />
             </Dropdown>
           )}
 

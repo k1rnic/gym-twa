@@ -1,6 +1,7 @@
 import { ComponentType, useEffect } from 'react';
 
 import { ThemeProvider, useTheme } from '@/shared/lib/theme';
+import { IconContext } from '@phosphor-icons/react';
 
 function InjectedStyles() {
   const { token } = useTheme();
@@ -17,7 +18,9 @@ export const withTheme =
   (hocProps: T) =>
     (
       <ThemeProvider>
-        <InjectedStyles />
-        <Component {...(hocProps as T & JSX.IntrinsicAttributes)} />
+        <IconContext.Provider value={{ weight: 'bold', size: 24 }}>
+          <InjectedStyles />
+          <Component {...(hocProps as T & JSX.IntrinsicAttributes)} />
+        </IconContext.Provider>
       </ThemeProvider>
     );

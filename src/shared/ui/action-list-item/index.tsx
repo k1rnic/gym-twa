@@ -1,9 +1,8 @@
 import { ReactNode } from 'react';
 
-import { RightOutlined } from '@ant-design/icons';
-
 import { Flex } from '@/shared/ui/flex';
 import { ListItem, ListItemProps } from '@/shared/ui/list-item';
+import { CaretRightIcon } from '@phosphor-icons/react';
 
 type ActionListItemProps = {
   nav?: boolean;
@@ -23,7 +22,7 @@ export const ActionListItem = ({
       rightExtra={
         <Flex vertical={false}>
           {extra}
-          {nav && <RightOutlined />}
+          {nav && <CaretRightIcon />}
         </Flex>
       }
       {...listItemProps}

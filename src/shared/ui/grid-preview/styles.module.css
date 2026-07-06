@@ -10,12 +10,11 @@
   bottom: 6px;
   background: rgba(0, 0, 0, 0.5);
   color: white;
-  width: 28px;
-  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
+  padding: var(--ant-padding-xxs);
+  border-radius: var(--ant-border-radius);
 }
 
 .viewerMain {

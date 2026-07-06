@@ -1,9 +1,8 @@
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { CloseOutlined, FormOutlined } from '@ant-design/icons';
+import { CheckSquareOffsetIcon, XIcon } from '@phosphor-icons/react';
 import {
   AutoComplete,
-  Button,
   Divider,
   Form,
   FormListFieldData,
@@ -96,20 +95,12 @@ export const ExerciseSet = ({
 
       <Divider type="vertical" style={{ height: '60%' }} />
 
-      <Flex vertical={false} gap={token.paddingSM}>
-        <Button
-          hidden={!showFillButton}
-          icon={<FormOutlined />}
-          type="text"
-          onClick={onFillFromPlan}
-        />
+      <Flex vertical={false} gap={token.paddingSM} align="center">
+        {showFillButton && (
+          <CheckSquareOffsetIcon size={20} onClick={onFillFromPlan} />
+        )}
 
-        <Button
-          hidden={!canRemove}
-          icon={<CloseOutlined />}
-          type="text"
-          onClick={onRemove}
-        />
+        {canRemove && <XIcon size={20} onClick={onRemove} />}
       </Flex>
     </Flex>
   );

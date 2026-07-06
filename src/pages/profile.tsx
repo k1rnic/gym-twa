@@ -17,6 +17,7 @@ import {
   ProfileName,
   ProfileToggle,
 } from '@/widgets/user-profile';
+import { BellIcon, UsersThreeIcon } from '@phosphor-icons/react';
 const { Title } = Typography;
 
 const mapInitialValues = (
@@ -100,15 +101,27 @@ export default function Page() {
           <Title level={4}>Действия</Title>
 
           <Space direction="vertical" style={{ width: '100%' }}>
-            <ActionListItem nav onClick={() => navigate('/profile/masters')}>
+            <ActionListItem
+              nav
+              icon={<UsersThreeIcon weight="fill" size={28} />}
+              onClick={() => navigate('/profile/masters')}
+            >
               Список тренеров
             </ActionListItem>
 
-            <ActionListItem nav onClick={() => navigate('/profile/gymmers')}>
+            <ActionListItem
+              nav
+              icon={<UsersThreeIcon weight="fill" size={28} />}
+              onClick={() => navigate('/profile/gymmers')}
+            >
               Мои ученики
             </ActionListItem>
 
-            <ActionListItem nav onClick={() => navigate('/profile/requests')}>
+            <ActionListItem
+              nav
+              icon={<BellIcon weight="fill" size={28} />}
+              onClick={() => navigate('/profile/requests')}
+            >
               Заявки на прикрепление
             </ActionListItem>
           </Space>

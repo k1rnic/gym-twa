@@ -1,6 +1,6 @@
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
-import { DeleteOutlined } from '@ant-design/icons';
+import { TrashIcon } from '@phosphor-icons/react';
 import { ItemType } from 'antd/es/menu/interface';
 import { useCallback, useMemo } from 'react';
 import { useRevalidator } from 'react-router';
@@ -27,7 +27,7 @@ export const useDeleteWorkoutAction = (
         ? {
             key,
             label: 'Удалить',
-            icon: <DeleteOutlined />,
+            icon: <TrashIcon />,
             onClick: deleteWorkout,
           }
         : null,

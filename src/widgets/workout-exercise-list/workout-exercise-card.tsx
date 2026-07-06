@@ -18,7 +18,8 @@ type ExerciseCardProps = {
   ex: workoutModel.WorkoutExercise;
   collapsed?: boolean;
   collapsible?: boolean;
-} & Pick<CardProps, 'style' | 'onClick'>;
+  onClick?: () => void;
+} & Pick<CardProps, 'style'>;
 
 export const ExerciseCard = (props: ExerciseCardProps) => {
   const { token } = useTheme();

@@ -4,7 +4,7 @@ import { Api } from '@/shared/api';
 import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusIcon } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router';
 
 const Page = () => {
@@ -36,7 +36,7 @@ const Page = () => {
           masterId={masterId}
           onSelect={goToExercise}
         />
-        <FloatButton icon={<PlusOutlined />} onClick={createExercise} />
+        <FloatButton icon={<PlusIcon />} onClick={createExercise} />
       </Flex>
     </PageLayout>
   );

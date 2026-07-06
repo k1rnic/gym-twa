@@ -1,5 +1,5 @@
 import { useTheme } from '@/shared/lib/theme';
-import { RightOutlined } from '@ant-design/icons';
+import { CaretRightIcon } from '@phosphor-icons/react';
 import { Space, Typography } from 'antd';
 import { CSSProperties, KeyboardEvent, MouseEvent, useMemo } from 'react';
 
@@ -127,7 +127,7 @@ export const ListItem = ({
               minWidth: 24,
             }}
           >
-            <RightOutlined />
+            <CaretRightIcon />
           </div>
         )}
       </div>

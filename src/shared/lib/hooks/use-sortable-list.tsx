@@ -1,6 +1,6 @@
-import { HolderOutlined } from '@ant-design/icons';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { DotsSixVerticalIcon } from '@phosphor-icons/react';
 import { useMemo } from 'react';
 
 export const useSortableList = (id: string | number) => {
@@ -16,18 +16,12 @@ export const useSortableList = (id: string | number) => {
     [sortable],
   );
 
+  delete sortable.attributes['aria-pressed'];
+
   const handler = useMemo(
     () => (
-      <HolderOutlined
-        style={{
-          touchAction: 'none',
-          width: 24,
-          height: 24,
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+      <DotsSixVerticalIcon
+        style={{ touchAction: 'none', outline: 'none' }}
         {...sortable.listeners}
         {...sortable.attributes}
       />

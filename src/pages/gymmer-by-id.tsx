@@ -67,7 +67,7 @@ export default function Page() {
 
   return (
     <PageLayout loading={loading} contentStyle={{ padding: 0 }}>
-      <Flex height="100%" style={{ overflowY: 'auto' }}>
+      <Flex height="100%" gap={token.paddingSM} style={{ overflowY: 'auto' }}>
         {gymmer && (
           <Flex style={{ position: 'relative' }}>
             <ProfileHero user={gymmer} />
@@ -81,7 +81,7 @@ export default function Page() {
               danger
               block
               type="primary"
-              size="large"
+              size="middle"
               loading={actionLoading}
               onClick={handleBreak}
             >

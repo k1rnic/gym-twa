@@ -4,7 +4,7 @@ import { sortByCreated } from '@/shared/lib/date';
 import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
 import { WorkoutList } from '@/widgets/workout-list';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusIcon } from '@phosphor-icons/react';
 import { Segmented } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
 import { useNavigate } from 'react-router';
@@ -64,7 +64,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
 
       <WorkoutList reorderEnabled data={workouts} />
 
-      <FloatButton icon={<PlusOutlined />} onClick={createWorkout} />
+      <FloatButton icon={<PlusIcon />} onClick={createWorkout} />
     </Flex>
   );
 };

@@ -78,11 +78,10 @@ export default function Page() {
       case GymerMasterStatus.AcceptsRequests:
         return (
           <Button
-            type="primary"
             block
-            size="large"
             onClick={handleSendRequest}
             loading={actionLoading}
+            style={{ backgroundColor: token.colorInfo }}
           >
             Отправить заявку на прикрепление
           </Button>

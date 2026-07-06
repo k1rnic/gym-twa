@@ -1,6 +1,27 @@
 @layer reset, antd;
 @import url(antd/dist/reset.css) layer(reset);
 
+@font-face {
+  font-family: 'Oswald';
+  src: url('/fonts/Oswald-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Oswald';
+  src: url('/fonts/Oswald-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Oswald';
+  src: url('/fonts/Oswald-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
 body {
   overflow: hidden;
 }
@@ -9,7 +30,9 @@ body {
   display: none;
 }
 
-.ant-modal-content {
+.ant-modal-content,
+.ant-dropdown-menu,
+.ant-select-dropdown {
   border: 1px solid var(--ant-color-border-secondary) !important;
 }
 
@@ -39,6 +62,11 @@ body {
 }
 
 .ant-drawer-content {
-  border-top-left-radius: var(--ant-border-radius-lg) !important;
-  border-top-right-radius: var(--ant-border-radius-lg) !important;
+  border-top: 1px solid var(--ant-color-border-secondary);
+  border-top-left-radius: calc(var(--ant-border-radius-lg) * 2) !important;
+  border-top-right-radius: calc(var(--ant-border-radius-lg) * 2) !important;
+}
+
+.ant-btn-icon {
+  display: inline-flex;
 }

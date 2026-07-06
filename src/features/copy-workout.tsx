@@ -1,6 +1,6 @@
 import { workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
-import { CopyOutlined } from '@ant-design/icons';
+import { CopySimpleIcon } from '@phosphor-icons/react';
 import { ItemType } from 'antd/es/menu/interface';
 import { useCallback, useMemo } from 'react';
 import { useRevalidator } from 'react-router';
@@ -21,7 +21,7 @@ export const useCopyWorkoutAction = (w: workoutModel.Workout, key: string) => {
     () => ({
       key,
       label: 'Дублировать',
-      icon: <CopyOutlined />,
+      icon: <CopySimpleIcon />,
       onClick: copyWorkout,
     }),
     [key, copyWorkout],

@@ -8,7 +8,7 @@ import { FloatButton } from '@/shared/ui/float-button';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { SectionTitle } from '@/shared/ui/section-title';
 import { WorkoutExerciseList } from '@/widgets/workout-exercise-list';
-import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons';
+import { PauseIcon, PlayIcon } from '@phosphor-icons/react';
 import { Form, Input } from 'antd';
 import { useEffect, useMemo } from 'react';
 import { useRevalidator } from 'react-router';
@@ -84,7 +84,7 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
             size="middle"
             disabled={!permissions.modifyWorkout}
           >
-            <Form.Item<FormValues> name="title">
+            <Form.Item<FormValues> name="title" label="Название">
               <Input
                 style={{ width: '100%' }}
                 placeholder="Название"
@@ -104,14 +104,14 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
           </Flex>
 
           <FloatButton
-            icon={<CaretRightOutlined />}
+            icon={<PlayIcon weight="fill" />}
             hidden={!permissions.runWorkout}
             onClick={startWorkout}
           />
 
           <FloatButton
             danger
-            icon={<PauseOutlined />}
+            icon={<PauseIcon weight="fill" />}
             hidden={!permissions.finishWorkout}
             onClick={finishWorkout}
           />

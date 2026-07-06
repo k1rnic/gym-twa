@@ -8,12 +8,12 @@ const statusLabels: Partial<Record<GymerMasterStatus, string>> = {
 };
 
 const statusColors: Partial<
-  Record<GymerMasterStatus, 'green' | 'orange' | 'red' | 'blue'>
+  Record<GymerMasterStatus, 'success' | 'warning' | 'error' | 'processing'>
 > = {
-  [GymerMasterStatus.CurrentMaster]: 'green',
-  [GymerMasterStatus.AwaitedRequest]: 'orange',
-  [GymerMasterStatus.RejectedRequest]: 'red',
-  [GymerMasterStatus.AcceptsRequests]: 'blue',
+  [GymerMasterStatus.CurrentMaster]: 'success',
+  [GymerMasterStatus.AwaitedRequest]: 'warning',
+  [GymerMasterStatus.RejectedRequest]: 'error',
+  [GymerMasterStatus.AcceptsRequests]: 'processing',
 };
 
 export const masterStatusFormatter = (status?: GymerMasterStatus | null) => {

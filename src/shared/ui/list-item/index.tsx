@@ -24,7 +24,13 @@ export const ListItem = ({
   return (
     <Card onClick={onClick} styles={{ body: { padding: token.paddingMD } }}>
       <Flex vertical={false} align="center" justify="space-between" gap={12}>
-        <Flex flex={1} gap={12} justify="center">
+        <Flex
+          flex={1}
+          gap={12}
+          justify="flex-start"
+          align="center"
+          vertical={false}
+        >
           {leftExtra}
           <Text>{children}</Text>
         </Flex>

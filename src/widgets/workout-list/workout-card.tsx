@@ -17,7 +17,8 @@ export type WorkoutCardProps = {
   workout: workoutModel.Workout;
   collapsible?: boolean;
   collapsed?: boolean;
-} & Pick<CardProps, 'style' | 'onClick'>;
+  onClick?: () => void;
+} & Pick<CardProps, 'style'>;
 
 export const WorkoutCard = (props: WorkoutCardProps) => {
   const navigate = useNavigate();

@@ -6,7 +6,7 @@ import { viewerModel } from '@/entities/viewer';
 import { workoutModel } from '@/entities/workout';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { CaretDownIcon, PlusIcon } from '@phosphor-icons/react';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import { NamePath } from 'antd/es/form/interface';
 import { FormListFieldData } from 'antd/lib';
@@ -129,6 +129,7 @@ export const ExerciseSetList = ({
           overflowY: 'auto',
           borderRadius: token.borderRadius,
           backgroundColor: token.colorBgLayout,
+          marginBottom: token.paddingContentVerticalLG,
         }}
       >
         {fields.map(({ key, ...field }, index) => (
@@ -157,7 +158,7 @@ export const ExerciseSetList = ({
         hidden={!permissions.addTaskSet || compact}
         type="dashed"
         size="large"
-        icon={<PlusOutlined />}
+        icon={<PlusIcon />}
         onClick={addNewSet}
         style={{ flexShrink: 0 }}
       >
@@ -165,13 +166,13 @@ export const ExerciseSetList = ({
       </Button>
 
       <ExerciseKeyboardToolbarItem hidden={!compact} left={token.padding}>
-        <Button icon={<DownOutlined />} type="text" />
+        <Button size="small" icon={<CaretDownIcon />} type="text" />
       </ExerciseKeyboardToolbarItem>
 
       <ExerciseKeyboardToolbarItem hidden={!compact} right={token.padding}>
         <Button
           size="small"
-          icon={<PlusOutlined />}
+          icon={<PlusIcon />}
           type="primary"
           onPointerDown={addNewSet}
         >

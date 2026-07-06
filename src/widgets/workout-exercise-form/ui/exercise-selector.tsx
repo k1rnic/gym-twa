@@ -1,11 +1,14 @@
 import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
+import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { PlusOutlined } from '@ant-design/icons';
+import { CaretDownIcon, PlusIcon } from '@phosphor-icons/react';
 import { Button, Divider, Select, SelectProps, Typography } from 'antd';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
+
+import classes from './exercise-selector-styles.module.css';
 
 type Props = Pick<
   SelectProps<number>,
@@ -15,6 +18,9 @@ type Props = Pick<
 export const ExerciseSelector = ({ ...selectProps }: Props) => {
   const navigate = useNavigate();
 
+  const selectRef = useRef(null);
+
+  const { token } = useTheme();
   const { master } = viewerModel.useViewer();
 
   const masterId = master!.master_id!;
@@ -49,16 +55,35 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
     goToExercise(ex);
   };
 
+  const handleChange = (value: number) => {
+    selectProps.onChange?.(value);
+    requestAnimationFrame(() => {
+      const active = document.activeElement;
+
+      if (active instanceof HTMLElement) {
+        active.blur();
+      }
+    });
+  };
+
   return (
     <Select
       showSearch
+      ref={selectRef}
       size="large"
       placeholder="Упражнение"
       optionFilterProp="label"
       options={options}
       style={{ height: 'max-content' }}
+      className={classes.root}
+      suffixIcon={<CaretDownIcon size={14} />}
       labelRender={({ label, value }) => (
-        <Flex vertical={false} gap={8} align="center" py={4}>
+        <Flex
+          vertical={false}
+          gap={token.paddingSM}
+          align="center"
+          py={token.paddingSM}
+        >
           <ExerciseAvatar
             exercise={exerciseMap.get(value)}
             onClick={goToExercise}
@@ -85,7 +110,7 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
             block
             type="primary"
             color="primary"
-            icon={<PlusOutlined />}
+            icon={<PlusIcon />}
             onClick={createExercise}
             style={{ flexShrink: 0 }}
           >
@@ -94,6 +119,7 @@ export const ExerciseSelector = ({ ...selectProps }: Props) => {
         </Flex>
       )}
       {...selectProps}
+      onChange={handleChange}
     />
   );
 };

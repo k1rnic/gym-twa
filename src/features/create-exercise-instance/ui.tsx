@@ -1,7 +1,7 @@
 import { viewerModel } from '@/entities/viewer';
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusIcon } from '@phosphor-icons/react';
 import { Button } from 'antd';
 import { useNavigate } from 'react-router';
 
@@ -33,7 +33,7 @@ export const CreateWorkoutExerciseButton = ({ workout }: Props) => {
       type="dashed"
       hidden={!permissions.addTask}
       onClick={createWorkoutExercise}
-      icon={<PlusOutlined />}
+      icon={<PlusIcon />}
     >
       Новое упражнение
     </Button>

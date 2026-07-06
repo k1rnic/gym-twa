@@ -1,7 +1,9 @@
 import { User } from '@/shared/api';
+import { alpha } from '@/shared/lib/color';
 import { useTheme } from '@/shared/lib/theme';
 import { FadeImage } from '@/shared/ui/fade-image';
-import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import { Flex } from '@/shared/ui/flex';
+import { CameraSlashIcon, GearSixIcon, PlusIcon } from '@phosphor-icons/react';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
@@ -10,6 +12,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Keyboard, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import classes from './profile-hero-styles.module.css';
 
 export type ProfileHeroProps = {
   user: Omit<User, 'user_id'>;
@@ -54,7 +57,7 @@ export const ProfileHero = ({
         : [
             {
               key: 'upload',
-              icon: <PlusOutlined />,
+              icon: <PlusIcon />,
               label: (
                 <Upload {...uploadProps}>
                   <span>Добавить фото</span>
@@ -87,42 +90,48 @@ export const ProfileHero = ({
       }}
     >
       {!toolbarHidden && (
-        <Dropdown
-          trigger={['click']}
-          menu={{ items: menuItems }}
-          placement="topRight"
-        >
+        <Dropdown trigger={['click']} menu={{ items: menuItems }}>
           <Button
+            size="large"
             type="text"
             shape="circle"
-            icon={<SettingOutlined />}
+            icon={<GearSixIcon weight="fill" />}
             style={{
               position: 'absolute',
               right: 16,
               bottom: 16,
               zIndex: 10,
-              background: 'rgba(0,0,0,0.45)',
-              color: '#fff',
+              background: alpha(token.colorBgContainer, 0.5),
               backdropFilter: 'blur(4px)',
             }}
           />
         </Dropdown>
       )}
 
-      <Swiper
-        loop
-        style={{ width: '100%', height: '100%' }}
-        modules={[Pagination, Keyboard]}
-        keyboard={{ enabled: true, pageUpDown: true, onlyInViewport: true }}
-        pagination={{ clickable: true }}
-        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-      >
-        {photos.map((photo) => (
-          <SwiperSlide key={photo}>
-            <FadeImage image={photo} bg={token.colorBgContainer} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {photos.length ? (
+        <Swiper
+          loop
+          style={{ width: '100%', height: '100%' }}
+          modules={[Pagination, Keyboard]}
+          keyboard={{ enabled: true, pageUpDown: true, onlyInViewport: true }}
+          pagination={{ clickable: true, bulletActiveClass: classes.active }}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+        >
+          {photos.map((photo) => (
+            <SwiperSlide key={photo}>
+              <FadeImage image={photo} bg={token.colorBgContainer} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <Flex height="100%" width="100%" align="center" justify="center">
+          <CameraSlashIcon
+            weight="light"
+            color={token.colorTextDisabled}
+            size="30%"
+          />
+        </Flex>
+      )}
     </div>
   );
 };

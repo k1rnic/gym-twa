@@ -38,6 +38,11 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
 
   const isFormFocused = Boolean(focusedField);
 
+  const isFocusedExerciseSelector = useMemo(
+    () => isFormFocused && focusedField === 'exercise_id',
+    [isFormFocused, focusedField],
+  );
+
   const isFocusedSetValues = useMemo(
     () => isFormFocused && /_(rep|value)$/.test(focusedField!),
     [isFormFocused, focusedField],
@@ -68,17 +73,18 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
       >
         <Flex height="100%" gap={token.paddingSM}>
           <Form.Item name="exercise_id" style={{ margin: 0 }}>
-            <ExerciseSelector />
+            <ExerciseSelector onChange={() => form.focusField(null)} />
           </Form.Item>
 
-          <SectionTitle>Подходы</SectionTitle>
-
           <Flex
+            hidden={isFocusedExerciseSelector}
             height="100%"
             flex={1}
             gap={token.paddingSM}
             style={{ overflow: 'hidden' }}
           >
+            <SectionTitle>Подходы</SectionTitle>
+
             <Form.List name={['task_properties', 'sets']}>
               {(fields, operations) => (
                 <ExerciseSetList

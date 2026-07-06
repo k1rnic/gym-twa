@@ -3,12 +3,7 @@ import { useLimitedList, useVideoThumbnail } from '@/shared/lib/hooks';
 import { useViewport } from '@/shared/lib/telegram';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import {
-  CloseOutlined,
-  PictureOutlined,
-  PlusOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons';
+import { ImageIcon, PlusIcon, VideoIcon, XIcon } from '@phosphor-icons/react';
 import { Button, Col, Drawer, Image, Row, Skeleton, Typography } from 'antd';
 import { RowProps } from 'antd/lib';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
@@ -71,9 +66,9 @@ const Tile = ({ item, previewSrc, selected, onClick }: TileProps) => {
 
       <div className={classes.overlayIcon}>
         {item.type === UrlPathType.Video ? (
-          <VideoCameraOutlined />
+          <VideoIcon weight="light" size={18} />
         ) : (
-          <PictureOutlined />
+          <ImageIcon weight="light" size={18} />
         )}
       </div>
     </div>
@@ -254,7 +249,7 @@ export const GridPreview = (props: GridPreviewProps) => {
             size="large"
             type="dashed"
             style={{ height: '100%', width: '100%' }}
-            icon={<PlusOutlined />}
+            icon={<PlusIcon />}
             onClick={handleAddClick}
             className={classes.addButton}
           />
@@ -267,7 +262,7 @@ export const GridPreview = (props: GridPreviewProps) => {
         open={previewVisible}
         onClose={() => setPreviewVisible(false)}
         placement="bottom"
-        height="80%"
+        height={`calc(90% - ${topSafeArea}px)`}
         styles={{ header: { padding: 0 }, body: { padding: 0 } }}
         title={
           <Flex
@@ -275,12 +270,13 @@ export const GridPreview = (props: GridPreviewProps) => {
             vertical={false}
             justify="space-between"
             style={{ textAlign: 'center' }}
+            py={token.padding}
           >
             <Button
               size="large"
               type="text"
               onClick={() => setPreviewVisible(false)}
-              icon={<CloseOutlined />}
+              icon={<XIcon />}
             />
 
             <Typography.Title level={5} style={{ margin: 0 }}>{`${
@@ -318,7 +314,7 @@ export const GridPreview = (props: GridPreviewProps) => {
                     src={item?.url}
                     width="100%"
                     height="100%"
-                    style={{ objectFit: 'contain' }}
+                    style={{ objectFit: 'cover', aspectRatio: '1 / 1' }}
                     preview={false}
                   />
                 )}

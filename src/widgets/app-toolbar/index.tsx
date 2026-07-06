@@ -1,23 +1,44 @@
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { FireOutlined, ReadOutlined, UserOutlined } from '@ant-design/icons';
-import { ConfigProvider, Segmented } from 'antd';
-import { ReactNode } from 'react';
+import {
+  BarbellIcon,
+  IconProps,
+  NotepadIcon,
+  UserIcon,
+} from '@phosphor-icons/react';
+import { Segmented } from 'antd';
+import { ComponentType, ReactNode, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import styles from './app-toolbar-styles.module.css';
 
-export const APP_TOOLBAR_HEIGHT = 48;
+const IconContainer = ({ Icon }: { Icon: ComponentType<IconProps> }) => (
+  <Flex>
+    <Icon weight="fill" />
+  </Flex>
+);
 
 interface Item {
-  label?: ReactNode;
+  label: ReactNode;
   value: string;
-  icon: ReactNode;
+  className?: string;
 }
 
 const items: Item[] = [
-  { value: '/workouts', icon: <FireOutlined /> },
-  { value: '/exercises', icon: <ReadOutlined /> },
-  { value: '/profile', icon: <UserOutlined /> },
+  {
+    value: '/workouts',
+    label: <IconContainer Icon={BarbellIcon} />,
+    className: styles.segmentedItem,
+  },
+  {
+    value: '/exercises',
+    label: <IconContainer Icon={NotepadIcon} />,
+    className: styles.segmentedItem,
+  },
+  {
+    value: '/profile',
+    label: <IconContainer Icon={UserIcon} />,
+    className: styles.segmentedItem,
+  },
 ];
 
 export type AppToolbarProps = {
@@ -28,31 +49,27 @@ export const AppToolbar = ({ hidden = false }: AppToolbarProps) => {
   const { token } = useTheme();
   const { pathname } = useLocation();
 
-  const activeItem = items.find((item) => pathname.startsWith(item.value));
+  const defaultActiveItem = items[0].value;
+
+  const activeItem = useMemo(
+    () => items.find((item) => pathname.startsWith(item.value)),
+    [pathname],
+  );
 
   const navigate = useNavigate();
-
-  const handleChange = (value: string) => {
-    navigate(value);
-  };
+  const handleChange = (value: string) => navigate(value);
 
   return (
-    <ConfigProvider
-      theme={{
-        components: { Segmented: { itemSelectedBg: token.colorPrimary } },
-      }}
-    >
-      <Flex hidden={hidden} px={token.padding} className={styles.container}>
-        <Segmented
-          block
-          shape="round"
-          size="large"
-          className={styles.segmented}
-          options={items}
-          value={activeItem?.value}
-          onChange={handleChange}
-        />
-      </Flex>
-    </ConfigProvider>
+    <Flex hidden={hidden} px={token.padding} className={styles.container}>
+      <Segmented
+        block
+        shape="round"
+        size="large"
+        className={styles.segmented}
+        options={items}
+        value={activeItem?.value ?? defaultActiveItem}
+        onChange={handleChange}
+      />
+    </Flex>
   );
 };

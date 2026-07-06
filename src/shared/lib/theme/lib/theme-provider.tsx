@@ -7,7 +7,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
   return (
     <ConfigProvider
       locale={ruLocale}
-      componentSize="small"
+      componentSize="middle"
       variant="filled"
       theme={BASE_THEME_CONFIG}
       renderEmpty={() => <></>}

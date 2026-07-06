@@ -2,7 +2,7 @@ import { useToggle } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
 import { useCountDown } from '@/shared/ui/countdown/lib';
 import { Flex } from '@/shared/ui/flex';
-import { CaretRightOutlined, CloseOutlined } from '@ant-design/icons';
+import { PlayIcon, XIcon } from '@phosphor-icons/react';
 import { Button, Drawer, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -102,7 +102,7 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
         block
         size="middle"
         type="primary"
-        icon={<CaretRightOutlined />}
+        icon={<PlayIcon weight="fill" size={18} />}
         disabled={props.disabled}
         onClick={close}
       >
@@ -119,7 +119,7 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
             <Typography.Title level={3} style={{ margin: 0, flex: 1 }}>
               Таймер
             </Typography.Title>
-            <CloseOutlined onClick={close} />
+            <XIcon onClick={close} />
           </Flex>
         }
         height="70vh"

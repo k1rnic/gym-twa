@@ -11,13 +11,13 @@ import {
 import { Flex } from '@/shared/ui/flex';
 import { GridPreview } from '@/shared/ui/grid-preview';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { DeleteOutlined } from '@ant-design/icons';
 import { Button, Form, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 
 import { useTheme } from '@/shared/lib/theme';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { SectionTitle } from '@/shared/ui/section-title';
+import { TrashIcon } from '@phosphor-icons/react';
 import { useMemo } from 'react';
 import { Route } from './+types/exercise-by-id';
 
@@ -83,16 +83,18 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
           size="middle"
           disabled={!canEdit}
         >
-          <Form.Item<exerciseModel.ExerciseDetailed> name="exercise_name">
-            <TextArea autoSize placeholder="Название" size="large" />
+          <Form.Item<exerciseModel.ExerciseDetailed>
+            name="exercise_name"
+            label="Название"
+          >
+            <TextArea autoSize size="large" />
           </Form.Item>
 
-          <Form.Item<exerciseModel.ExerciseDetailed> name="description">
-            <TextArea
-              size="large"
-              placeholder="Описание"
-              autoSize={{ minRows: 3, maxRows: 6 }}
-            />
+          <Form.Item<exerciseModel.ExerciseDetailed>
+            name="description"
+            label="Описание"
+          >
+            <TextArea size="large" autoSize={{ minRows: 3, maxRows: 6 }} />
           </Form.Item>
         </Form>
 
@@ -114,7 +116,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
                   size="large"
                   type="text"
                   danger
-                  icon={<DeleteOutlined />}
+                  icon={<TrashIcon />}
                   hidden={!canEdit}
                   onClick={() => deleteExerciseResource(files[current])}
                 />
