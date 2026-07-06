@@ -3,16 +3,14 @@ import { useLimitedList, useVideoThumbnail } from '@/shared/lib/hooks';
 import { useViewport } from '@/shared/lib/telegram';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
+import { VideoPlayer } from '@/shared/ui/player';
 import { ImageIcon, PlusIcon, VideoIcon, XIcon } from '@phosphor-icons/react';
 import { Button, Col, Drawer, Image, Row, Skeleton, Typography } from 'antd';
 import { RowProps } from 'antd/lib';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
-import ReactPlayer from 'react-player';
 import 'swiper/css';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 import classes from './styles.module.css';
-
-const Player = ReactPlayer;
 
 const baseTileStyles: CSSProperties = {
   cursor: 'pointer',
@@ -302,13 +300,7 @@ export const GridPreview = (props: GridPreviewProps) => {
             {items.map((item, index) => (
               <SwiperSlide key={item.url + index}>
                 {item?.type === UrlPathType.Video ? (
-                  <Player
-                    controls
-                    color="red"
-                    src={item.url}
-                    width="100%"
-                    height="100%"
-                  />
+                  <VideoPlayer url={item.url} active={previewIndex === index} />
                 ) : (
                   <Image
                     src={item?.url}
