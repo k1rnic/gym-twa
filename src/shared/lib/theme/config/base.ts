@@ -25,14 +25,15 @@ export const BASE_THEME_CONFIG: ThemeConfig = {
     },
     Input: {
       activeBg: BG_SECONDARY,
+      colorBorder: 'transparent',
       colorBgContainerDisabled: 'transparent',
       colorTextDisabled: COLOR_TEXT,
-      colorBorder: 'transparent',
     },
     InputNumber: {
       activeBg: BG_SECONDARY,
-      colorBgContainerDisabled: BG_SECONDARY,
       colorBorder: 'transparent',
+      colorBgContainerDisabled: 'transparent',
+      colorTextDisabled: COLOR_TEXT,
     },
     Select: {
       colorBgContainerDisabled: BG_SECONDARY,
