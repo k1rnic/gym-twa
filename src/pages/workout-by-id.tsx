@@ -90,14 +90,17 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
             </Form.Item>
           </Form>
 
-          <Flex gap={token.paddingXS}>
+          <Flex flex={1} gap={token.paddingXS} style={{ overflow: 'hidden' }}>
             <SectionTitle>Упражнения</SectionTitle>
             <WorkoutExerciseList
               w={workout}
               data={workout.tasks ?? []}
               reorderEnabled={permissions.isOwner || permissions.isGymmer}
             />
-            <CreateWorkoutExerciseButton workout={workout} />
+            <CreateWorkoutExerciseButton
+              workout={workout}
+              style={{ flexShrink: 0 }}
+            />
           </Flex>
 
           <FloatButton

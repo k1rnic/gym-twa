@@ -1,4 +1,5 @@
 export { useLimitedList } from './use-limited-list';
+export * from './use-local-storage';
 export { useLocalStorage } from './use-local-storage';
 export { useSortableList } from './use-sortable-list';
 export { useToggle } from './use-toggle';

@@ -3,8 +3,15 @@ import { viewerModel } from '@/entities/viewer';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { CaretDownIcon, PlusIcon } from '@phosphor-icons/react';
-import { Button, Divider, Select, SelectProps, Typography } from 'antd';
-import { useMemo, useState } from 'react';
+import {
+  Button,
+  Divider,
+  RefSelectProps,
+  Select,
+  SelectProps,
+  Typography,
+} from 'antd';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { Api } from '@/shared/api';
@@ -20,6 +27,8 @@ type Props = {
 export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  const selectRef = useRef<RefSelectProps>(null);
 
   const { token } = useTheme();
   const { master } = viewerModel.useViewer();
@@ -59,9 +68,14 @@ export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
     onCreated?.(ex);
   };
 
+  useEffect(() => {
+    if (!open) setTimeout(() => selectRef.current?.blur(), 0);
+  }, [open]);
+
   return (
     <Select
       showSearch
+      ref={selectRef}
       open={open}
       virtual={false}
       onOpenChange={setOpen}
@@ -79,10 +93,16 @@ export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
           align="center"
           py={token.paddingSM}
         >
-          <ExerciseAvatar
-            exercise={exerciseMap.get(value)}
-            onClick={goToExercise}
-          />
+          <Flex
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <ExerciseAvatar
+              exercise={exerciseMap.get(value)}
+              onClick={goToExercise}
+            />
+          </Flex>
+
           <Typography.Text style={{ whiteSpace: 'normal' }}>
             {label}
           </Typography.Text>

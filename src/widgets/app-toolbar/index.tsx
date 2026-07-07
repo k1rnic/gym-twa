@@ -69,7 +69,6 @@ export const AppToolbar = ({ hidden = false }: AppToolbarProps) => {
         options={items}
         value={activeItem?.value ?? defaultActiveItem}
         onChange={handleChange}
-        onTouchEnd={() => activeItem && navigate(activeItem.value)}
       />
     </Flex>
   );

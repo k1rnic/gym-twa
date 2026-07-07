@@ -15,7 +15,8 @@ import { useTheme } from '@/shared/lib/theme';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { SectionTitle } from '@/shared/ui/section-title';
 import { TrashIcon } from '@phosphor-icons/react';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useRevalidator } from 'react-router';
 import { Route } from './+types/exercise-by-id';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
@@ -24,15 +25,12 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   const { token } = useTheme();
+  const { revalidate } = useRevalidator();
 
   const goBack = useNavigateBackButton();
 
   const viewer = useViewer();
   const [form] = Form.useForm<exerciseModel.ExerciseDetailed>();
-
-  const formValues = Form.useWatch([], form) as
-    | exerciseModel.ExerciseDetailed
-    | undefined;
 
   const files = useMemo(
     () => initialValues?.url_path_list ?? [],
@@ -54,20 +52,27 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
     initialValues.exercise_id!,
   );
 
-  const saveChanges = async () => {
+  const saveChanges = useCallback(async () => {
     if (canEdit) {
-      await Api.exercise.updateExercise({
-        ...initialValues,
-        ...formValues,
-        exercise_name: formValues?.exercise_name ?? '',
-      });
+      try {
+        await Api.exercise.updateExercise(form.getFieldsValue(true));
+        revalidate();
+      } catch (e) {
+        console.error(e);
+      }
     }
-  };
+  }, []);
 
   const deleteExercise = async () => {
     await Api.exercise.deleteExercise(initialValues.exercise_id!);
     goBack();
   };
+
+  useEffect(() => {
+    return () => {
+      saveChanges();
+    };
+  }, [saveChanges]);
 
   return (
     <PageLayout>
@@ -77,7 +82,6 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
           initialValues={initialValues}
           size="middle"
           disabled={!canEdit}
-          onBlur={saveChanges}
         >
           <Form.Item<exerciseModel.ExerciseDetailed>
             name="exercise_name"

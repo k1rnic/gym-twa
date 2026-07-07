@@ -1,3 +1,4 @@
+import { alpha } from '@/shared/lib/color';
 import { stringToColor } from '@/shared/lib/string';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
@@ -45,7 +46,7 @@ export const UserAvatarListItem = forwardRef<
       <Flex
         className={classes.avatarWrapper}
         style={{
-          borderColor: active ? token.colorPrimary : 'transparent',
+          borderColor: active ? alpha(token.colorPrimary, 0.3) : 'transparent',
           borderWidth: BORDER_WIDTH,
           padding: BORDER_OFFSET,
         }}

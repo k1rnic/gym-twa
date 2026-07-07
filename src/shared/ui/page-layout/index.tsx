@@ -62,12 +62,7 @@ export const PageLayout = ({
       <Flex
         flex={1}
         p={token.padding}
-        style={{
-          overflow: 'hidden',
-          minHeight: 0,
-          paddingBottom: 0,
-          ...contentStyle,
-        }}
+        style={{ overflow: 'hidden', minHeight: 0, ...contentStyle }}
       >
         {children}
         <Spin

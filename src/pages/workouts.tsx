@@ -7,7 +7,6 @@ import { WorkoutList } from '@/widgets/workout-list';
 import { PlusIcon } from '@phosphor-icons/react';
 import { Segmented } from 'antd';
 import { SegmentedOptions } from 'antd/es/segmented';
-import { useMemo } from 'react';
 import { RouteHandle, useNavigate } from 'react-router';
 import { Route } from './+types/workouts';
 
@@ -20,9 +19,12 @@ const FILTERS: SegmentedOptions<TaskGroupStatus> = [
 ];
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
+  const viewer = viewerModel.getViewerState()!;
+
   return await Api.taskGroup
     .listTaskGroup({
       gymer_id: +params.gId,
+      master_id: viewer.master?.master_id,
       status: params.status as TaskGroupStatus,
     })
     .then((data) => data.sort(sortByCreated()))
@@ -34,11 +36,6 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
 
   const viewer = viewerModel.useViewer();
   const status = params.status as TaskGroupStatus;
-
-  const masterWorkouts = useMemo(
-    () => workouts.filter((w) => w.owner_id === viewer.master?.master_id),
-    [workouts, viewer.master?.master_id],
-  );
 
   const createWorkout = async () => {
     const data = await Api.taskGroup.createTaskGroup({
@@ -69,7 +66,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
         onChange={filterWorkouts}
       />
 
-      <WorkoutList reorderEnabled data={masterWorkouts} />
+      <WorkoutList reorderEnabled data={workouts} />
 
       <FloatButton icon={<PlusIcon />} onClick={createWorkout} />
     </Flex>

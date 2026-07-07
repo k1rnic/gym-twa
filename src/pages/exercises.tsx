@@ -6,16 +6,25 @@ import { FloatButton } from '@/shared/ui/float-button';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { PlusIcon } from '@phosphor-icons/react';
 import { RouteHandle, useNavigate } from 'react-router';
+import { Route } from './+types/exercises';
 
 export const handle: RouteHandle = { root: true };
 
-const Page = () => {
+export const clientLoader = async () => {
+  const viewer = viewerModel.getViewerState();
+
+  if (!Number(viewer?.master?.master_id)) return [];
+
+  return await Api.exercise
+    .getListOfExercise(viewer!.master!.master_id!)
+    .catch(() => []);
+};
+
+const Page = ({ loaderData: exercises }: Route.ComponentProps) => {
   const navigate = useNavigate();
 
   const viewer = viewerModel.useViewer();
   const masterId = viewer.master!.master_id!;
-
-  const { data: exercises, loading } = exerciseModel.useExercises(masterId);
 
   const goToExercise = (ex: exerciseModel.Exercise) =>
     navigate({ pathname: `${ex.exercise_id}` });
@@ -31,7 +40,7 @@ const Page = () => {
   };
 
   return (
-    <PageLayout loading={loading}>
+    <PageLayout>
       <Flex height="100%" style={{ overflow: 'hidden', position: 'relative' }}>
         <ExerciseList
           exercises={exercises}

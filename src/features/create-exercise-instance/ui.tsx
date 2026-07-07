@@ -3,13 +3,15 @@ import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
 import { PlusIcon } from '@phosphor-icons/react';
 import { Button } from 'antd';
+import { CSSProperties } from 'react';
 import { useNavigate } from 'react-router';
 
 type Props = {
   workout: workoutModel.Workout;
+  style?: CSSProperties;
 };
 
-export const CreateWorkoutExerciseButton = ({ workout }: Props) => {
+export const CreateWorkoutExerciseButton = ({ workout, style }: Props) => {
   const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
   const permissions = useWorkoutPermissions(workout);
@@ -34,6 +36,7 @@ export const CreateWorkoutExerciseButton = ({ workout }: Props) => {
       hidden={!permissions.addTask}
       onClick={createWorkoutExercise}
       icon={<PlusIcon />}
+      style={style}
     >
       Новое упражнение
     </Button>
