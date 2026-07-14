@@ -4,6 +4,7 @@ import { Api } from '@/shared/api';
 import { PlusIcon } from '@phosphor-icons/react';
 import { Button } from 'antd';
 import { CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
 export const CreateWorkoutExerciseButton = ({ workout, style }: Props) => {
   const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
+  const { t } = useTranslation();
   const permissions = useWorkoutPermissions(workout);
 
   const createWorkoutExercise = async () => {
@@ -38,7 +40,7 @@ export const CreateWorkoutExerciseButton = ({ workout, style }: Props) => {
       icon={<PlusIcon />}
       style={style}
     >
-      Новое упражнение
+      {t('training.createExercise')}
     </Button>
   );
 };

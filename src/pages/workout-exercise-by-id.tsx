@@ -4,6 +4,7 @@ import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExerciseForm } from '@/widgets/workout-exercise-form';
 import { normalizeSetValues } from '@/widgets/workout-exercise-form/lib/normalize-set-values';
 import { Empty } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
 import { Route } from './+types/workout-exercise-by-id';
 
@@ -17,6 +18,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 const Page = ({ loaderData }: Route.ComponentProps) => {
   const { workout, exercise } = loaderData;
   const { revalidate } = useRevalidator();
+  const { t } = useTranslation();
 
   const saveChanges = async (values: workoutModel.WorkoutExercise) => {
     try {
@@ -36,7 +38,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
           onSubmit={saveChanges}
         />
       ) : (
-        <Empty description="Упражнение не найдено" />
+        <Empty description={t('exercise.notFound')} />
       )}
     </PageLayout>
   );

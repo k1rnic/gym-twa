@@ -16,6 +16,7 @@ import { DeleteButton } from '@/shared/ui/delete-button';
 import { SectionTitle } from '@/shared/ui/section-title';
 import { TrashIcon } from '@phosphor-icons/react';
 import { useCallback, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
 import { Route } from './+types/exercise-by-id';
 
@@ -26,6 +27,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   const { token } = useTheme();
   const { revalidate } = useRevalidator();
+  const { t } = useTranslation();
 
   const goBack = useNavigateBackButton();
 
@@ -85,14 +87,14 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
         >
           <Form.Item<exerciseModel.ExerciseDetailed>
             name="exercise_name"
-            label="Название"
+            label={t('exercise.name')}
           >
             <TextArea autoSize size="large" />
           </Form.Item>
 
           <Form.Item<exerciseModel.ExerciseDetailed>
             name="description"
-            label="Описание"
+            label={t('exercise.description')}
           >
             <TextArea size="large" autoSize={{ minRows: 3, maxRows: 6 }} />
           </Form.Item>
@@ -104,7 +106,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
             style={{ width: '100%', overflow: 'hidden' }}
           >
             <SectionTitle hidden={!canEdit && !items.length}>
-              Файлы
+              {t('exercise.files')}
             </SectionTitle>
 
             <GridPreview

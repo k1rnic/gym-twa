@@ -3,6 +3,7 @@ import { Api } from '@/shared/api';
 import { TrashSimpleIcon } from '@phosphor-icons/react';
 import { MenuProps } from 'antd/lib';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
 
 export const useDeleteWorkoutExerciseAction = (
@@ -10,6 +11,8 @@ export const useDeleteWorkoutExerciseAction = (
   task: workoutModel.WorkoutExercise,
   key: string,
 ) => {
+  const { t } = useTranslation();
+
   const { revalidate } = useRevalidator();
   const permissions = useWorkoutPermissions(w, task);
 
@@ -27,11 +30,11 @@ export const useDeleteWorkoutExerciseAction = (
       permissions.deleteTask
         ? {
             key,
-            label: 'Удалить',
+            label: t('common.delete'),
             icon: <TrashSimpleIcon />,
             onClick: deleteWorkoutExercise,
           }
         : null,
-    [key, permissions.deleteTask, deleteWorkoutExercise],
+    [t, key, permissions.deleteTask, deleteWorkoutExercise],
   );
 };

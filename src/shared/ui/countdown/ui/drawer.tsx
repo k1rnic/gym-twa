@@ -5,6 +5,7 @@ import { Flex } from '@/shared/ui/flex';
 import { PlayIcon, XIcon } from '@phosphor-icons/react';
 import { Button, Drawer, Typography } from 'antd';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   progress: number;
@@ -68,7 +69,7 @@ export type CountDownDrawerProps = {
 };
 
 export const CountDownDrawer = (props: CountDownDrawerProps) => {
-  const { token } = useTheme();
+  const { t } = useTranslation();
 
   const [opened, toggle] = useToggle();
   const [countDownValue, setCountDownValue] = useState(props.value);
@@ -106,7 +107,7 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
         disabled={props.disabled}
         onClick={close}
       >
-        Запуск
+        {t('common.start')}
       </Button>
 
       <Drawer
@@ -117,7 +118,7 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
             style={{ textAlign: 'center' }}
           >
             <Typography.Title level={3} style={{ margin: 0, flex: 1 }}>
-              Таймер
+              {t('common.timer')}
             </Typography.Title>
             <XIcon onClick={close} />
           </Flex>
@@ -145,7 +146,7 @@ export const CountDownDrawer = (props: CountDownDrawerProps) => {
             </Flex>
           </CircularProgress>
           <Button block size="large" type="primary" onClick={restart}>
-            Перезапуск
+            {t('common.restart')}
           </Button>
         </Flex>
       </Drawer>

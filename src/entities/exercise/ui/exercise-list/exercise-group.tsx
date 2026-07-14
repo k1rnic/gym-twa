@@ -1,6 +1,7 @@
 import { List, ListItem } from '@/shared/ui/list';
 import { Divider } from 'antd';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Exercise } from '../../model';
 import { ExerciseAvatar } from '../exercise-avatar';
 
@@ -17,6 +18,8 @@ export const ExerciseGroup: React.FC<ExerciseGroupProps> = ({
   listItemStyle,
   onSelect,
 }) => {
+  const { t } = useTranslation();
+
   if (!data.length) return null;
 
   return (
@@ -27,7 +30,7 @@ export const ExerciseGroup: React.FC<ExerciseGroupProps> = ({
         itemKey="exercise_id"
         variant="contained"
         size="small"
-        emptyText="Упражнения пока не добавлены"
+        emptyText={t('exercise.empty')}
         renderItem={(task, idx) => (
           <ListItem
             nav

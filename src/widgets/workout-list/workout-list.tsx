@@ -2,6 +2,7 @@ import { workoutModel } from '@/entities/workout';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { CardList } from '@/shared/ui/card-list';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useRevalidator } from 'react-router';
 
 import { FLOAT_BUTTON_SIZE } from '@/shared/ui/float-button';
@@ -15,6 +16,7 @@ type WorkoutListProps = {
 export const WorkoutList = ({ data, reorderEnabled }: WorkoutListProps) => {
   const navigate = useNavigate();
   const { revalidate } = useRevalidator();
+  const { t } = useTranslation();
 
   const [innerWorkouts, setInnerWorkouts] = useState(data);
 
@@ -46,7 +48,7 @@ export const WorkoutList = ({ data, reorderEnabled }: WorkoutListProps) => {
   return (
     <CardList
       reorderEnabled={reorderEnabled}
-      emptyText="Нет тренировок"
+      emptyText={t('training.empty')}
       items={innerWorkouts}
       itemKey="task_group_id"
       onReorder={handleReorder}

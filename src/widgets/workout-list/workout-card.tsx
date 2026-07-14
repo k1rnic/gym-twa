@@ -3,13 +3,13 @@ import { UserAvatar } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
 import { useCopyWorkoutAction } from '@/features/copy-workout';
 import { useDeleteWorkoutAction } from '@/features/delete-workout';
-import { plural } from '@/shared/lib/plural';
 import { CardListItem } from '@/shared/ui/card-list';
 import { List, ListItem } from '@/shared/ui/list';
 
 import { CardProps } from 'antd';
 import { MenuProps } from 'antd/lib';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 export type WorkoutCardProps = {
@@ -22,6 +22,7 @@ export type WorkoutCardProps = {
 
 export const WorkoutCard = (props: WorkoutCardProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const {
     id,
@@ -49,11 +50,10 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
   return (
     <CardListItem
       id={id}
-      title={w.title ?? 'Без названия'}
-      description={`${taskCount} ${plural(
-        ['упражнение', 'упражнения', 'упражнений'],
-        taskCount,
-      )}`}
+      title={w.title ?? t('training.titleFallback')}
+      description={`${taskCount} ${t('training.exercises', {
+        count: taskCount,
+      })}`}
       actions={actions}
       collapsed={collapsed}
       collapsible={collapsible}
@@ -68,7 +68,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
         itemKey="task_id"
         variant="simple"
         size="small"
-        emptyText="Упражнения пока не добавлены"
+        emptyText={t('training.emptyExercises')}
         renderItem={(task) => (
           <ListItem
             avatar={<ExerciseAvatar exercise={task.exercise!} size="large" />}

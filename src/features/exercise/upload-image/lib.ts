@@ -2,10 +2,12 @@ import { Api } from '@/shared/api';
 import { useFilePicker } from '@/shared/lib/file';
 import { message } from 'antd';
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
 
 export const useExerciseImagePicker = (exerciseId: number) => {
   const { revalidate } = useRevalidator();
+  const { t } = useTranslation();
 
   const [imageToUpload, openImagePicker, resetImageList] = useFilePicker({
     accept: 'image/*',
@@ -16,13 +18,13 @@ export const useExerciseImagePicker = (exerciseId: number) => {
     async (image: File) => {
       try {
         await Api.exercise.addExerciseImage(exerciseId, { image });
-        message.success('Изображение загружено');
+        message.success(t('errors.imageUploaded'));
         revalidate();
       } catch (e) {
-        message.error('Не удалось загрузить изображение');
+        message.error(t('errors.imageUploadFailed'));
       }
     },
-    [exerciseId],
+    [t, exerciseId],
   );
 
   useEffect(() => {

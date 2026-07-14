@@ -15,6 +15,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { Api } from '@/shared/api';
+import { useTranslation } from 'react-i18next';
 import classes from './exercise-selector-styles.module.css';
 
 type Props = {
@@ -25,6 +26,8 @@ type Props = {
 >;
 
 export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -80,7 +83,7 @@ export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
       virtual={false}
       onOpenChange={setOpen}
       size="large"
-      placeholder="Упражнение"
+      placeholder={t('exercise.title')}
       optionFilterProp="label"
       options={options}
       style={{ height: 'max-content' }}
@@ -129,7 +132,7 @@ export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
             onClick={createExercise}
             style={{ flexShrink: 0 }}
           >
-            Добавить шаблон
+            {t('exercise.addTemplate')}
           </Button>
         </Flex>
       )}

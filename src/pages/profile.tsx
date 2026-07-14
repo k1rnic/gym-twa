@@ -3,9 +3,10 @@ import { Api } from '@/shared/api';
 
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Form, message, Space, Typography } from 'antd';
+import { Card, Form, message, Select, Space, Typography } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RouteHandle, useNavigate } from 'react-router';
 
 import { useTheme } from '@/shared/lib/theme';
@@ -13,13 +14,19 @@ import { ActionListItem } from '@/shared/ui/action-list-item';
 
 export const handle: RouteHandle = { root: true };
 
+import { useI18nContext } from '@/app/providers/with-i18n';
 import {
   ProfileDescription,
   ProfileHero,
   ProfileName,
   ProfileToggle,
 } from '@/widgets/user-profile';
-import { BellIcon, UsersThreeIcon } from '@phosphor-icons/react';
+import {
+  BellIcon,
+  CaretDownIcon,
+  TranslateIcon,
+  UsersThreeIcon,
+} from '@phosphor-icons/react';
 const { Title } = Typography;
 
 const mapInitialValues = (
@@ -35,6 +42,8 @@ export default function Page() {
   const viewer = viewerModel.useViewer();
   const setViewer = viewerModel.useSetViewer();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { language, setLanguage, languages } = useI18nContext();
   const [form] = Form.useForm<ReturnType<typeof mapInitialValues>>();
 
   const initialValues = useMemo(() => mapInitialValues(viewer), [viewer]);
@@ -52,9 +61,9 @@ export default function Page() {
     try {
       await Api.user.addUserImage(viewer.user_id, { image: file });
       await refreshViewer();
-      message.success('Фотография загружена');
+      message.success(t('profile.photoUploaded'));
     } catch (e) {
-      message.error('Не удалось загрузить фото');
+      message.error(t('profile.photoUploadFailed'));
     }
   };
 
@@ -100,7 +109,31 @@ export default function Page() {
             </Form.Item>
           </Form>
 
-          <Title level={4}>Действия</Title>
+          <Card
+            styles={{
+              body: { padding: token.paddingSM, paddingLeft: token.paddingXXS },
+            }}
+          >
+            <Select
+              value={language}
+              onChange={setLanguage}
+              style={{ width: '100%' }}
+              prefix={
+                <TranslateIcon
+                  size={28}
+                  color={token.colorText}
+                  style={{ marginRight: token.paddingSM }}
+                />
+              }
+              suffixIcon={<CaretDownIcon color={token.colorText} />}
+              options={languages.map(({ code, nativeName }) => ({
+                value: code,
+                label: nativeName,
+              }))}
+            />
+          </Card>
+
+          <Title level={4}>{t('profile.actions')}</Title>
 
           <Space direction="vertical" style={{ width: '100%' }}>
             <ActionListItem
@@ -108,7 +141,7 @@ export default function Page() {
               icon={<UsersThreeIcon weight="fill" size={28} />}
               onClick={() => navigate('/profile/masters')}
             >
-              Список тренеров
+              {t('profile.listMasters')}
             </ActionListItem>
 
             <ActionListItem
@@ -116,7 +149,7 @@ export default function Page() {
               icon={<UsersThreeIcon weight="fill" size={28} />}
               onClick={() => navigate('/profile/gymmers')}
             >
-              Мои ученики
+              {t('profile.myGymmers')}
             </ActionListItem>
 
             <ActionListItem
@@ -124,7 +157,7 @@ export default function Page() {
               icon={<BellIcon weight="fill" size={28} />}
               onClick={() => navigate('/profile/requests')}
             >
-              Заявки на прикрепление
+              {t('profile.requests')}
             </ActionListItem>
           </Space>
         </Flex>

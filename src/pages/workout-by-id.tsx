@@ -10,6 +10,7 @@ import { WorkoutExerciseList } from '@/widgets/workout-exercise-list';
 import { PauseIcon, PlayIcon } from '@phosphor-icons/react';
 import { Form, Input } from 'antd';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
 import { Route } from './+types/workout-by-id';
 
@@ -20,6 +21,8 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 };
 
 const Page = ({ loaderData: workout }: Route.ComponentProps) => {
+  const { t } = useTranslation();
+
   const { revalidate } = useRevalidator();
 
   const { token } = useTheme();
@@ -53,7 +56,7 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
 
       if (changed) {
         await Api.taskGroup.updateTaskGroupTitle(workout!.task_group_id, {
-          title: form.getFieldValue('title') || 'Без названия',
+          title: form.getFieldValue('title') || t('training.titleFallback'),
         });
         revalidate();
       }
@@ -81,17 +84,17 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
             size="middle"
             disabled={!permissions.modifyWorkout}
           >
-            <Form.Item<FormValues> name="title" label="Название">
+            <Form.Item<FormValues> name="title" label={t('exercise.name')}>
               <Input
                 style={{ width: '100%' }}
-                placeholder="Название"
+                placeholder={t('training.titlePlaceholder')}
                 size="large"
               />
             </Form.Item>
           </Form>
 
           <Flex flex={1} gap={token.paddingXS} style={{ overflow: 'hidden' }}>
-            <SectionTitle>Упражнения</SectionTitle>
+            <SectionTitle>{t('training.exercisesSection')}</SectionTitle>
             <WorkoutExerciseList
               w={workout}
               data={workout.tasks ?? []}

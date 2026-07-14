@@ -3,6 +3,7 @@ import { User } from '@/shared/api';
 import { useToggle } from '@/shared/lib/hooks';
 import { Modal, Typography } from 'antd';
 import { CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   readOnly?: boolean;
@@ -12,6 +13,7 @@ type Props = {
 
 export const UserTgLink = ({ user, readOnly, style }: Props) => {
   const [opened, toggle] = useToggle();
+  const { t } = useTranslation();
 
   const goToChat = () => {
     window.open(`https://t.me/${user.username}`, '_blank');
@@ -32,7 +34,7 @@ export const UserTgLink = ({ user, readOnly, style }: Props) => {
 
       <Modal
         centered
-        title="Подтверждение перехода в чат"
+        title={t('profile.confirmChat.title')}
         closable={false}
         maskClosable={false}
         open={opened}
@@ -48,7 +50,7 @@ export const UserTgLink = ({ user, readOnly, style }: Props) => {
         }}
       >
         <Typography.Paragraph>
-          Начать диалог с <b>{formatUserFullName(user)}</b>?
+          {t('profile.confirmChat.message', { name: formatUserFullName(user) })}
         </Typography.Paragraph>
       </Modal>
     </>

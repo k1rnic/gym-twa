@@ -13,6 +13,7 @@ import {
   PauseIcon,
   PlayIcon,
 } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 import ReactPlayer from 'react-player';
 
 const { Text } = Typography;
@@ -40,6 +41,7 @@ export type VideoPlayerProps = {
 
 export const VideoPlayer = ({ url, active }: VideoPlayerProps) => {
   const { token } = useTheme();
+  const { t } = useTranslation();
 
   const playerRef = useRef<HTMLVideoElement>(null);
 
@@ -124,7 +126,7 @@ export const VideoPlayer = ({ url, active }: VideoPlayerProps) => {
         gap={token.padding}
       >
         <Empty
-          description="Ошибка при загрузке видео"
+          description={t('errors.videoLoad')}
           image={<LinkBreakIcon weight="light" size={80} />}
         />
 
@@ -136,7 +138,7 @@ export const VideoPlayer = ({ url, active }: VideoPlayerProps) => {
           icon={<LinkSimpleIcon />}
           rel="noopener noreferrer"
         >
-          Посмотреть по ссылке
+          {t('errors.videoLink')}
         </Button>
       </Flex>
     );
@@ -208,7 +210,7 @@ export const VideoPlayer = ({ url, active }: VideoPlayerProps) => {
           align="center"
         >
           <Flex vertical={false} align="center" gap={token.paddingXS}>
-            15s
+            {t('common.seekSeconds', { count: SEEK_SECONDS })}
             <ArrowUUpLeftIcon
               onClick={() => seek(currentTime - SEEK_SECONDS)}
             />
@@ -231,7 +233,7 @@ export const VideoPlayer = ({ url, active }: VideoPlayerProps) => {
             <ArrowUUpRightIcon
               onClick={() => seek(currentTime + SEEK_SECONDS)}
             />
-            15s
+            {t('common.seekSeconds', { count: SEEK_SECONDS })}
           </Flex>
         </Flex>
       </Flex>

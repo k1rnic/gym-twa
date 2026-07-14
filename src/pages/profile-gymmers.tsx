@@ -5,9 +5,12 @@ import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 export default function Page() {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
 
   const viewer = viewerModel.useViewer();
@@ -24,7 +27,7 @@ export default function Page() {
         <List
           items={gymmers}
           itemKey="gymer_id"
-          emptyText={gymmerApi.loading ? '' : 'Учеников пока нет'}
+          emptyText={gymmerApi.loading ? '' : t('profile.noGymmers')}
           variant="contained"
           renderItem={(g) => (
             <ListItem

@@ -1,4 +1,5 @@
 import { withProviders } from './providers';
+import i18next from 'i18next';
 import { PropsWithChildren } from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
@@ -22,6 +23,6 @@ export const Layout = ({ children }: PropsWithChildren) => (
   </html>
 );
 
-export const ErrorBoundary = () => <>Something went wrong =/</>;
+export const ErrorBoundary = () => <>{i18next.t('errors.unexpected')}</>;
 
 export default withProviders(Outlet);

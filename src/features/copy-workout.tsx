@@ -3,9 +3,12 @@ import { Api } from '@/shared/api';
 import { CopySimpleIcon } from '@phosphor-icons/react';
 import { ItemType } from 'antd/es/menu/interface';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
 
 export const useCopyWorkoutAction = (w: workoutModel.Workout, key: string) => {
+  const { t } = useTranslation();
+
   const { revalidate } = useRevalidator();
 
   const copyWorkout = useCallback(async () => {
@@ -20,10 +23,10 @@ export const useCopyWorkoutAction = (w: workoutModel.Workout, key: string) => {
   return useMemo<ItemType>(
     () => ({
       key,
-      label: 'Дублировать',
+      label: t('common.duplicate'),
       icon: <CopySimpleIcon />,
       onClick: copyWorkout,
     }),
-    [key, copyWorkout],
+    [t, key, copyWorkout],
   );
 };

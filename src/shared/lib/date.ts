@@ -1,4 +1,11 @@
+import i18next from 'i18next';
+
 type SortOrder = 'asc' | 'desc';
+
+const DATE_LOCALES: Record<string, string> = {
+  ru: 'ru-RU',
+  en: 'en-US',
+};
 
 const createDateSorter =
   <T, K extends keyof T>(field: K, order: SortOrder = 'desc') =>
@@ -22,10 +29,11 @@ export const formatDate = (
   maybeDate: string | null | Date,
   format: 'date' | 'datetime' | 'time' = 'date',
 ) => {
-  const locale = 'ru-RU';
+  const language = i18next.resolvedLanguage || i18next.language;
+  const locale = DATE_LOCALES[language] ?? language;
 
   if (!maybeDate) {
-    return 'Неверная дата';
+    return i18next.t('common.invalidDate');
   }
 
   const date = typeof maybeDate === 'string' ? new Date(maybeDate) : maybeDate;

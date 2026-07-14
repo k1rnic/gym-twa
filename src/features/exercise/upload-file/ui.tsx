@@ -13,6 +13,7 @@ import {
   Typography,
 } from 'antd';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
 
 export type ExerciseUploadFileModalProps = {
@@ -26,6 +27,7 @@ export const ExerciseUploadFileModal = (
 ) => {
   const { token } = useTheme();
   const { revalidate } = useRevalidator();
+  const { t } = useTranslation();
 
   const [mode, setMode] = useState<'link' | 'file'>('link');
   const [url, setUrl] = useState('');
@@ -57,13 +59,14 @@ export const ExerciseUploadFileModal = (
       revalidate();
       props.onClose?.();
     } catch (e) {
-      message.error('Не удалось добавить ссылку');
+      message.error(t('exercise.upload.errors.link'));
     }
   };
 
   const onSubmitFile = async () => {
     try {
-      if (!files[0]) return message.error('Файл не выбран');
+      if (!files[0])
+        return message.error(t('exercise.upload.errors.fileNotSelected'));
       await Api.exercise.addExerciseImage(props.exerciseId, {
         image: files[0],
       });
@@ -72,7 +75,7 @@ export const ExerciseUploadFileModal = (
       clearFileList();
       props.onClose?.();
     } catch (e) {
-      message.error('Не удалось загрузить файл');
+      message.error(t('exercise.upload.errors.file'));
     }
   };
 
@@ -80,7 +83,7 @@ export const ExerciseUploadFileModal = (
     <Modal
       centered
       height="400"
-      title="Добавить файл"
+      title={t('exercise.upload.title')}
       open={props.opened}
       onCancel={props.onClose}
       okButtonProps={{ hidden: true }}
@@ -91,34 +94,34 @@ export const ExerciseUploadFileModal = (
           value={mode}
           onChange={(e: RadioChangeEvent) => setMode(e.target.value)}
         >
-          <Radio value="link">Вставить ссылку</Radio>
-          <Radio value="file">Загрузить файл</Radio>
+          <Radio value="link">{t('exercise.upload.link')}</Radio>
+          <Radio value="file">{t('exercise.upload.file')}</Radio>
         </Radio.Group>
 
         {mode === 'link' ? (
           <Flex align="center" gap={token.paddingSM} vertical={false}>
             <Input
-              placeholder="Вставьте ссылку"
+              placeholder={t('exercise.upload.placeholder')}
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
             <Button type="primary" disabled={!url} onClick={onSubmitLink}>
-              Вставить
+              {t('exercise.upload.insert')}
             </Button>
           </Flex>
         ) : (
           <Flex align="flex-start" gap={token.paddingSM} vertical={false}>
             <Flex flex={1} gap={token.paddingSM}>
               <Button block onClick={openFilePicker}>
-                Выбрать файл
+                {t('exercise.upload.chooseFile')}
               </Button>
               <Typography.Text hidden={!files.length}>
-                Файл: {files[0]?.name}
+                {t('exercise.upload.fileLabel', { name: files[0]?.name ?? '' })}
               </Typography.Text>
             </Flex>
 
             <Button type="primary" disabled={!files[0]} onClick={onSubmitFile}>
-              Загрузить
+              {t('exercise.upload.load')}
             </Button>
           </Flex>
         )}
