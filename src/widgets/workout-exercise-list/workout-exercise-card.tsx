@@ -39,50 +39,58 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
     [deleteAction],
   );
 
-  const hasFinishedExercises = useCallback(
+  const isSetFinished = useCallback(
     (set: Set) => set.fact_value !== null && set.fact_rep !== null,
     [],
   );
 
-  const getExerciseDescriptions = useCallback(
-    (ex: workoutModel.WorkoutExercise): DescriptionsItemType[] => [
-      ...(ex.task_properties?.sets?.map((s, idx) => ({
-        key: s.set_id,
-        label: `${idx + 1}`,
-        children: (
-          <Flex vertical={false} width="100%">
-            <Flex
-              flex={1}
-              align="flex-start"
-              style={{ color: token.colorSuccess }}
-              hidden={!hasFinishedExercises(s)}
-            >
-              {`${s.fact_value ?? 0} ${t('exercise.units.kg')} x ${
-                s.fact_rep ?? 0
-              } ${t('exercise.units.reps')}`}
-            </Flex>
+  const isExerciseStarted = useCallback(
+    (sets: Set[]) => sets.some(isSetFinished),
+    [isSetFinished],
+  );
 
-            <Flex
-              flex={1}
-              align={hasFinishedExercises(s) ? 'flex-end' : 'flex-start'}
-            >{`${s.plan_value ?? 0} ${t('exercise.units.kg')} x ${
-              s.plan_rep ?? 0
-            } ${t('exercise.units.reps')}`}</Flex>
-          </Flex>
-        ),
-      })) ?? []),
-    ],
-    [t, token.colorSuccess, hasFinishedExercises],
+  const getExerciseDescriptions = useCallback(
+    (ex: workoutModel.WorkoutExercise): DescriptionsItemType[] => {
+      const sets = ex.task_properties?.sets ?? [];
+      const isStarted = isExerciseStarted(sets);
+
+      return [
+        ...(ex.task_properties?.sets?.map((s, idx) => ({
+          key: s.set_id,
+          label: `${idx + 1}`,
+          children: (
+            <Flex vertical={false} width="100%">
+              <Flex
+                flex={1}
+                align="flex-start"
+                style={{ color: token.colorSuccess }}
+                hidden={!isStarted}
+              >
+                {isSetFinished(s)
+                  ? `${s.fact_value ?? 0} ${t('exercise.units.kg')} x ${
+                      s.fact_rep ?? 0
+                    } ${t('exercise.units.reps')}`
+                  : ''}
+              </Flex>
+
+              <Flex flex={1} align={isStarted ? 'flex-end' : 'flex-start'}>{`${
+                s.plan_value ?? 0
+              } ${t('exercise.units.kg')} x ${s.plan_rep ?? 0} ${t(
+                'exercise.units.reps',
+              )}`}</Flex>
+            </Flex>
+          ),
+        })) ?? []),
+      ];
+    },
+    [t, token.colorSuccess, isExerciseStarted, isSetFinished],
   );
 
   return (
     <CardListItem
       id={id}
-      title={
-        ex.exercise?.exercise_name ??
-        t('common.notSelected')
-      }
-      avatar={<ExerciseAvatar exercise={ex.exercise!} size="large" />}
+      title={ex.exercise?.exercise_name ?? t('common.notSelected')}
+      avatar={<ExerciseAvatar exercise={ex.exercise!} size="default" />}
       actions={actions}
       footer={
         <Flex vertical={false} justify="space-between" align="center">

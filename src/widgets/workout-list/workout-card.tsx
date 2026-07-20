@@ -71,7 +71,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
         emptyText={t('training.emptyExercises')}
         renderItem={(task) => (
           <ListItem
-            avatar={<ExerciseAvatar exercise={task.exercise!} size="large" />}
+            avatar={<ExerciseAvatar exercise={task.exercise!} size="default" />}
             header={task.exercise?.exercise_name}
             onClick={() => goToWorkoutExercise(task)}
           />
