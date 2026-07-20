@@ -1,11 +1,12 @@
 import { viewerModel } from '@/entities/viewer';
+import { PolicyDrawer } from '@/features/policy-consent';
 import { Api } from '@/shared/api';
 
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Card, Form, message, Select, Space, Typography } from 'antd';
 import { RcFile } from 'antd/es/upload';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteHandle, useNavigate } from 'react-router';
 
@@ -24,6 +25,7 @@ import {
 import {
   BellIcon,
   CaretDownIcon,
+  FileTextIcon,
   TranslateIcon,
   UsersThreeIcon,
 } from '@phosphor-icons/react';
@@ -45,6 +47,7 @@ export default function Page() {
   const { t } = useTranslation();
   const { language, setLanguage, languages } = useI18nContext();
   const [form] = Form.useForm<ReturnType<typeof mapInitialValues>>();
+  const [policyOpen, setPolicyOpen] = useState(false);
 
   const initialValues = useMemo(() => mapInitialValues(viewer), [viewer]);
 
@@ -109,30 +112,6 @@ export default function Page() {
             </Form.Item>
           </Form>
 
-          <Card
-            styles={{
-              body: { padding: token.paddingSM, paddingLeft: token.paddingXXS },
-            }}
-          >
-            <Select
-              value={language}
-              onChange={setLanguage}
-              style={{ width: '100%' }}
-              prefix={
-                <TranslateIcon
-                  size={28}
-                  color={token.colorText}
-                  style={{ marginRight: token.paddingSM }}
-                />
-              }
-              suffixIcon={<CaretDownIcon color={token.colorText} />}
-              options={languages.map(({ code, nativeName }) => ({
-                value: code,
-                label: nativeName,
-              }))}
-            />
-          </Card>
-
           <Title level={4}>{t('profile.actions')}</Title>
 
           <Space direction="vertical" style={{ width: '100%' }}>
@@ -160,8 +139,52 @@ export default function Page() {
               {t('profile.requests')}
             </ActionListItem>
           </Space>
+
+          <Title level={4}>{t('profile.settings')}</Title>
+
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <Card
+              styles={{
+                body: {
+                  padding: token.paddingSM,
+                  paddingLeft: token.paddingXXS,
+                },
+              }}
+            >
+              <Select
+                value={language}
+                onChange={setLanguage}
+                style={{ width: '100%' }}
+                prefix={
+                  <TranslateIcon
+                    size={28}
+                    color={token.colorText}
+                    style={{ marginRight: token.paddingSM }}
+                  />
+                }
+                suffixIcon={<CaretDownIcon color={token.colorText} />}
+                options={languages.map(({ code, nativeName }) => ({
+                  value: code,
+                  label: nativeName,
+                }))}
+              />
+            </Card>
+
+            <ActionListItem
+              icon={<FileTextIcon weight="fill" size={28} />}
+              onClick={() => setPolicyOpen(true)}
+            >
+              {t('profile.policy')}
+            </ActionListItem>
+          </Space>
         </Flex>
       </Flex>
+
+      <PolicyDrawer
+        mode="view"
+        open={policyOpen}
+        onClose={() => setPolicyOpen(false)}
+      />
     </PageLayout>
   );
 }

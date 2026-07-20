@@ -1,7 +1,8 @@
 import { useViewport } from '@/shared/lib/telegram';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
-import { Spin, Typography } from 'antd';
+import { PageSpinner } from '@/shared/ui/page-spinner';
+import { Typography } from 'antd';
 import { CSSProperties, PropsWithChildren, ReactNode } from 'react';
 import { useNavigation } from 'react-router';
 
@@ -65,12 +66,7 @@ export const PageLayout = ({
         style={{ overflow: 'hidden', minHeight: 0, ...contentStyle }}
       >
         {children}
-        <Spin
-          fullscreen
-          spinning={spinning}
-          className="page-spinner"
-          delay={250}
-        />
+        <PageSpinner spinning={spinning} />
       </Flex>
     </Flex>
   );

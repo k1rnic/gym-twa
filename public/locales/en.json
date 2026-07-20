@@ -93,11 +93,20 @@
       }
     }
   },
+  "policy": {
+    "title": "App policy",
+    "agree": "I have read and agree to the app policy",
+    "continue": "Continue",
+    "closeApp": "Close app",
+    "body": "This is a temporary app policy placeholder. The full terms of use, personal data processing rules, and service guidelines will be placed here.\n\nBy using the app, you confirm that you have read this policy and accept its terms.\n\n1. General provisions\nThe app is intended for workout tracking and trainer–student interaction. By continuing to use it, you agree to the rules described below.\n\n2. Personal data\nWe process data required for the service to work: Telegram ID, name, profile photo, and workout-related information. Data is used only to provide app features.\n\n3. Confidentiality\nWe take reasonable measures to protect your data. Do not share access to your Telegram account with third parties.\n\n4. User responsibility\nYou are responsible for the accuracy of the information you provide in your profile and for proper use of the app features.\n\n5. Policy changes\nThis policy text may be updated. The current version is always available in the profile section.\n\n6. Contacts\nFor questions about the policy and data processing, contact the service administrator via Telegram support.\n\nThis paragraph is added so vertical scrolling of a long policy text can be verified on screens of different heights. After approval, the final legal text will replace this placeholder without changing the consent screen structure."
+  },
   "profile": {
     "actions": "Actions",
+    "settings": "Settings",
     "listMasters": "Trainers",
     "myGymmers": "My students",
     "requests": "Attachment requests",
+    "policy": "App policy",
     "language": "Language",
     "languageDescription": "Choose the interface language",
     "hideProfile": "Hide profile",
