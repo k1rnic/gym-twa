@@ -283,7 +283,9 @@ export const GridPreview = (props: GridPreviewProps) => {
               previewIndex + 1
             } ${t('common.of')} ${items.length}`}</Typography.Title>
 
-            {renderToolbar && renderToolbar(<></>, { current: previewIndex })}
+            <Flex style={{ minWidth: token.controlHeightLG }}>
+              {renderToolbar && renderToolbar(<></>, { current: previewIndex })}
+            </Flex>
           </Flex>
         }
       >
@@ -308,7 +310,7 @@ export const GridPreview = (props: GridPreviewProps) => {
                     src={item?.url}
                     width="100%"
                     height="100%"
-                    style={{ objectFit: 'cover', aspectRatio: '1 / 1' }}
+                    style={{ objectFit: 'contain', aspectRatio: '1 / 1' }}
                     preview={false}
                   />
                 )}

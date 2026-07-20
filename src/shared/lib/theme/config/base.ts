@@ -54,7 +54,7 @@ export const BASE_THEME_CONFIG: ThemeConfig = {
       'Mulish, "Ubuntu Condensed", Oswald,Inter, system-ui, sans-serif',
     controlHeight: 40,
     colorText: COLOR_TEXT,
-    colorPrimary: '#84C02A',
+    colorPrimary: '#dd2d4a',
     colorSuccess: '#32936F',
     colorWarning: '#E9A23B',
     colorError: '#e5383b',

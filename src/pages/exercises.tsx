@@ -40,7 +40,7 @@ const Page = ({ loaderData: exercises }: Route.ComponentProps) => {
   };
 
   return (
-    <PageLayout>
+    <PageLayout contentStyle={{ paddingBottom: 0 }}>
       <Flex height="100%" style={{ overflow: 'hidden', position: 'relative' }}>
         <ExerciseList
           exercises={exercises}

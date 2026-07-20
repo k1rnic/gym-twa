@@ -57,7 +57,7 @@ const Page = () => {
   }, [isIndex, gymer]);
 
   return (
-    <PageLayout loading={loading}>
+    <PageLayout loading={loading} contentStyle={{ paddingBottom: 0 }}>
       <Flex height="100%" gap="small" style={{ overflow: 'hidden' }}>
         <UserAvatarList
           items={items}
