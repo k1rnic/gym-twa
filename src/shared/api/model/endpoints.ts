@@ -476,6 +476,11 @@ export interface User {
   photo?: string | null;
   /** Photos */
   photos?: string[] | null;
+  /**
+   * Language Code
+   * @default "ru"
+   */
+  language_code?: string | null;
   master?: Master | null;
   gymer?: Gymer | null;
 }
@@ -500,6 +505,11 @@ export interface UserBase {
   photo?: string | null;
   /** Photos */
   photos?: string[] | null;
+  /**
+   * Language Code
+   * @default "ru"
+   */
+  language_code?: string | null;
 }
 
 /** UserIn */
@@ -518,6 +528,17 @@ export interface UserIn {
   telegram_id: number;
   /** Photo */
   photo?: string | null;
+  /**
+   * Language Code
+   * @default "ru"
+   */
+  language_code?: string | null;
+}
+
+/** UserProfile */
+export interface UserProfile {
+  /** Language Code */
+  language_code?: UserProfileLanguageCodeEnum;
 }
 
 /** ValidationError */
@@ -528,6 +549,12 @@ export interface ValidationError {
   msg: string;
   /** Error Type */
   type: string;
+}
+
+/** Language Code */
+export enum UserProfileLanguageCodeEnum {
+  Ru = "ru",
+  En = "en",
 }
 
 import type {
@@ -707,7 +734,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.8.0
+ * @version 2.8.1
  */
 export class Endpoints<
   SecurityDataType extends unknown,
@@ -983,6 +1010,30 @@ export class Endpoints<
         path: `/gym/user/master/${masterId}`,
         method: "PUT",
         query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name UpdateUserProfile
+     * @summary update user profile
+     * @request PUT:/gym/user/profile/{user_id}
+     * @secure
+     */
+    updateUserProfile: (
+      userId: number,
+      data: UserProfile,
+      params: RequestParams = {},
+    ) =>
+      this.request<User, HTTPValidationError>({
+        path: `/gym/user/profile/${userId}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

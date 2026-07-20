@@ -1,6 +1,6 @@
 import { viewerModel } from '@/entities/viewer';
 import { PolicyDrawer } from '@/features/policy-consent';
-import { Api } from '@/shared/api';
+import { Api, UserProfileLanguageCodeEnum } from '@/shared/api';
 
 import { notify } from '@/shared/lib/notification';
 import { useTheme } from '@/shared/lib/theme';
@@ -9,7 +9,7 @@ import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Card, Form, Select, Space, Typography } from 'antd';
 import { RcFile } from 'antd/es/upload';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteHandle, useNavigate } from 'react-router';
 
@@ -86,6 +86,16 @@ export default function Page() {
     await Api.user.updateMasterProfile(viewer.master!.master_id!, payload);
     await refreshViewer();
   };
+
+  const updateLanguage = async (lang: UserProfileLanguageCodeEnum) => {
+    if (lang === viewer.language_code) return;
+    await Api.user.updateUserProfile(viewer.user_id, { language_code: lang });
+    await refreshViewer();
+  };
+
+  useEffect(() => {
+    updateLanguage(language as UserProfileLanguageCodeEnum);
+  }, [language]);
 
   return (
     <PageLayout pageStyle={{ paddingTop: 0 }} contentStyle={{ padding: 0 }}>
