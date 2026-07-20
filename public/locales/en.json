@@ -112,6 +112,7 @@
     "hideProfile": "Hide profile",
     "tellAboutYou": "Tell us about yourself",
     "addPhoto": "Add photo",
+    "deleteCurrentPhoto": "Delete photo",
     "descriptionMissing": "No description",
     "masterNotFound": "Trainer not found",
     "gymmerNotFound": "Student not found",

@@ -60,13 +60,23 @@ export default function Page() {
     }
   };
 
-  const uploadFile = async (file: RcFile) => {
+  const uploadPhoto = async (file: RcFile) => {
     try {
       await Api.user.addUserImage(viewer.user_id, { image: file });
       await refreshViewer();
       message.success(t('profile.photoUploaded'));
     } catch (e) {
       message.error(t('profile.photoUploadFailed'));
+    }
+  };
+
+  const deletePhoto = async (url: string) => {
+    try {
+      await Api.user.deleteUserImage(viewer.user_id, { image_url: url });
+      await refreshViewer();
+      message.success(t('profile.photoDeleted'));
+    } catch (e) {
+      message.error(t('profile.photoDeleteFailed'));
     }
   };
 
@@ -84,7 +94,8 @@ export default function Page() {
           <ProfileHero
             user={viewer}
             toolbarHidden={false}
-            onUpload={uploadFile}
+            onUploadPhoto={uploadPhoto}
+            onDeletePhoto={deletePhoto}
           />
           <ProfileName user={viewer} />
         </Flex>

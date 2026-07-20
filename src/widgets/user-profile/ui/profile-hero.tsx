@@ -3,7 +3,12 @@ import { alpha } from '@/shared/lib/color';
 import { useTheme } from '@/shared/lib/theme';
 import { FadeImage } from '@/shared/ui/fade-image';
 import { Flex } from '@/shared/ui/flex';
-import { CameraSlashIcon, GearSixIcon, PlusIcon } from '@phosphor-icons/react';
+import {
+  CameraSlashIcon,
+  GearSixIcon,
+  PlusIcon,
+  TrashSimpleIcon,
+} from '@phosphor-icons/react';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
@@ -17,14 +22,14 @@ import classes from './profile-hero-styles.module.css';
 
 export type ProfileHeroProps = {
   user: Omit<User, 'user_id'>;
-  onUpload?: (file: RcFile) => Promise<void>;
+  onUploadPhoto?: (file: RcFile) => Promise<void>;
   onDeletePhoto?: (url: string) => Promise<void> | void;
   toolbarHidden?: boolean;
 };
 
 export const ProfileHero = ({
   user,
-  onUpload,
+  onUploadPhoto,
   onDeletePhoto,
   toolbarHidden = true,
 }: ProfileHeroProps) => {
@@ -47,7 +52,7 @@ export const ProfileHero = ({
     multiple: false,
     showUploadList: false,
     beforeUpload: async (file) => {
-      await onUpload?.(file as RcFile);
+      await onUploadPhoto?.(file as RcFile);
       return false;
     },
   };
@@ -66,17 +71,17 @@ export const ProfileHero = ({
                 </Upload>
               ),
             },
-            // {
-            //   key: 'delete',
-            //   danger: true,
-            //   disabled: !currentPhoto,
-            //   icon: <DeleteOutlined />,
-            //   label: t('profile.deleteCurrentPhoto', { defaultValue: 'Delete current photo' }),
-            //   onClick: async () => {
-            //     if (!currentPhoto) return;
-            //     await onDeletePhoto?.(currentPhoto);
-            //   },
-            // },
+            {
+              key: 'delete',
+              danger: true,
+              disabled: !currentPhoto,
+              icon: <TrashSimpleIcon />,
+              label: t('profile.deleteCurrentPhoto'),
+              onClick: async () => {
+                if (!currentPhoto) return;
+                await onDeletePhoto?.(currentPhoto);
+              },
+            },
           ],
 
     [toolbarHidden, uploadProps, t],

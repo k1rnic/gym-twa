@@ -45,10 +45,13 @@ export const BASE_THEME_CONFIG: ThemeConfig = {
     Drawer: {
       colorBgElevated: BG_SECONDARY,
     },
+    Avatar: {
+      containerSizeLG: 64,
+    },
   },
   token: {
     fontFamily:
-      'Oswald, Mulish,"Ubuntu Condensed", Inter, system-ui, sans-serif',
+      'Mulish, "Ubuntu Condensed", Oswald,Inter, system-ui, sans-serif',
     controlHeight: 40,
     colorText: COLOR_TEXT,
     colorPrimary: '#84C02A',

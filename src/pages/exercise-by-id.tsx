@@ -15,7 +15,7 @@ import { useTheme } from '@/shared/lib/theme';
 import { DeleteButton } from '@/shared/ui/delete-button';
 import { SectionTitle } from '@/shared/ui/section-title';
 import { TrashIcon } from '@phosphor-icons/react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
 import { Route } from './+types/exercise-by-id';
@@ -33,6 +33,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
 
   const viewer = useViewer();
   const [form] = Form.useForm<exerciseModel.ExerciseDetailed>();
+  const skipSaveOnUnmount = useRef(false);
 
   const files = useMemo(
     () => initialValues?.url_path_list ?? [],
@@ -55,7 +56,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   );
 
   const saveChanges = useCallback(async () => {
-    if (canEdit) {
+    if (canEdit && !skipSaveOnUnmount.current) {
       try {
         await Api.exercise.updateExercise(form.getFieldsValue(true));
         revalidate();
@@ -66,6 +67,7 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
   }, []);
 
   const deleteExercise = async () => {
+    skipSaveOnUnmount.current = true;
     await Api.exercise.deleteExercise(initialValues.exercise_id!);
     goBack();
   };
