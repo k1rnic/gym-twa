@@ -2,10 +2,11 @@ import { masterModel } from '@/entities/master';
 import { formatUserFullName, UserAvatar } from '@/entities/user';
 import { viewerModel } from '@/entities/viewer';
 import { Api, NotificationUserResponse } from '@/shared/api';
+import { notify } from '@/shared/lib/notification';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Button, message, Typography } from 'antd';
+import { Button, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -48,7 +49,7 @@ export default function Page() {
       await Api.notification.closeJoinRequest(notificationId, {
         accept_flg: accept,
       });
-      message.success(
+      notify.success(
         accept ? t('profile.requestAccepted') : t('profile.requestRejected'),
       );
       await loadRequests();

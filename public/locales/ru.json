@@ -133,8 +133,10 @@
     "noRequests": "Заявок пока нет",
     "noMasters": "Тренеров пока нет",
     "noGymmers": "Учеников пока нет",
-    "photoUploaded": "Фотография загружена",
+    "photoUploaded": "Фото загружено",
     "photoUploadFailed": "Не удалось загрузить фото",
+    "photoDeleted": "Фото удалено",
+    "photoDeleteFailed": "Не удалось удалить фото",
     "confirmChat": {
       "title": "Подтверждение перехода в чат",
       "message": "Начать диалог с {{name}}?"

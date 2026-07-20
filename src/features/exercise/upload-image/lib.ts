@@ -1,6 +1,6 @@
 import { Api } from '@/shared/api';
 import { useFilePicker } from '@/shared/lib/file';
-import { message } from 'antd';
+import { notify } from '@/shared/lib/notification';
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
@@ -18,10 +18,10 @@ export const useExerciseImagePicker = (exerciseId: number) => {
     async (image: File) => {
       try {
         await Api.exercise.addExerciseImage(exerciseId, { image });
-        message.success(t('errors.imageUploaded'));
+        notify.success(t('errors.imageUploaded'));
         revalidate();
       } catch (e) {
-        message.error(t('errors.imageUploadFailed'));
+        notify.error(t('errors.imageUploadFailed'));
       }
     },
     [t, exerciseId],

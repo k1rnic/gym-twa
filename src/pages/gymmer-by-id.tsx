@@ -1,11 +1,12 @@
 import { gymmerModel } from '@/entities/gymmer';
 import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
+import { notify } from '@/shared/lib/notification';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { ProfileHero, ProfileName } from '@/widgets/user-profile';
-import { Button, Empty, message } from 'antd';
+import { Button, Empty } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route } from './+types/gymmer-by-id';
@@ -45,7 +46,7 @@ export default function Page({ loaderData: user }: Route.ComponentProps) {
         gymer_id: masterGymmer.gymer_id,
         master_id: viewer.master!.master_id!,
       });
-      message.success(t('profile.detachedSuccessfully'));
+      notify.success(t('profile.detachedSuccessfully'));
       await refresh();
     } finally {
       setActionLoading(false);

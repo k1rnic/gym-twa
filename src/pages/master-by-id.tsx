@@ -1,14 +1,15 @@
 import { masterModel } from '@/entities/master';
 import { viewerModel } from '@/entities/viewer';
 import { Api, GymerMasterStatus } from '@/shared/api';
+import { notify } from '@/shared/lib/notification';
+import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Button, Empty, message } from 'antd';
+import { Button, Empty } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { useTheme } from '@/shared/lib/theme';
 import {
   ProfileDescription,
   ProfileHero,
@@ -40,7 +41,7 @@ export default function Page() {
         sender: viewer.user_id,
         recipient: master.user_id!,
       });
-      message.success(t('profile.requestSent'));
+      notify.success(t('profile.requestSent'));
       await refresh();
     } finally {
       setActionLoading(false);
@@ -55,7 +56,7 @@ export default function Page() {
         gymer_id: viewer.gymer!.gymer_id,
         master_id: master.master_id!,
       });
-      message.success(t('profile.detachedFromMaster'));
+      notify.success(t('profile.detachedFromMaster'));
       await refresh();
     } finally {
       setActionLoading(false);

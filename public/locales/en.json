@@ -131,6 +131,8 @@
     "noGymmers": "No students yet",
     "photoUploaded": "Photo uploaded",
     "photoUploadFailed": "Failed to upload photo",
+    "photoDeleted": "Photo deleted",
+    "photoDeleteFailed": "Failed to delete photo",
     "confirmChat": {
       "title": "Open chat?",
       "message": "Start a chat with {{name}}?"

@@ -2,16 +2,16 @@ import { viewerModel } from '@/entities/viewer';
 import { PolicyDrawer } from '@/features/policy-consent';
 import { Api } from '@/shared/api';
 
+import { notify } from '@/shared/lib/notification';
+import { useTheme } from '@/shared/lib/theme';
+import { ActionListItem } from '@/shared/ui/action-list-item';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
-import { Card, Form, message, Select, Space, Typography } from 'antd';
+import { Card, Form, Select, Space, Typography } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteHandle, useNavigate } from 'react-router';
-
-import { useTheme } from '@/shared/lib/theme';
-import { ActionListItem } from '@/shared/ui/action-list-item';
 
 export const handle: RouteHandle = { root: true };
 
@@ -64,9 +64,9 @@ export default function Page() {
     try {
       await Api.user.addUserImage(viewer.user_id, { image: file });
       await refreshViewer();
-      message.success(t('profile.photoUploaded'));
+      notify.success(t('profile.photoUploaded'));
     } catch (e) {
-      message.error(t('profile.photoUploadFailed'));
+      notify.error(t('profile.photoUploadFailed'));
     }
   };
 
@@ -74,9 +74,9 @@ export default function Page() {
     try {
       await Api.user.deleteUserImage(viewer.user_id, { image_url: url });
       await refreshViewer();
-      message.success(t('profile.photoDeleted'));
+      notify.success(t('profile.photoDeleted'));
     } catch (e) {
-      message.error(t('profile.photoDeleteFailed'));
+      notify.error(t('profile.photoDeleteFailed'));
     }
   };
 

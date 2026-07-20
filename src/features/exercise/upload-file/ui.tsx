@@ -1,12 +1,12 @@
 import { Api, UrlPathType } from '@/shared/api';
 import { useFilePicker } from '@/shared/lib/file';
+import { notify } from '@/shared/lib/notification';
 import { useTheme } from '@/shared/lib/theme';
 import { isVideoUrl } from '@/shared/lib/video';
 import { Flex } from '@/shared/ui/flex';
 import {
   Button,
   Input,
-  message,
   Modal,
   Radio,
   RadioChangeEvent,
@@ -59,14 +59,14 @@ export const ExerciseUploadFileModal = (
       revalidate();
       props.onClose?.();
     } catch (e) {
-      message.error(t('exercise.upload.errors.link'));
+      notify.error(t('exercise.upload.errors.link'));
     }
   };
 
   const onSubmitFile = async () => {
     try {
       if (!files[0])
-        return message.error(t('exercise.upload.errors.fileNotSelected'));
+        return notify.error(t('exercise.upload.errors.fileNotSelected'));
       await Api.exercise.addExerciseImage(props.exerciseId, {
         image: files[0],
       });
@@ -75,7 +75,7 @@ export const ExerciseUploadFileModal = (
       clearFileList();
       props.onClose?.();
     } catch (e) {
-      message.error(t('exercise.upload.errors.file'));
+      notify.error(t('exercise.upload.errors.file'));
     }
   };
 
