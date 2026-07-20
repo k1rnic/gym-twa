@@ -2,11 +2,10 @@ import { Flex } from '@/shared/ui/flex';
 import { XCircleIcon } from '@phosphor-icons/react';
 import { Input } from 'antd';
 import { ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useExerciseFilter } from '../../lib/use-exercise-filter';
 import { Exercise } from '../../model';
 import { ExerciseGroup } from './exercise-group';
-
-const { Search } = Input;
 
 export type ExerciseListProps = {
   exercises: Exercise[];
@@ -20,29 +19,32 @@ export const ExerciseList = ({
   exercises,
   masterId,
   onSelect,
-  searchPlaceholder = 'Поиск упражнений',
+  searchPlaceholder,
   extra,
 }: ExerciseListProps) => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const grouped = useExerciseFilter(exercises, masterId, query);
+  const resolvedPlaceholder =
+    searchPlaceholder ?? t('exercise.searchPlaceholder');
 
   return (
     <Flex height="100%" style={{ overflow: 'hidden' }} gap={8}>
       <Input
         allowClear={{ clearIcon: <XCircleIcon weight="fill" /> }}
         size="large"
-        placeholder={searchPlaceholder}
+        placeholder={resolvedPlaceholder}
         onChange={(e) => setQuery(e.target.value)}
       />
       {extra}
       <Flex height="100%" style={{ overflow: 'auto' }}>
         <ExerciseGroup
-          title="Мои"
+          title={t('exercise.my')}
           data={grouped.yours}
           onSelect={(ex) => onSelect?.(ex)}
         />
         <ExerciseGroup
-          title="Базовые"
+          title={t('exercise.basic')}
           data={grouped.basic}
           onSelect={(ex) => onSelect?.(ex)}
         />

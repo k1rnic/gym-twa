@@ -10,6 +10,7 @@ import {
   Typography,
 } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   field: Omit<FormListFieldData, 'key'>;
@@ -41,6 +42,7 @@ export const ExerciseSet = ({
   onRemove,
 }: Props) => {
   const { token } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Flex
@@ -66,7 +68,7 @@ export const ExerciseSet = ({
           placeholder={valuePlaceholder}
         >
           <Input
-            suffix="кг"
+            suffix={t('exercise.units.kg')}
             inputMode="decimal"
             style={{ borderRadius: 0, backgroundColor: 'transparent' }}
           />
@@ -86,7 +88,7 @@ export const ExerciseSet = ({
           placeholder={repPlaceholder}
         >
           <Input
-            suffix="раз"
+            suffix={t('exercise.units.reps')}
             inputMode="decimal"
             style={{ borderRadius: 0, backgroundColor: 'transparent' }}
           />

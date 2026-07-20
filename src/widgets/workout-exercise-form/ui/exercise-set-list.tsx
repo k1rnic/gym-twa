@@ -10,6 +10,7 @@ import { CaretDownIcon, PlusIcon } from '@phosphor-icons/react';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import { NamePath } from 'antd/es/form/interface';
 import { FormListFieldData } from 'antd/lib';
+import { useTranslation } from 'react-i18next';
 import { Fragment } from 'react/jsx-runtime';
 import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
 import { useExercisePermissions } from '../lib/use-exercise-permissions';
@@ -20,8 +21,8 @@ type ValueType = 'fact' | 'plan';
 type FieldType = 'value' | 'rep';
 
 const FIELD_PLACEHOLDERS = {
-  rep: 'Количество',
-  value: 'Вес',
+  rep: 'exercise.setRep',
+  value: 'exercise.setValue',
 };
 
 type Props = {
@@ -40,6 +41,7 @@ export const ExerciseSetList = ({
   fields,
 }: Props) => {
   const { user_id: viewerId } = viewerModel.useViewer();
+  const { t } = useTranslation();
 
   const valueType: ValueType = workoutStatus.isPlanned ? 'plan' : 'fact';
   const repField = `${valueType}_rep` as const;
@@ -72,20 +74,20 @@ export const ExerciseSetList = ({
   ): string | number =>
     valueType === 'fact'
       ? getFieldValue('plan', fieldType, index)
-      : FIELD_PLACEHOLDERS[fieldType];
+      : t(FIELD_PLACEHOLDERS[fieldType]);
 
   const getOptions = (
     field: SuggestionField,
     index: number,
-  ): DefaultOptionType[] =>
-    getFieldSuggestions({
+  ): DefaultOptionType[] => [
+    ...getFieldSuggestions({
       index,
       field,
       mode: valueType,
       sets: formValues?.task_properties?.sets ?? [],
-    })
-      .map((value) => ({ value: `${value}`, label: value }))
-      .concat({ value: 'max', label: 'max' });
+    }).map((value) => ({ value: `${value}`, label: value })),
+    { value: 'max', label: t('exercise.max') },
+  ];
 
   const getLastSetValues = () => {
     const sets =
@@ -163,7 +165,7 @@ export const ExerciseSetList = ({
         onClick={addNewSet}
         style={{ flexShrink: 0 }}
       >
-        Добавить подход
+        {t('exercise.addSet')}
       </Button>
 
       <ExerciseKeyboardToolbarItem hidden={!compact} left={token.padding}>
@@ -177,7 +179,7 @@ export const ExerciseSetList = ({
           type="primary"
           onPointerDown={addNewSet}
         >
-          Добавить подход
+          {t('exercise.addSet')}
         </Button>
       </ExerciseKeyboardToolbarItem>
     </>

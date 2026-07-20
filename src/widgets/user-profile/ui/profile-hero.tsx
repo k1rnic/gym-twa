@@ -8,6 +8,7 @@ import type { MenuProps } from 'antd';
 import { Button, Dropdown, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Keyboard, Pagination } from 'swiper/modules';
@@ -28,6 +29,7 @@ export const ProfileHero = ({
   toolbarHidden = true,
 }: ProfileHeroProps) => {
   const { token } = useTheme();
+  const { t } = useTranslation();
 
   const photos = useMemo(
     () => user.photos ?? ([user.photo].filter(Boolean) as string[]),
@@ -60,7 +62,7 @@ export const ProfileHero = ({
               icon: <PlusIcon />,
               label: (
                 <Upload {...uploadProps}>
-                  <span>Добавить фото</span>
+                  <span>{t('profile.addPhoto')}</span>
                 </Upload>
               ),
             },
@@ -69,7 +71,7 @@ export const ProfileHero = ({
             //   danger: true,
             //   disabled: !currentPhoto,
             //   icon: <DeleteOutlined />,
-            //   label: 'Удалить текущее фото',
+            //   label: t('profile.deleteCurrentPhoto', { defaultValue: 'Delete current photo' }),
             //   onClick: async () => {
             //     if (!currentPhoto) return;
             //     await onDeletePhoto?.(currentPhoto);
@@ -77,7 +79,7 @@ export const ProfileHero = ({
             // },
           ],
 
-    [toolbarHidden, uploadProps, currentPhoto],
+    [toolbarHidden, uploadProps, t],
   );
 
   return (

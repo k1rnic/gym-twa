@@ -5,6 +5,7 @@ import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Button, Empty, message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { useTheme } from '@/shared/lib/theme';
@@ -17,6 +18,7 @@ import {
 export default function Page() {
   const { token } = useTheme();
   const { masterId } = useParams();
+  const { t } = useTranslation();
 
   const viewer = viewerModel.useViewer();
 
@@ -38,7 +40,7 @@ export default function Page() {
         sender: viewer.user_id,
         recipient: master.user_id!,
       });
-      message.success('Заявка отправлена');
+      message.success(t('profile.requestSent'));
       await refresh();
     } finally {
       setActionLoading(false);
@@ -53,7 +55,7 @@ export default function Page() {
         gymer_id: viewer.gymer!.gymer_id,
         master_id: master.master_id!,
       });
-      message.success('Вы открепились от тренера');
+      message.success(t('profile.detachedFromMaster'));
       await refresh();
     } finally {
       setActionLoading(false);
@@ -71,7 +73,7 @@ export default function Page() {
             onClick={handleBreak}
             loading={actionLoading}
           >
-            Открепиться
+            {t('profile.detachFromMaster')}
           </Button>
         );
       case GymerMasterStatus.AcceptsRequests:
@@ -83,20 +85,20 @@ export default function Page() {
             loading={actionLoading}
             style={{ backgroundColor: token.colorInfo }}
           >
-            Отправить заявку на прикрепление
+            {t('profile.sendRequest')}
           </Button>
         );
       default:
         return null;
     }
-  }, [master?.status, actionLoading]);
+  }, [t, master?.status, actionLoading]);
 
   if (!master && !loading) {
     return (
       <PageLayout loading={loading}>
         <Flex height="100%" width="100%" align="center" justify="center">
           <Empty
-            description="Тренер не найден"
+            description={t('profile.masterNotFound')}
             image={Empty.PRESENTED_IMAGE_SIMPLE}
           />
         </Flex>
@@ -116,7 +118,7 @@ export default function Page() {
 
         <Flex p={token.paddingSM} gap={token.paddingSM}>
           <ProfileDescription
-            value={master?.description || 'Описание отсутствует'}
+            value={master?.description || t('profile.descriptionMissing')}
             disabled
           />
         </Flex>

@@ -8,6 +8,7 @@ import { ImageIcon, PlusIcon, VideoIcon, XIcon } from '@phosphor-icons/react';
 import { Button, Col, Drawer, Image, Row, Skeleton, Typography } from 'antd';
 import { RowProps } from 'antd/lib';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import 'swiper/css';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 import classes from './styles.module.css';
@@ -99,6 +100,7 @@ export type GridPreviewProps = {
 } & Pick<RowProps, 'gutter'>;
 
 export const GridPreview = (props: GridPreviewProps) => {
+  const { t } = useTranslation();
   const { token } = useTheme();
   const { topSafeArea } = useViewport();
 
@@ -279,7 +281,7 @@ export const GridPreview = (props: GridPreviewProps) => {
 
             <Typography.Title level={5} style={{ margin: 0 }}>{`${
               previewIndex + 1
-            } из ${items.length}`}</Typography.Title>
+            } ${t('common.of')} ${items.length}`}</Typography.Title>
 
             {renderToolbar && renderToolbar(<></>, { current: previewIndex })}
           </Flex>

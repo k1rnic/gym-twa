@@ -3,7 +3,6 @@ import { UserAvatar } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
 import { useDeleteWorkoutExerciseAction } from '@/features/delete-exercise-instance';
 import { Set } from '@/shared/api';
-import { plural } from '@/shared/lib/plural';
 import { useTheme } from '@/shared/lib/theme';
 import { CardListItem } from '@/shared/ui/card-list';
 import { Flex } from '@/shared/ui/flex';
@@ -11,6 +10,7 @@ import { Descriptions, MenuProps, Typography } from 'antd';
 import { CardProps } from 'antd/lib';
 import { DescriptionsItemType } from 'antd/lib/descriptions';
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type ExerciseCardProps = {
   id: Exclude<React.Key, bigint>;
@@ -22,6 +22,8 @@ type ExerciseCardProps = {
 } & Pick<CardProps, 'style'>;
 
 export const ExerciseCard = (props: ExerciseCardProps) => {
+  const { t } = useTranslation();
+
   const { token } = useTheme();
   const { id, ex, w, collapsible, collapsed, onClick } = props;
 
@@ -55,24 +57,31 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
               style={{ color: token.colorSuccess }}
               hidden={!hasFinishedExercises(s)}
             >
-              {`${s.fact_value ?? 0} кг x ${s.fact_rep ?? 0} раз`}
+              {`${s.fact_value ?? 0} ${t('exercise.units.kg')} x ${
+                s.fact_rep ?? 0
+              } ${t('exercise.units.reps')}`}
             </Flex>
 
             <Flex
               flex={1}
               align={hasFinishedExercises(s) ? 'flex-end' : 'flex-start'}
-            >{`${s.plan_value ?? 0} кг x ${s.plan_rep ?? 0} раз`}</Flex>
+            >{`${s.plan_value ?? 0} ${t('exercise.units.kg')} x ${
+              s.plan_rep ?? 0
+            } ${t('exercise.units.reps')}`}</Flex>
           </Flex>
         ),
       })) ?? []),
     ],
-    [token.colorSuccess, hasFinishedExercises],
+    [t, token.colorSuccess, hasFinishedExercises],
   );
 
   return (
     <CardListItem
       id={id}
-      title={ex.exercise?.exercise_name ?? 'Не выбрано'}
+      title={
+        ex.exercise?.exercise_name ??
+        t('common.notSelected')
+      }
       avatar={<ExerciseAvatar exercise={ex.exercise!} size="large" />}
       actions={actions}
       footer={
@@ -82,14 +91,14 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
           )}
 
           <Flex gap={token.paddingXXS} align="flex-end">
-            <Typography hidden={contentVisible}>{`${exSets.length} ${plural(
-              ['подход', 'подхода', 'подходов'],
-              exSets.length,
+            <Typography hidden={contentVisible}>{`${exSets.length} ${t(
+              'exercise.sets',
+              { count: exSets.length },
             )}`}</Typography>
 
-            <Typography>{`Отдых: ${
+            <Typography>{`${t('exercise.playRest')}: ${
               ex.task_properties?.rest || 0
-            } сек`}</Typography>
+            } ${t('common.seconds')}`}</Typography>
           </Flex>
         </Flex>
       }

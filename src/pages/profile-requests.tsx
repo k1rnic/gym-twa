@@ -7,6 +7,7 @@ import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { Button, message, Typography } from 'antd';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 const { Paragraph } = Typography;
@@ -14,6 +15,7 @@ const { Paragraph } = Typography;
 export default function Page() {
   const navigate = useNavigate();
   const viewer = viewerModel.useViewer();
+  const { t } = useTranslation();
 
   const { refresh: refreshMasters } = masterModel.useMasters(
     viewer.gymer?.gymer_id,
@@ -46,7 +48,9 @@ export default function Page() {
       await Api.notification.closeJoinRequest(notificationId, {
         accept_flg: accept,
       });
-      message.success(accept ? 'Заявка принята' : 'Заявка отклонена');
+      message.success(
+        accept ? t('profile.requestAccepted') : t('profile.requestRejected'),
+      );
       await loadRequests();
       await refreshMasters();
     } finally {
@@ -60,7 +64,7 @@ export default function Page() {
         <List
           items={requests}
           itemKey="notification_id"
-          emptyText={loading ? '' : 'Заявок пока нет'}
+          emptyText={loading ? '' : t('profile.noRequests')}
           variant="contained"
           renderItem={(item) => {
             const gymerId = item.sender_user?.gymer?.gymer_id;
@@ -81,13 +85,13 @@ export default function Page() {
                 }
                 description={
                   <Paragraph style={{ margin: 0 }}>
-                    Пользователь{' '}
+                    {t('common.user')}{' '}
                     <b>
                       {item.sender_user
                         ? formatUserFullName(item.sender_user)
                         : item.sender}
                     </b>{' '}
-                    хочет прикрепиться к вам
+                    {t('profile.requestMessage')}
                   </Paragraph>
                 }
                 actions={[
@@ -101,7 +105,7 @@ export default function Page() {
                       handleRequest(item.notification_id, true);
                     }}
                   >
-                    Принять
+                    {t('common.accept')}
                   </Button>,
                   <Button
                     key="reject"
@@ -114,7 +118,7 @@ export default function Page() {
                       handleRequest(item.notification_id, false);
                     }}
                   >
-                    Отклонить
+                    {t('common.reject')}
                   </Button>,
                 ]}
               />

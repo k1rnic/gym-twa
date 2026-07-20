@@ -6,6 +6,7 @@ import { Flex } from '@/shared/ui/flex';
 import { SectionTitle } from '@/shared/ui/section-title';
 import { Form } from 'antd';
 import { FocusEvent, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useExerciseForm } from '../lib/use-exercise-form';
 import { useExercisePermissions } from '../lib/use-exercise-permissions';
@@ -22,6 +23,7 @@ export type WorkoutExerciseFormProps = {
 };
 
 export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
+  const { t } = useTranslation();
   const { token } = useTheme();
   const { workout, exercise } = props;
 
@@ -94,7 +96,7 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
             gap={token.paddingSM}
             style={{ overflow: 'hidden' }}
           >
-            <SectionTitle>Подходы</SectionTitle>
+            <SectionTitle>{t('exercise.setsTitle')}</SectionTitle>
 
             <Form.List name={['task_properties', 'sets']}>
               {(fields, operations) => (

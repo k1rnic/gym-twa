@@ -20,6 +20,7 @@ import {
 } from '@dnd-kit/sortable';
 import { Empty } from 'antd';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface RenderItemProps {
   id: Exclude<React.Key, bigint>;
@@ -39,7 +40,7 @@ export type CardListProps<T> = {
 export const CardList = <T,>({
   items,
   loading,
-  emptyText = 'Нет данных',
+  emptyText,
   showEmptyPlaceholder = true,
   itemKey,
   reorderEnabled,
@@ -47,8 +48,10 @@ export const CardList = <T,>({
   renderItem,
 }: CardListProps<T>) => {
   const { token } = useTheme();
+  const { t } = useTranslation();
 
   const noData = !loading && items.length === 0;
+  const resolvedEmptyText = emptyText ?? t('common.empty');
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -72,7 +75,10 @@ export const CardList = <T,>({
   };
 
   return noData && showEmptyPlaceholder ? (
-    <Empty description={emptyText} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+    <Empty
+      description={resolvedEmptyText}
+      image={Empty.PRESENTED_IMAGE_SIMPLE}
+    />
   ) : (
     <DndContext
       sensors={sensors}

@@ -7,6 +7,7 @@ import { PageLayout } from '@/shared/ui/page-layout';
 import { ProfileHero, ProfileName } from '@/widgets/user-profile';
 import { Button, Empty, message } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Route } from './+types/gymmer-by-id';
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
@@ -15,6 +16,7 @@ export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
 
 export default function Page({ loaderData: user }: Route.ComponentProps) {
   const { token } = useTheme();
+  const { t } = useTranslation();
 
   const viewer = viewerModel.useViewer();
   const {
@@ -43,19 +45,19 @@ export default function Page({ loaderData: user }: Route.ComponentProps) {
         gymer_id: masterGymmer.gymer_id,
         master_id: viewer.master!.master_id!,
       });
-      message.success('Успешно откреплено');
+      message.success(t('profile.detachedSuccessfully'));
       await refresh();
     } finally {
       setActionLoading(false);
     }
-  }, [masterGymmer, refresh, viewer.master]);
+  }, [t, masterGymmer, refresh, viewer.master]);
 
   if (!user && !loading) {
     return (
-      <PageLayout title="Информация" loading={loading}>
+      <PageLayout title={t('profile.infoTitle')} loading={loading}>
         <Flex height="100%" width="100%" align="center" justify="center">
           <Empty
-            description="Ученик не найден"
+            description={t('profile.gymmerNotFound')}
             image={Empty.PRESENTED_IMAGE_SIMPLE}
           />
         </Flex>
@@ -81,7 +83,7 @@ export default function Page({ loaderData: user }: Route.ComponentProps) {
               loading={actionLoading}
               onClick={handleBreak}
             >
-              Открепить
+              {t('profile.detach')}
             </Button>
           )}
         </Flex>

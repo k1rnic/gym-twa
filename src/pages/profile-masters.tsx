@@ -4,11 +4,13 @@ import { viewerModel } from '@/entities/viewer';
 import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 import { PageLayout } from '@/shared/ui/page-layout';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 export default function Page() {
   const viewer = viewerModel.useViewer();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { masters, loading } = masterModel.useMasters(viewer.gymer?.gymer_id);
 
@@ -18,7 +20,7 @@ export default function Page() {
         <List
           items={masters}
           itemKey="master_id"
-          emptyText={loading ? '' : 'Тренеров пока нет'}
+          emptyText={loading ? '' : t('profile.noMasters')}
           variant="contained"
           renderItem={(m) => (
             <ListItem
