@@ -20,12 +20,14 @@ const FILTERS = [
 ];
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
+  const gymmerId = +params.gId;
   const viewer = viewerModel.getViewerState()!;
+  const isMe = viewer.gymer?.gymer_id === gymmerId;
 
   return await Api.taskGroup
     .listTaskGroup({
-      gymer_id: +params.gId,
-      master_id: viewer.master?.master_id,
+      gymer_id: gymmerId,
+      master_id: isMe ? undefined : viewer.master?.master_id,
       status: params.status as TaskGroupStatus,
     })
     .then((data) => data.sort(sortByCreated()))
