@@ -1,3 +1,4 @@
+import { useVirtualKeyboardOpened } from '@/shared/lib/hooks';
 import { Button, ButtonProps } from 'antd';
 
 export const FLOAT_BUTTON_SIZE = 64;
@@ -7,7 +8,9 @@ type Props = Pick<
   'icon' | 'style' | 'onClick' | 'hidden' | 'danger'
 >;
 
-export const FloatButton = ({ style, ...props }: Props) => {
+export const FloatButton = ({ style, hidden, ...props }: Props) => {
+  const virtualKeyboardOpened = useVirtualKeyboardOpened();
+
   return (
     <Button
       type="primary"
@@ -22,6 +25,7 @@ export const FloatButton = ({ style, ...props }: Props) => {
         ...style,
       }}
       {...props}
+      hidden={hidden || virtualKeyboardOpened}
     />
   );
 };
