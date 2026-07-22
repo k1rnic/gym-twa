@@ -1,5 +1,5 @@
 import { RefSelectProps } from 'antd';
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 
 export const useKeyboardHeight = () => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -46,29 +46,74 @@ export const useSelectKeyboardDistance = (ref: RefObject<RefSelectProps>) => {
   return distance;
 };
 
+const isMobileDevice = () => {
+  if (typeof navigator === 'undefined') return false;
+
+  const userAgentData = (
+    navigator as Navigator & { userAgentData?: { mobile?: boolean } }
+  ).userAgentData;
+
+  if (userAgentData?.mobile !== undefined) {
+    return userAgentData.mobile;
+  }
+
+  return (
+    /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  );
+};
+
+const isTextInput = (element: Element | null): boolean => {
+  if (element instanceof HTMLTextAreaElement) return !element.disabled;
+
+  if (element instanceof HTMLInputElement) {
+    return (
+      !element.disabled &&
+      ![
+        'button',
+        'checkbox',
+        'file',
+        'hidden',
+        'image',
+        'radio',
+        'reset',
+        'submit',
+      ].includes(element.type)
+    );
+  }
+
+  return element instanceof HTMLElement && element.isContentEditable;
+};
+
 export const useVirtualKeyboardOpened = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const initialHeight = useRef<number>();
-
   useEffect(() => {
-    const viewport = window.visualViewport;
+    if (!isMobileDevice()) return;
 
-    if (!viewport) return;
+    let blurTimer: number | undefined;
 
-    initialHeight.current = viewport.height;
-
-    const handleResize = () => {
-      const keyboardHeight =
-        (initialHeight.current ?? viewport.height) - viewport.height;
-
-      setIsOpen(keyboardHeight > 150);
+    const updateState = () => {
+      setIsOpen(isTextInput(document.activeElement));
     };
 
-    viewport.addEventListener('resize', handleResize);
+    const handleFocusIn = () => {
+      window.clearTimeout(blurTimer);
+      updateState();
+    };
+
+    const handleFocusOut = () => {
+      blurTimer = window.setTimeout(updateState, 0);
+    };
+
+    document.addEventListener('focusin', handleFocusIn);
+    document.addEventListener('focusout', handleFocusOut);
+    updateState();
 
     return () => {
-      viewport.removeEventListener('resize', handleResize);
+      window.clearTimeout(blurTimer);
+      document.removeEventListener('focusin', handleFocusIn);
+      document.removeEventListener('focusout', handleFocusOut);
     };
   }, []);
 
