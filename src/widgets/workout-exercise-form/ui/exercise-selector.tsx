@@ -2,6 +2,7 @@ import { ExerciseAvatar, exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
+import { LoadingOutlined } from '@ant-design/icons';
 import { CaretDownIcon, PlusIcon } from '@phosphor-icons/react';
 import {
   Button,
@@ -38,7 +39,7 @@ export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
 
   const masterId = master!.master_id!;
 
-  const { data: exercises } = exerciseModel.useExercises(masterId);
+  const { data: exercises, loading } = exerciseModel.useExercises(masterId);
 
   const exerciseMap = useMemo(
     () => exercises.reduce((acc, ex) => acc.set(ex.exercise_id, ex), new Map()),
@@ -78,6 +79,7 @@ export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
   return (
     <Select
       showSearch
+      loading={loading}
       ref={selectRef}
       open={open}
       virtual={false}
@@ -88,7 +90,9 @@ export const ExerciseSelector = ({ onCreated, ...selectProps }: Props) => {
       options={options}
       style={{ height: 'max-content' }}
       className={classes.root}
-      suffixIcon={<CaretDownIcon size={14} />}
+      suffixIcon={
+        loading ? <LoadingOutlined spin /> : <CaretDownIcon size={14} />
+      }
       labelRender={({ label, value }) => (
         <Flex
           vertical={false}

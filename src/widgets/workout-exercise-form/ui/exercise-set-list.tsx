@@ -10,6 +10,7 @@ import { CaretDownIcon, PlusIcon } from '@phosphor-icons/react';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import { NamePath } from 'antd/es/form/interface';
 import { FormListFieldData } from 'antd/lib';
+import { flushSync } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { Fragment } from 'react/jsx-runtime';
 import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
@@ -113,13 +114,14 @@ export const ExerciseSetList = ({
   };
 
   const focusNextSet = (index: number) => {
-    setTimeout(() => {
-      form.focusField(['task_properties', 'sets', index, weightField]);
-    }, 0);
+    form.focusField(['task_properties', 'sets', index, weightField]);
   };
 
   const addNewSet = () => {
-    operations.add(getLastSetValues());
+    flushSync(() => {
+      operations.add(getLastSetValues());
+    });
+
     focusNextSet(fields.length);
   };
 
