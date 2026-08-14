@@ -145,7 +145,9 @@ export const ExerciseSetList = ({
               field={field}
               valueType={valueType}
               canEdit={permissions.editSetValues!}
-              canRemove={getSetOwner(index) === viewerId}
+              canRemove={
+                getSetOwner(index) === viewerId && !workoutStatus.isFinished
+              }
               showFillButton={workoutStatus.isActive && permissions.isGymmer}
               valueOptions={getOptions('value', field.name)}
               repOptions={getOptions('rep', field.name)}
