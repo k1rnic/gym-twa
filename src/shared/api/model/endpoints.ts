@@ -34,6 +34,16 @@ export enum TaskGroupStatus {
   Closed = "closed",
 }
 
+/** TaskGroupBlockType */
+export enum TaskGroupBlockType {
+  Superset = "superset",
+  Dropset = "dropset",
+  GiantSet = "giant_set",
+  Triset = "triset",
+  Circuit = "circuit",
+  CompoundSet = "compound_set",
+}
+
 /** NotificationType */
 export enum NotificationType {
   JoinRequest = "join_request",
@@ -84,25 +94,18 @@ export interface CreateExercise {
   /** @default "active" */
   status?: ExerciseStatus;
   /** Link Ids */
-  link_ids: number[] | null;
+  link_ids?: number[] | null;
 }
 
-/** CreateLink */
-export interface CreateLink {
-  /** Link */
-  link: string;
-  /** Title */
-  title: string | null;
+/** CreateTaskGroupBlock */
+export interface CreateTaskGroupBlock {
   /**
-   * Master Id
-   * @default 1
+   * Task Ids
+   * @minItems 1
    */
-  master_id?: number;
-  /**
-   * Link Type
-   * @default "video"
-   */
-  link_type?: string;
+  task_ids: number[];
+  /** @default "superset" */
+  group_type?: TaskGroupBlockType;
 }
 
 /** Exercise */
@@ -135,8 +138,6 @@ export interface ExerciseAggregateInput {
   status?: ExerciseStatus;
   /** Url Path List */
   url_path_list?: UrlPath[];
-  /** Links */
-  links?: Link[];
 }
 
 /** ExerciseAggregate */
@@ -153,8 +154,6 @@ export interface ExerciseAggregateOutput {
   status?: ExerciseStatus;
   /** Url Path List */
   url_path_list?: UrlPath[];
-  /** Links */
-  links?: Link[];
 }
 
 /** Gymer */
@@ -176,20 +175,6 @@ export interface Gymer {
 export interface HTTPValidationError {
   /** Detail */
   detail?: ValidationError[];
-}
-
-/** Link */
-export interface Link {
-  /** Link Id */
-  link_id: number;
-  /** Link */
-  link: string;
-  /** Title */
-  title: string | null;
-  /** Master Id */
-  master_id: number;
-  /** Link Type */
-  link_type: string | null;
 }
 
 /** Master */
@@ -331,6 +316,8 @@ export interface TaskAggregate {
   task_id: number;
   /** Task Group Id */
   task_group_id: number;
+  /** Task Group Block Id */
+  task_group_block_id?: number | null;
   /** Exercise Id */
   exercise_id: number | null;
   status: TaskStatus;
@@ -376,7 +363,22 @@ export interface TaskGroupAggregate {
   owner_id: number | null;
   /** Tasks */
   tasks?: TaskAggregate[];
+  /** Groups */
+  groups?: TaskGroupBlock[];
   owner?: UserBase | null;
+}
+
+/** TaskGroupBlock */
+export interface TaskGroupBlock {
+  /** Task Group Block Id */
+  task_group_block_id: number;
+  /** Task Group Id */
+  task_group_id: number;
+  group_type: TaskGroupBlockType;
+  /** Create Dttm */
+  create_dttm?: string | null;
+  /** Task Ids */
+  task_ids?: number[];
 }
 
 /** TaskGroupOrderIndex */
@@ -423,6 +425,14 @@ export interface TaskPropertiesAggregateUpdate {
   sets?: SetUpdate[];
 }
 
+/** Token */
+export interface Token {
+  /** Access Token */
+  access_token: string;
+  /** Token Type */
+  token_type: string;
+}
+
 /** UpdateTask */
 export interface UpdateTask {
   /** Task Id */
@@ -430,7 +440,16 @@ export interface UpdateTask {
   /** Exercise Id */
   exercise_id: number;
   status: TaskStatus | null;
+  /** Task Group Block Id */
+  task_group_block_id?: number | null;
   task_properties?: TaskPropertiesAggregateUpdate | null;
+}
+
+/** UpdateTaskGroupBlock */
+export interface UpdateTaskGroupBlock {
+  group_type: TaskGroupBlockType;
+  /** Task Ids */
+  task_ids?: number[] | null;
 }
 
 /** UrlPath */
@@ -533,6 +552,12 @@ export interface UserIn {
    * @default "ru"
    */
   language_code?: string | null;
+}
+
+/** UserOut */
+export interface UserOut {
+  user: User;
+  token: Token;
 }
 
 /** UserProfile */
@@ -734,12 +759,30 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.8.1
+ * @version 2.12.0
  */
 export class Endpoints<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
   user = {
+    /**
+     * No description
+     *
+     * @tags user
+     * @name InitUser
+     * @summary Initialize active user data snapshot
+     * @request POST:/gym/user/init/{user_id}
+     * @secure
+     */
+    initUser: (userId: number, params: RequestParams = {}) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/user/init/${userId}`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *
@@ -810,35 +853,6 @@ export class Endpoints<
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags user
-     * @name AddGymerForMaster
-     * @summary Adding gymer for master
-     * @request POST:/gym/user/{master_id}/gymer_id
-     * @secure
-     */
-    addGymerForMaster: (
-      masterId: number,
-      query: {
-        /**
-         * Gymer Id
-         * gymer id
-         */
-        gymer_id: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<MastersGymer[], HTTPValidationError>({
-        path: `/gym/user/${masterId}/gymer_id`,
-        method: "POST",
-        query: query,
-        secure: true,
         format: "json",
         ...params,
       }),
@@ -937,27 +951,10 @@ export class Endpoints<
      * No description
      *
      * @tags user
-     * @name GetMasters
-     * @summary master_id if exists
-     * @request GET:/gym/user/master/{gymer_id}
-     * @secure
-     */
-    getMasters: (gymerId: number, params: RequestParams = {}) =>
-      this.request<number | null, HTTPValidationError>({
-        path: `/gym/user/master/${gymerId}`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags user
      * @name MasterGymerBreak
      * @summary break master gymer
      * @request GET:/gym/user/master_gymer_break/
+     * @secure
      */
     masterGymerBreak: (
       query: {
@@ -978,6 +975,7 @@ export class Endpoints<
         path: `/gym/user/master_gymer_break/`,
         method: "GET",
         query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -989,6 +987,7 @@ export class Endpoints<
      * @name UpdateMasterProfile
      * @summary update master profile
      * @request PUT:/gym/user/master/{master_id}
+     * @secure
      */
     updateMasterProfile: (
       masterId: number,
@@ -1010,6 +1009,7 @@ export class Endpoints<
         path: `/gym/user/master/${masterId}`,
         method: "PUT",
         query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -1060,6 +1060,11 @@ export class Endpoints<
          * user_id создающего упражнение
          */
         owner_id?: number | null;
+        /**
+         * Task Group Block Id
+         * task_group_block_id
+         */
+        task_group_block_id?: number | null;
       },
       params: RequestParams = {},
     ) =>
@@ -1088,27 +1093,6 @@ export class Endpoints<
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags task
-     * @name GetTasksWithExerciseByGroup
-     * @summary Getting a list of task by task_group_id
-     * @request GET:/gym/task/tasks/{task_group_id}
-     * @secure
-     */
-    getTasksWithExerciseByGroup: (
-      taskGroupId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<TaskAggregate[], HTTPValidationError>({
-        path: `/gym/task/tasks/${taskGroupId}`,
-        method: "GET",
-        secure: true,
         format: "json",
         ...params,
       }),
@@ -1193,7 +1177,7 @@ export class Endpoints<
         gymer_id: number;
         /**
          * Title
-         * title
+         * title, max 30 characters
          */
         title?: string | null;
       },
@@ -1294,11 +1278,13 @@ export class Endpoints<
      * @name TaskGroupById
      * @summary Getting task group by id
      * @request GET:/gym/task_group/{task_group_id}
+     * @secure
      */
     taskGroupById: (taskGroupId: number, params: RequestParams = {}) =>
       this.request<TaskGroupAggregate | null, HTTPValidationError>({
         path: `/gym/task_group/${taskGroupId}`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -1317,7 +1303,7 @@ export class Endpoints<
       query: {
         /**
          * Title
-         * title task_group
+         * title task_group, max 30 characters
          */
         title: string | null;
       },
@@ -1371,6 +1357,75 @@ export class Endpoints<
       this.request<TaskGroupAggregate, HTTPValidationError>({
         path: `/gym/task_group/copy/${taskGroupId}`,
         method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  taskGroupBlock = {
+    /**
+     * No description
+     *
+     * @tags task_group_block
+     * @name CreateTaskGroupBlock
+     * @summary Create task group block
+     * @request POST:/gym/task_group_block
+     * @secure
+     */
+    createTaskGroupBlock: (
+      data: CreateTaskGroupBlock,
+      params: RequestParams = {},
+    ) =>
+      this.request<TaskGroupBlock, HTTPValidationError>({
+        path: `/gym/task_group_block`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_group_block
+     * @name UpdateTaskGroupBlock
+     * @summary Update task group block
+     * @request PUT:/gym/task_group_block/{task_group_block_id}
+     * @secure
+     */
+    updateTaskGroupBlock: (
+      taskGroupBlockId: number,
+      data: UpdateTaskGroupBlock,
+      params: RequestParams = {},
+    ) =>
+      this.request<TaskGroupBlock, HTTPValidationError>({
+        path: `/gym/task_group_block/${taskGroupBlockId}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_group_block
+     * @name DeleteTaskGroupBlock
+     * @summary Delete task group block
+     * @request DELETE:/gym/task_group_block/{task_group_block_id}
+     * @secure
+     */
+    deleteTaskGroupBlock: (
+      taskGroupBlockId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/task_group_block/${taskGroupBlockId}`,
+        method: "DELETE",
         secure: true,
         format: "json",
         ...params,
@@ -1577,31 +1632,29 @@ export class Endpoints<
         ...params,
       }),
   };
-  link = {
+  auth = {
     /**
      * No description
      *
-     * @tags link
-     * @name GetLinksById
-     * @summary Getting a list of links by id
-     * @request GET:/gym/link
-     * @secure
+     * @tags auth
+     * @name GetUserToken
+     * @summary Getting token
+     * @request POST:/auth/signin
      */
-    getLinksById: (
+    getUserToken: (
       query: {
         /**
-         * Link Ids
-         * List link_ids
+         * Init Data
+         * telegram init_data
          */
-        link_ids: number[];
+        init_data: string;
       },
       params: RequestParams = {},
     ) =>
-      this.request<Link[], HTTPValidationError>({
-        path: `/gym/link`,
-        method: "GET",
+      this.request<UserOut, HTTPValidationError>({
+        path: `/auth/signin`,
+        method: "POST",
         query: query,
-        secure: true,
         format: "json",
         ...params,
       }),
@@ -1609,18 +1662,74 @@ export class Endpoints<
     /**
      * No description
      *
-     * @tags link
-     * @name CreateLink
-     * @summary Create Link
-     * @request POST:/gym/link
-     * @secure
+     * @tags auth
+     * @name CreateUserByInitData
+     * @summary Creating user and getting token
+     * @request POST:/auth/signup
      */
-    createLink: (data: CreateLink, params: RequestParams = {}) =>
-      this.request<Link, HTTPValidationError>({
-        path: `/gym/link`,
+    createUserByInitData: (
+      query: {
+        /**
+         * Init Data
+         * telegram init_data
+         */
+        init_data: string;
+      },
+      data: UserIn,
+      params: RequestParams = {},
+    ) =>
+      this.request<UserOut, HTTPValidationError>({
+        path: `/auth/signup`,
+        method: "POST",
+        query: query,
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags auth
+     * @name GetDevUserTokenAuthDevSigninPost
+     * @summary Getting token by telegram_id for local development
+     * @request POST:/auth/dev-signin
+     */
+    getDevUserTokenAuthDevSigninPost: (
+      query: {
+        /**
+         * Telegram Id
+         * telegram id
+         */
+        telegram_id: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<UserOut, HTTPValidationError>({
+        path: `/auth/dev-signin`,
+        method: "POST",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags auth
+     * @name CreateDevUserTokenAuthDevSignupPost
+     * @summary Creating user and getting token for local development
+     * @request POST:/auth/dev-signup
+     */
+    createDevUserTokenAuthDevSignupPost: (
+      data: UserIn,
+      params: RequestParams = {},
+    ) =>
+      this.request<UserOut, HTTPValidationError>({
+        path: `/auth/dev-signup`,
         method: "POST",
         body: data,
-        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -1694,36 +1803,6 @@ export class Endpoints<
      * No description
      *
      * @tags notification
-     * @name RecipientSender
-     * @summary Recipient Sender
-     * @request GET:/gym/notification/sender/{user_id}
-     * @secure
-     */
-    recipientSender: (
-      userId: number,
-      query?: {
-        /**
-         * Is Read
-         * is read flag
-         * @default false
-         */
-        is_read?: boolean;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<NotificationResponse[], HTTPValidationError>({
-        path: `/gym/notification/sender/${userId}`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags notification
      * @name CloseJoinRequest
      * @summary Close Join Request
      * @request POST:/gym/notification/close_join_request/{notification_id}
@@ -1749,6 +1828,22 @@ export class Endpoints<
         ...params,
       }),
   };
+  healthz = {
+    /**
+     * No description
+     *
+     * @name Healthz
+     * @summary Healthz
+     * @request GET:/healthz
+     */
+    healthz: (params: RequestParams = {}) =>
+      this.request<any, any>({
+        path: `/healthz`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
   debug = {
     /**
      * No description
@@ -1760,6 +1855,36 @@ export class Endpoints<
     debugHeaders: (params: RequestParams = {}) =>
       this.request<any, any>({
         path: `/debug/headers`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name DebugRedis
+     * @summary Debug Redis
+     * @request GET:/debug/redis
+     */
+    debugRedis: (params: RequestParams = {}) =>
+      this.request<any, any>({
+        path: `/debug/redis`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name DebugDb
+     * @summary Debug Db
+     * @request GET:/debug/db
+     */
+    debugDb: (params: RequestParams = {}) =>
+      this.request<any, any>({
+        path: `/debug/db`,
         method: "GET",
         format: "json",
         ...params,

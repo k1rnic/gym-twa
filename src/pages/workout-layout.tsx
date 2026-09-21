@@ -36,7 +36,11 @@ const Page = () => {
           src: getDefaultUserPhoto(g),
         }))
         .sort((a, b) =>
-          a.id === gymer?.gymer_id ? -1 : b.id === gymer?.gymer_id ? -1 : 1,
+          a.id === gymer?.gymer_id
+            ? 1
+            : b.id === gymer?.gymer_id
+            ? 1
+            : a.name?.localeCompare(b.name ?? '') ?? -1,
         ),
     [masterGymmers, gymer?.gymer_id],
   );
