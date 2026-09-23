@@ -80,7 +80,7 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
         form={form}
         style={{ flex: 1, overflow: 'hidden' }}
         initialValues={initialValues}
-        disabled={workoutStatus.isFinished}
+        disabled={workoutStatus.isFinished || !permissions.modifyWorkout}
         onFocus={handleInputFocusChange}
         onBlur={handleInputFocusChange}
       >
