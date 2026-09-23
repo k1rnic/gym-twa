@@ -22,7 +22,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "rootDirs": [".", "./.react-router/types"]
+    "rootDirs": [".", "./.react-router/types"],
+    "types": ["node"]
   },
   "include": ["src", ".react-router/types/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
