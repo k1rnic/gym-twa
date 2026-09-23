@@ -46,9 +46,10 @@ export const ExerciseSet = ({
 
   return (
     <Flex
-      height={50}
+      height={74}
       vertical={false}
       align="center"
+      p={token.paddingSM}
       style={{ backgroundColor: token.colorBgLayout, flexShrink: 0 }}
     >
       <Typography style={{ margin: `0 ${token.paddingXS}px` }}>
