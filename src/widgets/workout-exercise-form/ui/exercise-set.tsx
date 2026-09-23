@@ -1,6 +1,10 @@
 import { useTheme } from '@/shared/lib/theme';
+
 import { Flex } from '@/shared/ui/flex';
-import { CheckSquareOffsetIcon, XIcon } from '@phosphor-icons/react';
+
+import { CheckSquareOffsetIcon } from '@phosphor-icons/react';
+
+import { SwipeableItem } from '@/shared/ui/swipeable-item';
 import {
   AutoComplete,
   Divider,
@@ -45,66 +49,66 @@ export const ExerciseSet = ({
   const { t } = useTranslation();
 
   return (
-    <Flex
-      height={74}
-      vertical={false}
-      align="center"
-      p={token.paddingSM}
-      style={{ backgroundColor: token.colorBgLayout, flexShrink: 0 }}
-    >
-      <Typography style={{ margin: `0 ${token.paddingXS}px` }}>
-        {index + 1}
-      </Typography>
-
-      <Divider type="vertical" style={{ height: '60%' }} />
-
-      <Form.Item
-        {...field}
-        name={[field.name, `${valueType}_value`]}
-        style={{ margin: 0, flex: 1 }}
+    <SwipeableItem canRemove={canRemove} onRemove={onRemove}>
+      <Flex
+        height={74}
+        vertical={false}
+        align="center"
+        p={token.paddingSM}
+        style={{ backgroundColor: token.colorBgLayout, flexShrink: 0 }}
       >
-        <AutoComplete
-          disabled={!canEdit}
-          options={valueOptions}
-          placeholder={valuePlaceholder}
+        <Typography style={{ margin: `0 ${token.paddingXS}px` }}>
+          {index + 1}
+        </Typography>
+
+        <Divider type="vertical" style={{ height: '60%' }} />
+
+        <Form.Item
+          {...field}
+          name={[field.name, `${valueType}_value`]}
+          style={{ margin: 0, flex: 1 }}
         >
-          <Input
-            suffix={t('exercise.units.kg')}
-            inputMode="decimal"
-            style={{ borderRadius: 0, backgroundColor: 'transparent' }}
-          />
-        </AutoComplete>
-      </Form.Item>
+          <AutoComplete
+            disabled={!canEdit}
+            options={valueOptions}
+            placeholder={valuePlaceholder}
+          >
+            <Input
+              suffix={t('exercise.units.kg')}
+              inputMode="decimal"
+              style={{ borderRadius: 0, backgroundColor: 'transparent' }}
+            />
+          </AutoComplete>
+        </Form.Item>
 
-      <Divider type="vertical" style={{ height: '60%' }} />
+        <Divider type="vertical" style={{ height: '60%' }} />
 
-      <Form.Item
-        {...field}
-        name={[field.name, `${valueType}_rep`]}
-        style={{ margin: 0, flex: 1 }}
-      >
-        <AutoComplete
-          disabled={!canEdit}
-          options={repOptions}
-          placeholder={repPlaceholder}
+        <Form.Item
+          {...field}
+          name={[field.name, `${valueType}_rep`]}
+          style={{ margin: 0, flex: 1 }}
         >
-          <Input
-            suffix={t('exercise.units.reps')}
-            inputMode="decimal"
-            style={{ borderRadius: 0, backgroundColor: 'transparent' }}
-          />
-        </AutoComplete>
-      </Form.Item>
+          <AutoComplete
+            disabled={!canEdit}
+            options={repOptions}
+            placeholder={repPlaceholder}
+          >
+            <Input
+              suffix={t('exercise.units.reps')}
+              inputMode="decimal"
+              style={{ borderRadius: 0, backgroundColor: 'transparent' }}
+            />
+          </AutoComplete>
+        </Form.Item>
 
-      <Divider type="vertical" style={{ height: '60%' }} />
+        <Divider type="vertical" style={{ height: '60%' }} />
 
-      <Flex vertical={false} gap={token.paddingSM} align="center">
-        {showFillButton && (
-          <CheckSquareOffsetIcon size={20} onClick={onFillFromPlan} />
-        )}
-
-        {canRemove && <XIcon size={20} onClick={onRemove} />}
+        <Flex vertical={false} gap={token.paddingSM} align="center">
+          {showFillButton && (
+            <CheckSquareOffsetIcon size={20} onClick={onFillFromPlan} />
+          )}
+        </Flex>
       </Flex>
-    </Flex>
+    </SwipeableItem>
   );
 };
