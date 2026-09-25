@@ -48,6 +48,14 @@
     "titleFallback": "Без названия",
     "createExercise": "Новое упражнение",
     "exercisesSection": "Упражнения",
+    "groupType": {
+      "superset": "Суперсет",
+      "dropset": "Дропсет",
+      "giant_set": "Гигантский сет",
+      "triset": "Трисет",
+      "circuit": "Круговая",
+      "compound_set": "Составной сет"
+    },
     "status": {
       "planned": "новые",
       "running": "текущие",

@@ -98,6 +98,7 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
             <WorkoutExerciseList
               w={workout}
               data={workout.tasks ?? []}
+              groups={workout.groups ?? []}
               reorderEnabled={permissions.isOwner || permissions.isGymmer}
             />
             <CreateWorkoutExerciseButton

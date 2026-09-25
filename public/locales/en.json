@@ -46,6 +46,14 @@
     "titleFallback": "Untitled",
     "createExercise": "New exercise",
     "exercisesSection": "Exercises",
+    "groupType": {
+      "superset": "Superset",
+      "dropset": "Dropset",
+      "giant_set": "Giant set",
+      "triset": "Triset",
+      "circuit": "Circuit",
+      "compound_set": "Compound set"
+    },
     "status": {
       "planned": "new",
       "running": "current",
