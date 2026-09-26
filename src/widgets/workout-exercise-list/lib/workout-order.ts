@@ -122,3 +122,24 @@ export const moveInsideGroup = (
         : row,
     ),
   );
+
+export const moveTasksAfterGroup = (
+  tasks: workoutModel.WorkoutExercise[],
+  blockId: number,
+  taskIds: number[],
+) => {
+  const movingIds = new Set(taskIds);
+  const sorted = sortTasks(tasks);
+  const moving = sorted.filter((task) => movingIds.has(task.task_id));
+  const remaining = sorted.filter((task) => !movingIds.has(task.task_id));
+  const lastGroupTaskIndex = remaining.reduce(
+    (lastIndex, task, index) =>
+      task.task_group_block_id === blockId ? index : lastIndex,
+    -1,
+  );
+
+  if (!moving.length || lastGroupTaskIndex < 0) return tasks;
+
+  remaining.splice(lastGroupTaskIndex + 1, 0, ...moving);
+  return remaining.map((task, order_idx) => ({ ...task, order_idx }));
+};

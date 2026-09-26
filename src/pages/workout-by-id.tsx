@@ -1,5 +1,4 @@
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
-import { CreateWorkoutExerciseButton } from '@/features/create-exercise-instance';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
@@ -100,10 +99,7 @@ const Page = ({ loaderData: workout }: Route.ComponentProps) => {
               data={workout.tasks ?? []}
               groups={workout.groups ?? []}
               reorderEnabled={permissions.isOwner || permissions.isGymmer}
-            />
-            <CreateWorkoutExerciseButton
-              workout={workout}
-              style={{ flexShrink: 0 }}
+              canModifyWorkout={permissions.modifyWorkout}
             />
           </Flex>
 

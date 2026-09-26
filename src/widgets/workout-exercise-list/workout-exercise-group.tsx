@@ -1,6 +1,6 @@
 import { workoutModel } from '@/entities/workout';
 import { useDeleteWorkoutGroupAction } from '@/features/delete-workout-group';
-import { TaskGroupBlock } from '@/shared/api';
+import { TaskGroupBlock, TaskGroupBlockType } from '@/shared/api';
 import { useSortableList } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
@@ -20,8 +20,8 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { DotsThreeIcon } from '@phosphor-icons/react';
-import { Dropdown, Typography } from 'antd';
+import { DotsThreeIcon, PlusIcon } from '@phosphor-icons/react';
+import { Dropdown, MenuProps, Typography } from 'antd';
 import { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { workoutRowId } from './lib/workout-order';
@@ -33,6 +33,9 @@ type WorkoutExerciseGroupProps = {
   group: TaskGroupBlock;
   tasks: workoutModel.WorkoutExercise[];
   reorderEnabled?: boolean;
+  canModifyWorkout?: boolean;
+  selectionMode?: boolean;
+  onAddExercises: () => void;
   onInnerReorder: (from: number, to: number) => void;
   onExerciseClick: (taskId: workoutModel.WorkoutExercise['task_id']) => void;
 };
@@ -43,18 +46,33 @@ export const WorkoutExerciseGroup = ({
   group,
   tasks,
   reorderEnabled,
+  canModifyWorkout,
+  selectionMode,
+  onAddExercises,
   onInnerReorder,
   onExerciseClick,
 }: WorkoutExerciseGroupProps) => {
   const { t } = useTranslation();
   const { token } = useTheme();
-  const { setNodeRef, style, handler, attributes } = useSortableList(id);
+  const { setNodeRef, style, handler } = useSortableList(id);
   const deleteAction = useDeleteWorkoutGroupAction(
     w,
     group.task_group_block_id,
   );
 
-  const draggable = !attributes['aria-disabled'];
+  const addGroupExercisesAction: Required<MenuProps>['items'][number] =
+    group.group_type === TaskGroupBlockType.Superset && canModifyWorkout
+      ? {
+          key: 'add-exercises',
+          label: t('training.addExercises'),
+          icon: <PlusIcon />,
+          onClick: onAddExercises,
+        }
+      : null;
+
+  const actions = [addGroupExercisesAction, deleteAction];
+
+  const hasActions = Boolean(actions.filter(Boolean).length);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -93,15 +111,19 @@ export const WorkoutExerciseGroup = ({
         width="100%"
       >
         <Flex vertical={false} align="center" gap={token.paddingXS}>
-          {draggable && handler}
+          {handler}
           <Typography.Text strong>
             {t(`training.groupType.${group.group_type}`)}
           </Typography.Text>
         </Flex>
 
-        <Dropdown menu={{ items: [deleteAction] }} trigger={['click']}>
-          <DotsThreeIcon />
-        </Dropdown>
+        <Flex vertical={false} align="center" gap={token.paddingXS}>
+          {!selectionMode && hasActions && (
+            <Dropdown menu={{ items: actions }} trigger={['click']}>
+              <DotsThreeIcon />
+            </Dropdown>
+          )}
+        </Flex>
       </Flex>
 
       <DndContext
@@ -112,7 +134,7 @@ export const WorkoutExerciseGroup = ({
       >
         <SortableContext
           items={itemIds}
-          disabled={!reorderEnabled}
+          disabled={!reorderEnabled || selectionMode}
           strategy={verticalListSortingStrategy}
         >
           <Flex gap={token.paddingXS}>
@@ -127,7 +149,12 @@ export const WorkoutExerciseGroup = ({
                     ex={ex}
                     collapsible
                     collapsed
-                    onClick={() => onExerciseClick(ex.task_id)}
+                    selectionMode={selectionMode}
+                    onClick={
+                      selectionMode
+                        ? undefined
+                        : () => onExerciseClick(ex.task_id)
+                    }
                   />
                 </InnerSortableItem>
               );

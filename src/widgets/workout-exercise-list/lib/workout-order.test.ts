@@ -1,3 +1,4 @@
+import type { workoutModel } from '@/entities/workout';
 import { TaskGroupBlockType, TaskStatus } from '@/shared/api';
 import { describe, expect, test } from 'bun:test';
 import {
@@ -5,10 +6,10 @@ import {
   getRowId,
   moveInsideGroup,
   moveRows,
+  moveTasksAfterGroup,
   toRows,
   workoutRowId,
 } from './workout-order';
-import type { workoutModel } from '@/entities/workout';
 
 const task = (
   partial: Partial<workoutModel.WorkoutExercise> &
@@ -86,9 +87,9 @@ describe('flatten', () => {
     expect(flatten(toRows(tasks, groups)).map((item) => item.task_id)).toEqual([
       1, 2, 3, 4,
     ]);
-    expect(flatten(toRows(tasks, groups)).map((item) => item.order_idx)).toEqual(
-      [0, 1, 2, 3],
-    );
+    expect(
+      flatten(toRows(tasks, groups)).map((item) => item.order_idx),
+    ).toEqual([0, 1, 2, 3]);
   });
 });
 
@@ -145,5 +146,24 @@ describe('moveInsideGroup', () => {
     expect(moved.map((item) => item.order_idx)).toEqual([0, 1, 2, 3]);
     expect(moved[0].task_id).toBe(1);
     expect(moved[3].task_id).toBe(4);
+  });
+});
+
+describe('moveTasksAfterGroup', () => {
+  test('keeps other rows in place while moving selected tasks into a group', () => {
+    const moved = moveTasksAfterGroup(
+      [
+        task({ task_id: 1, order_idx: 0 }),
+        task({ task_id: 2, order_idx: 1, task_group_block_id: 10 }),
+        task({ task_id: 3, order_idx: 2 }),
+        task({ task_id: 4, order_idx: 3, task_group_block_id: 10 }),
+        task({ task_id: 5, order_idx: 4 }),
+      ],
+      10,
+      [1, 3],
+    );
+
+    expect(moved.map((item) => item.task_id)).toEqual([2, 4, 1, 3, 5]);
+    expect(moved.map((item) => item.order_idx)).toEqual([0, 1, 2, 3, 4]);
   });
 });

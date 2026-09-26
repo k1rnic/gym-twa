@@ -1,6 +1,6 @@
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
-import { TrashSimpleIcon } from '@phosphor-icons/react';
+import { LinkBreakIcon } from '@phosphor-icons/react';
 import { MenuProps } from 'antd/lib';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,8 +28,8 @@ export const useDeleteWorkoutGroupAction = (
       permissions.modifyWorkout
         ? {
             key: 'delete-group',
-            label: t('common.delete'),
-            icon: <TrashSimpleIcon />,
+            label: t('training.ungroupExercises'),
+            icon: <LinkBreakIcon />,
             onClick: deleteWorkoutGroup,
           }
         : null,
