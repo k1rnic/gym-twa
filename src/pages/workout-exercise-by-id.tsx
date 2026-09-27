@@ -33,6 +33,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
     <PageLayout>
       {workout && exercise ? (
         <WorkoutExerciseForm
+          key={exercise.task_id}
           exercise={exercise}
           workout={workout}
           onSubmit={saveChanges}
