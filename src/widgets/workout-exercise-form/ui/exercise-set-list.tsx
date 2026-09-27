@@ -1,5 +1,5 @@
 import { Set } from '@/shared/api';
-import { Button, Divider, FormListOperation } from 'antd';
+import { Button, FormListOperation } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 
 import { viewerModel } from '@/entities/viewer';
@@ -17,6 +17,8 @@ import { getFieldSuggestions, SuggestionField } from '../lib/suggestions';
 import { useExercisePermissions } from '../lib/use-exercise-permissions';
 import ExerciseKeyboardToolbarItem from './exercise-keyboard-toolbar-item';
 import { ExerciseSet } from './exercise-set';
+
+import classes from './exercise-set-list-styles.module.css';
 
 type ValueType = 'fact' | 'plan';
 type FieldType = 'value' | 'rep';
@@ -129,10 +131,8 @@ export const ExerciseSetList = ({
     <>
       <Flex
         hidden={!fields.length}
-        p={token.paddingSM}
+        className={classes.root}
         style={{
-          overflowY: 'auto',
-          borderRadius: token.borderRadius,
           backgroundColor: token.colorBgLayout,
           marginBottom: token.paddingContentVerticalLG,
         }}
@@ -145,7 +145,9 @@ export const ExerciseSetList = ({
               field={field}
               valueType={valueType}
               canEdit={permissions.editSetValues!}
-              canRemove={getSetOwner(index) === viewerId}
+              canRemove={
+                getSetOwner(index) === viewerId && !workoutStatus.isFinished
+              }
               showFillButton={workoutStatus.isActive && permissions.isGymmer}
               valueOptions={getOptions('value', field.name)}
               repOptions={getOptions('rep', field.name)}
@@ -154,7 +156,6 @@ export const ExerciseSetList = ({
               onFillFromPlan={() => fillFromPlan(field.name)}
               onRemove={() => operations.remove(field.name)}
             />
-            {index !== fields.length - 1 && <Divider />}
           </Fragment>
         ))}
       </Flex>

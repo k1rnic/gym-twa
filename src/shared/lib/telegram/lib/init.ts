@@ -3,16 +3,23 @@ import {
   closingBehavior,
   initData,
   init as initSDK,
+  isTMA,
   setDebug,
   swipeBehavior,
   viewport,
 } from '@tma.js/sdk-react';
 
-if (import.meta.env.DEV) {
-  await import('./mock-env.client');
-}
+let telegramMiniApp = false;
+
+export const isTelegramMiniApp = () => telegramMiniApp;
 
 export async function init(): Promise<void> {
+  telegramMiniApp = await isTMA('complete');
+
+  if (import.meta.env.DEV && !telegramMiniApp) {
+    await import('./mock-env.client');
+  }
+
   setDebug(import.meta.env.DEV);
   initSDK();
 

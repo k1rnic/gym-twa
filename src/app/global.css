@@ -98,3 +98,7 @@ body {
 .ant-btn-icon {
   display: inline-flex;
 }
+
+.ant-form-item .ant-form-item-label {
+  font-weight: 600;
+}

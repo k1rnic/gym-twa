@@ -2,7 +2,8 @@ import { ExerciseAvatar } from '@/entities/exercise';
 import { UserAvatar } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
 import { useDeleteWorkoutExerciseAction } from '@/features/delete-exercise-instance';
-import { Set } from '@/shared/api';
+import { useDetachWorkoutGroupExerciseAction } from '@/features/detach-workout-group-exercise';
+import { Set, TaskGroupBlock } from '@/shared/api';
 import { useTheme } from '@/shared/lib/theme';
 import { CardListItem } from '@/shared/ui/card-list';
 import { Flex } from '@/shared/ui/flex';
@@ -16,8 +17,12 @@ type ExerciseCardProps = {
   id: Exclude<React.Key, bigint>;
   w: workoutModel.Workout;
   ex: workoutModel.WorkoutExercise;
+  group?: TaskGroupBlock | null;
+  groupTasks?: workoutModel.WorkoutExercise[];
   collapsed?: boolean;
   collapsible?: boolean;
+  selectionMode?: boolean;
+  selected?: boolean;
   onClick?: () => void;
 } & Pick<CardProps, 'style'>;
 
@@ -25,7 +30,18 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
   const { t } = useTranslation();
 
   const { token } = useTheme();
-  const { id, ex, w, collapsible, collapsed, onClick } = props;
+  const {
+    id,
+    ex,
+    w,
+    group,
+    groupTasks,
+    collapsible,
+    collapsed,
+    selectionMode,
+    selected,
+    onClick,
+  } = props;
 
   const [contentVisible, setContentVisible] = useState(!collapsed);
 
@@ -33,10 +49,16 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
   const hasSets = Boolean(ex.task_properties?.sets?.length);
 
   const deleteAction = useDeleteWorkoutExerciseAction(w, ex, 'delete');
+  const detachFromGroupAction = useDetachWorkoutGroupExerciseAction(
+    w,
+    ex,
+    group,
+    groupTasks,
+  );
 
   const actions = useMemo<MenuProps['items']>(
-    () => [deleteAction],
-    [deleteAction],
+    () => [detachFromGroupAction, deleteAction],
+    [detachFromGroupAction, deleteAction],
   );
 
   const isSetFinished = useCallback(
@@ -89,9 +111,9 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
   return (
     <CardListItem
       id={id}
-      title={ex.exercise?.exercise_name ?? t('common.notSelected')}
+      title={ex.exercise?.exercise_name}
       avatar={<ExerciseAvatar exercise={ex.exercise!} size="default" />}
-      actions={actions}
+      actions={selectionMode ? [] : actions}
       footer={
         <Flex vertical={false} justify="space-between" align="center">
           {ex.owner && (
@@ -114,6 +136,7 @@ export const ExerciseCard = (props: ExerciseCardProps) => {
       collapsible={collapsible && hasSets}
       onToggle={setContentVisible}
       onClick={onClick}
+      style={selected ? { borderColor: token.colorPrimary } : undefined}
     >
       {hasSets ? (
         <Flex px={token.paddingXXS} py={token.paddingSM}>

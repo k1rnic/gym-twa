@@ -1,0 +1,11 @@
+.root {
+  overflow-y: auto;
+  border-radius: var(--ant-border-radius);
+  & > :not(:last-child) {
+    &::after {
+      display: block;
+      content: ' ';
+      border-block-end: var(--ant-line-width) solid var(--ant-color-split);
+    }
+  }
+}
