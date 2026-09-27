@@ -54,6 +54,7 @@
     "addToGroupAction": "Add to {{group}}: {{count}}",
     "groupExercises": "Group",
     "ungroupExercises": "Ungroup",
+    "detachFromGroup": "Detach from group",
     "groupNotFound": "The group no longer exists",
     "groupUpdateFailed": "Could not update the superset",
     "groupPositionNotPreserved": "Exercises were added, but the list order could not be preserved",

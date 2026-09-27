@@ -147,6 +147,8 @@ export const WorkoutExerciseGroup = ({
                     id={taskId}
                     w={w}
                     ex={ex}
+                    group={group}
+                    groupTasks={tasks}
                     collapsible
                     collapsed
                     selectionMode={selectionMode}

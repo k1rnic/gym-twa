@@ -56,6 +56,7 @@
     "addToGroupAction": "Добавить в {{group}}: {{count}}",
     "groupExercises": "Группировать",
     "ungroupExercises": "Разгруппировать",
+    "detachFromGroup": "Открепить от группы",
     "groupNotFound": "Группа больше не существует",
     "groupUpdateFailed": "Не удалось изменить суперсет",
     "groupPositionNotPreserved": "Упражнения добавлены, но порядок списка не удалось сохранить",
