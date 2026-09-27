@@ -95,15 +95,7 @@ export const WorkoutExerciseGroup = ({
   };
 
   return (
-    <Flex
-      ref={setNodeRef}
-      gap={token.paddingXS}
-      style={{
-        borderLeft: `3px solid ${token.colorPrimary}`,
-        paddingLeft: token.paddingSM,
-        ...style,
-      }}
-    >
+    <Flex ref={setNodeRef} gap={token.paddingXS} style={style}>
       <Flex
         vertical={false}
         align="center"
@@ -137,30 +129,43 @@ export const WorkoutExerciseGroup = ({
           disabled={!reorderEnabled || selectionMode}
           strategy={verticalListSortingStrategy}
         >
-          <Flex gap={token.paddingXS}>
-            {tasks.map((ex) => {
-              const taskId = workoutRowId.task(ex.task_id);
+          <Flex vertical={false} gap={6}>
+            <Flex
+              height="100%"
+              style={{
+                flexShrink: 0,
+                borderLeft: `2px solid ${token.colorPrimary}`,
+              }}
+            />
+            <Flex
+              gap={token.paddingXS}
+              width="100%"
+              style={{ overflow: 'hidden' }}
+            >
+              {tasks.map((ex) => {
+                const taskId = workoutRowId.task(ex.task_id);
 
-              return (
-                <InnerSortableItem id={taskId} key={taskId}>
-                  <ExerciseCard
-                    id={taskId}
-                    w={w}
-                    ex={ex}
-                    group={group}
-                    groupTasks={tasks}
-                    collapsible
-                    collapsed
-                    selectionMode={selectionMode}
-                    onClick={
-                      selectionMode
-                        ? undefined
-                        : () => onExerciseClick(ex.task_id)
-                    }
-                  />
-                </InnerSortableItem>
-              );
-            })}
+                return (
+                  <InnerSortableItem id={taskId} key={taskId}>
+                    <ExerciseCard
+                      id={taskId}
+                      w={w}
+                      ex={ex}
+                      group={group}
+                      groupTasks={tasks}
+                      collapsible
+                      collapsed
+                      selectionMode={selectionMode}
+                      onClick={
+                        selectionMode
+                          ? undefined
+                          : () => onExerciseClick(ex.task_id)
+                      }
+                    />
+                  </InnerSortableItem>
+                );
+              })}
+            </Flex>
           </Flex>
         </SortableContext>
       </DndContext>

@@ -20,8 +20,10 @@ export const BASE_THEME_CONFIG: ThemeConfig = {
       headerPadding: 16,
     },
     Form: {
-      verticalLabelPadding: `0 ${PADDING * 0.75}px`,
+      verticalLabelPadding: 0,
       itemMarginBottom: PADDING * 0.75,
+      labelColonMarginInlineStart: 100,
+      labelFontSize: 16,
     },
     Input: {
       activeBg: BG_SECONDARY,

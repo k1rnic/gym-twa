@@ -1,6 +1,7 @@
 import { viewerModel } from '@/entities/viewer';
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { Api } from '@/shared/api';
+import { PlusIcon } from '@phosphor-icons/react';
 import { Button } from 'antd';
 import { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +36,7 @@ export const CreateWorkoutExerciseButton = ({ workout, style }: Props) => {
       type="dashed"
       hidden={!permissions.addTask}
       onClick={createWorkoutExercise}
+      icon={<PlusIcon />}
       style={style}
     >
       {t('training.createExercise')}
