@@ -33,7 +33,6 @@ export const CreateWorkoutExerciseButton = ({ workout, style }: Props) => {
   return (
     <Button
       block
-      size="large"
       type="dashed"
       hidden={!permissions.addTask}
       onClick={createWorkoutExercise}

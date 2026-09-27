@@ -8,9 +8,11 @@ import { Form } from 'antd';
 import { FocusEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { getNextSupersetTaskId } from '../lib/get-next-superset-task-id';
 import { useExerciseForm } from '../lib/use-exercise-form';
 import { useExercisePermissions } from '../lib/use-exercise-permissions';
 import { ExerciseCountDown } from './exercise-countdown';
+import { ExerciseNextButton } from './exercise-next-button';
 import { ExerciseSelector } from './exercise-selector';
 import { ExerciseSetList } from './exercise-set-list';
 
@@ -40,6 +42,10 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
 
   const virtualKeyboardOpened = useVirtualKeyboardOpened();
 
+  const runEnabled = workoutStatus.isActive && permissions.isGymmer;
+
+  const nextTaskId = getNextSupersetTaskId(workout, exercise);
+
   const isFormFocused = Boolean(focusedField);
 
   const isFocusedExerciseSelector = useMemo(
@@ -66,6 +72,12 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
     requestAnimationFrame(() => {
       navigate(`/exercises/${ex.exercise_id}`);
     });
+  };
+
+  const goToNextExercise = () => {
+    if (nextTaskId === null) return;
+
+    navigate(`../${nextTaskId}`, { relative: 'path' });
   };
 
   useEffect(() => {
@@ -96,7 +108,21 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
             gap={token.paddingSM}
             style={{ overflow: 'hidden' }}
           >
-            <SectionTitle>{t('exercise.setsTitle')}</SectionTitle>
+            <Flex
+              vertical={false}
+              width="100%"
+              align="center"
+              justify="space-between"
+            >
+              <SectionTitle>{t('exercise.setsTitle')}</SectionTitle>
+
+              <ExerciseNextButton
+                hidden={
+                  virtualKeyboardOpened || !runEnabled || nextTaskId === null
+                }
+                onClick={goToNextExercise}
+              />
+            </Flex>
 
             <Form.List name={['task_properties', 'sets']}>
               {(fields, operations) => (
@@ -113,8 +139,11 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
           </Flex>
 
           <ExerciseCountDown
-            hidden={virtualKeyboardOpened && !isFocusedCountdown}
-            runEnabled={workoutStatus.isActive && permissions.isGymmer}
+            hidden={
+              (virtualKeyboardOpened && !isFocusedCountdown) ||
+              nextTaskId !== null
+            }
+            runEnabled={runEnabled}
           />
         </Flex>
       </Form>
