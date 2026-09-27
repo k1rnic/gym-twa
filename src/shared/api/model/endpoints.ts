@@ -759,7 +759,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.12.0
+ * @version 2.15.0
  */
 export class Endpoints<
   SecurityDataType extends unknown,
@@ -1675,15 +1675,12 @@ export class Endpoints<
          */
         init_data: string;
       },
-      data: UserIn,
       params: RequestParams = {},
     ) =>
       this.request<UserOut, HTTPValidationError>({
         path: `/auth/signup`,
         method: "POST",
         query: query,
-        body: data,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),

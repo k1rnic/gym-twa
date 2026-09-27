@@ -1,2 +1,2 @@
 export * from './helpers';
-export { ViewerProvider } from './viewer-provider';
+export { getViewerState, setViewer, ViewerProvider } from './viewer-provider';

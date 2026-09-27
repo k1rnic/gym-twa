@@ -170,6 +170,7 @@
   "errors": {
     "unexpected": "Something went wrong =/",
     "unsupportedEnv": "Unsupported env...:(",
+    "authForbidden": "Access to the app is forbidden",
     "videoLoad": "Failed to load video",
     "videoLink": "Open by link",
     "imageDeleted": "Image deleted",
