@@ -1,8 +1,8 @@
 import { workoutModel } from '@/entities/workout';
+import { saveWorkoutExercise } from '@/features/save-workout-exercise';
 import { Api } from '@/shared/api';
 import { PageLayout } from '@/shared/ui/page-layout';
 import { WorkoutExerciseForm } from '@/widgets/workout-exercise-form';
-import { normalizeSetValues } from '@/widgets/workout-exercise-form/lib/normalize-set-values';
 import { Empty } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useRevalidator } from 'react-router';
@@ -22,7 +22,7 @@ const Page = ({ loaderData }: Route.ComponentProps) => {
 
   const saveChanges = async (values: workoutModel.WorkoutExercise) => {
     try {
-      await Api.task.updateTask(normalizeSetValues(values));
+      await saveWorkoutExercise(workout!, exercise!, values);
       revalidate();
     } catch (e) {
       console.error(e);

@@ -60,6 +60,7 @@
     "groupNotFound": "Группа больше не существует",
     "groupUpdateFailed": "Не удалось изменить суперсет",
     "groupPositionNotPreserved": "Упражнения добавлены, но порядок списка не удалось сохранить",
+    "groupRestNotApplied": "Не удалось проставить упражнениям группы общее время отдыха",
     "groupType": {
       "superset": "Суперсет",
       "dropset": "Дропсет",

@@ -1,5 +1,6 @@
 import { workoutModel } from '@/entities/workout';
 import { CreateWorkoutExerciseButton } from '@/features/create-exercise-instance';
+import { applyWorkoutGroupRest } from '@/features/sync-workout-group-rest';
 import { Api, TaskGroupBlock, TaskGroupBlockType } from '@/shared/api';
 import { useSortableList } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
@@ -166,11 +167,26 @@ export const WorkoutExerciseList = ({
     );
   };
 
+  const applyGroupRest = async (groupTasks: workoutModel.WorkoutExercise[]) => {
+    try {
+      await applyWorkoutGroupRest(groupTasks);
+    } catch (error) {
+      console.error('Failed to apply group rest', error);
+      message.warning(t('training.groupRestNotApplied'));
+    }
+  };
+
   const confirmSelection = async () => {
     if (!selectionMode) return;
 
     const minSelection = selectionMode.type === 'create' ? 2 : 1;
     if (selectedTaskIds.length < minSelection) return;
+
+    const selectedTasks = rows.flatMap((row) =>
+      row.type === 'exercise' && selectedTaskIds.includes(row.task.task_id)
+        ? [row.task]
+        : [],
+    );
 
     try {
       if (selectionMode.type === 'create') {
@@ -178,6 +194,8 @@ export const WorkoutExerciseList = ({
           task_ids: selectedTaskIds,
           group_type: TaskGroupBlockType.Superset,
         });
+
+        await applyGroupRest(selectedTasks);
       } else {
         const group = groups.find(
           (item) => item.task_group_block_id === selectionMode.groupId,
@@ -220,6 +238,15 @@ export const WorkoutExerciseList = ({
             message.warning(t('training.groupPositionNotPreserved'));
           }
         }
+
+        const groupTasks = rows.flatMap((row) =>
+          row.type === 'group' &&
+          row.group.task_group_block_id === selectionMode.groupId
+            ? row.tasks
+            : [],
+        );
+
+        await applyGroupRest([...groupTasks, ...selectedTasks]);
       }
 
       cancelSelection();

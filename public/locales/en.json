@@ -58,6 +58,7 @@
     "groupNotFound": "The group no longer exists",
     "groupUpdateFailed": "Could not update the superset",
     "groupPositionNotPreserved": "Exercises were added, but the list order could not be preserved",
+    "groupRestNotApplied": "Could not apply the shared rest time to the group exercises",
     "groupType": {
       "superset": "Superset",
       "dropset": "Dropset",
