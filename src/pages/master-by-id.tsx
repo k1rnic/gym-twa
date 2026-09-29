@@ -108,7 +108,11 @@ export default function Page() {
   }
 
   return (
-    <PageLayout loading={loading} contentStyle={{ padding: 0 }}>
+    <PageLayout
+      loading={loading}
+      pageStyle={{ paddingTop: 0 }}
+      contentStyle={{ padding: 0 }}
+    >
       <Flex height="100%" style={{ overflowY: 'auto' }}>
         {master && (
           <Flex style={{ position: 'relative' }}>
