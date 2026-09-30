@@ -67,7 +67,11 @@ export default function Page({ loaderData: user }: Route.ComponentProps) {
   }
 
   return (
-    <PageLayout loading={loading} contentStyle={{ padding: 0 }}>
+    <PageLayout
+      loading={loading}
+      pageStyle={{ paddingTop: 0 }}
+      contentStyle={{ padding: 0 }}
+    >
       <Flex height="100%" gap={token.paddingSM} style={{ overflowY: 'auto' }}>
         <Flex style={{ position: 'relative' }}>
           <ProfileHero user={user} />

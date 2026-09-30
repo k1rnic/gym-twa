@@ -33,7 +33,6 @@ export const CreateWorkoutExerciseButton = ({ workout, style }: Props) => {
   return (
     <Button
       block
-      type="dashed"
       hidden={!permissions.addTask}
       onClick={createWorkoutExercise}
       icon={<PlusIcon />}
