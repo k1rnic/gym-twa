@@ -40,18 +40,16 @@ export const ExerciseTitleSelect = ({
   const inGroup = groupExercises.length > 0;
 
   const currentExercise = exercise.exercise ?? null;
-  const currentName =
-    currentExercise?.exercise_name || t('common.unknownName');
+  const currentName = currentExercise?.exercise_name || t('common.unknownName');
 
   const groupTasks = useMemo(
-    () =>
-      new Map(groupExercises.map((task) => [task.task_id, task] as const)),
+    () => new Map(groupExercises.map((task) => [task.task_id, task] as const)),
     [groupExercises],
   );
 
   const selectedValue = inGroup
     ? exercise.task_id
-    : (value ?? exercise.exercise_id ?? undefined);
+    : value ?? exercise.exercise_id ?? undefined;
 
   const options = useMemo(() => {
     if (inGroup) {
@@ -73,7 +71,7 @@ export const ExerciseTitleSelect = ({
   };
 
   const goToGroupExercise = (taskId: number) => {
-    navigate(`../${taskId}`, { relative: 'path' });
+    navigate(`../${taskId}`, { relative: 'path', replace: true });
   };
 
   return (

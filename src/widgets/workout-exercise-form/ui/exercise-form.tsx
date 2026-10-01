@@ -64,7 +64,7 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
   const goToNextExercise = () => {
     if (nextTaskId === null) return;
 
-    navigate(`../${nextTaskId}`, { relative: 'path' });
+    navigate(`../${nextTaskId}`, { relative: 'path', replace: true });
   };
 
   useEffect(() => {
