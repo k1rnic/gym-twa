@@ -11,6 +11,7 @@ export type ListProps<T> = {
   renderItem: (item: T, index: number) => ReactNode;
   itemKey?: keyof T | ((item: T) => React.Key);
   emptyText?: ReactNode;
+  selectedKeys?: React.Key[];
 } & Omit<AntdListProps<T>, 'dataSource' | 'renderItem'>;
 
 export const List = <T,>(props: ListProps<T>) => {
@@ -21,6 +22,7 @@ export const List = <T,>(props: ListProps<T>) => {
     renderItem,
     itemKey,
     emptyText,
+    selectedKeys,
     rowKey: rowKeyProp,
     locale,
     ...listProps
@@ -29,10 +31,17 @@ export const List = <T,>(props: ListProps<T>) => {
 
   const rowKey = itemKey ?? rowKeyProp;
 
+  const getItemKey = (item: T): React.Key => {
+    if (!rowKey) return item as unknown as React.Key;
+
+    return typeof rowKey === 'function'
+      ? rowKey(item)
+      : (item[rowKey] as React.Key);
+  };
+
   const containedItemStyle: CSSProperties = {
     background: token.colorBgLayout,
     borderRadius: token.borderRadius,
-    border: `1px solid ${token.colorBorderSecondary}`,
     padding: compact ? token.paddingSM : token.padding,
     marginTop: token.paddingSM,
   } as const;
@@ -45,16 +54,27 @@ export const List = <T,>(props: ListProps<T>) => {
       split={variant === 'simple'}
       rowKey={rowKey}
       locale={emptyText !== undefined ? { ...locale, emptyText } : locale}
-      renderItem={(item, index) => (
-        <AntdList.Item
-          key={rowKey ? undefined : index}
-          style={
-            variant === 'contained' ? { ...containedItemStyle } : undefined
-          }
-        >
-          {renderItem(item, index)}
-        </AntdList.Item>
-      )}
+      renderItem={(item, index) => {
+        const selected = Boolean(selectedKeys?.includes(getItemKey(item)));
+
+        return (
+          <AntdList.Item
+            key={rowKey ? undefined : index}
+            style={
+              variant === 'contained'
+                ? {
+                    ...containedItemStyle,
+                    border: `1px solid ${
+                      selected ? token.colorPrimary : token.colorBorderSecondary
+                    }`,
+                  }
+                : undefined
+            }
+          >
+            {renderItem(item, index)}
+          </AntdList.Item>
+        );
+      }}
     />
   );
 };

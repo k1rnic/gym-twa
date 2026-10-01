@@ -1,4 +1,3 @@
-import { exerciseModel } from '@/entities/exercise';
 import { workoutModel } from '@/entities/workout';
 import { useVirtualKeyboardOpened } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
@@ -13,8 +12,8 @@ import { useExerciseForm } from '../lib/use-exercise-form';
 import { useExercisePermissions } from '../lib/use-exercise-permissions';
 import { ExerciseCountDown } from './exercise-countdown';
 import { ExerciseNextButton } from './exercise-next-button';
-import { ExerciseSelector } from './exercise-selector';
 import { ExerciseSetList } from './exercise-set-list';
+import { ExerciseTitleSelect } from './exercise-title-select';
 
 type FormValues = workoutModel.WorkoutExercise;
 
@@ -48,11 +47,6 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
 
   const isFormFocused = Boolean(focusedField);
 
-  const isFocusedExerciseSelector = useMemo(
-    () => isFormFocused && focusedField === 'exercise_id',
-    [isFormFocused, focusedField],
-  );
-
   const isFocusedSetValues = useMemo(
     () => isFormFocused && /_(rep|value)$/.test(focusedField!),
     [isFormFocused, focusedField],
@@ -65,13 +59,6 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
 
   const handleInputFocusChange = (e: FocusEvent<HTMLFormElement, Element>) => {
     setFocusedField(e.type === 'focus' ? e.target.id : null);
-  };
-
-  const handleExerciseCreated = (ex: exerciseModel.Exercise) => {
-    form.setFieldValue('exercise_id', ex.exercise_id);
-    requestAnimationFrame(() => {
-      navigate(`/exercises/${ex.exercise_id}`);
-    });
   };
 
   const goToNextExercise = () => {
@@ -98,11 +85,10 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
       >
         <Flex height="100%" gap={token.paddingSM}>
           <Form.Item name="exercise_id" style={{ margin: 0 }}>
-            <ExerciseSelector onCreated={handleExerciseCreated} />
+            <ExerciseTitleSelect exercise={exercise} workout={workout} />
           </Form.Item>
 
           <Flex
-            hidden={isFocusedExerciseSelector}
             height="100%"
             flex={1}
             gap={token.paddingSM}
