@@ -759,7 +759,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.15.0
+ * @version 2.16.0
  */
 export class Endpoints<
   SecurityDataType extends unknown,
@@ -1065,6 +1065,11 @@ export class Endpoints<
          * task_group_block_id
          */
         task_group_block_id?: number | null;
+        /**
+         * Exercise Id
+         * exercise id
+         */
+        exercise_id?: number | null;
       },
       params: RequestParams = {},
     ) =>
