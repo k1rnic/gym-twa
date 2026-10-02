@@ -1,11 +1,12 @@
 import { ExerciseList, exerciseModel } from '@/entities/exercise';
 import { viewerModel } from '@/entities/viewer';
 import { Api } from '@/shared/api';
+import { message } from '@/shared/lib/message';
 import { useViewport } from '@/shared/lib/telegram';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { XIcon } from '@phosphor-icons/react';
-import { Button, Drawer, Typography, message } from 'antd';
+import { Button, Drawer, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

@@ -3,6 +3,7 @@ import { CreateWorkoutExerciseButton } from '@/features/create-exercise-instance
 import { applyWorkoutGroupRest } from '@/features/sync-workout-group-rest';
 import { Api, TaskGroupBlock, TaskGroupBlockType } from '@/shared/api';
 import { useSortableList } from '@/shared/lib/hooks';
+import { message } from '@/shared/lib/message';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import {
@@ -22,7 +23,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { DotsThreeIcon, LinkIcon } from '@phosphor-icons/react';
-import { Button, Dropdown, message, Space, Typography } from 'antd';
+import { Button, Dropdown, Space, Typography } from 'antd';
 import { MenuProps } from 'antd/lib';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
