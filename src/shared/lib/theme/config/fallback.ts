@@ -6,8 +6,7 @@ const COLOR_BORDER = 'rgba(215,170,175,0.04)';
 const COLOR_TEXT = 'rgba(255,255,255,0.85)';
 const PADDING = 16;
 
-export const BASE_THEME_CONFIG: ThemeConfig = {
-  cssVar: true,
+export const FALLBACK_THEME_CONFIG: ThemeConfig = {
   algorithm: theme.darkAlgorithm,
   components: {
     Segmented: {
