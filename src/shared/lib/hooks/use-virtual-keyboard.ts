@@ -1,5 +1,4 @@
-import { RefSelectProps } from 'antd';
-import { RefObject, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useKeyboardHeight = () => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -20,32 +19,6 @@ export const useKeyboardHeight = () => {
   return keyboardHeight;
 };
 
-export const useSelectKeyboardDistance = (ref: RefObject<RefSelectProps>) => {
-  const [distance, setDistance] = useState<number>(0);
-
-  useEffect(() => {
-    const viewport = window.visualViewport;
-    if (!viewport || !ref.current?.nativeElement) return;
-
-    const update = () => {
-      const rect = ref.current!.nativeElement.getBoundingClientRect();
-      const d = viewport.height - rect.bottom;
-      setDistance(d);
-    };
-
-    viewport.addEventListener('resize', update);
-    viewport.addEventListener('scroll', update);
-    update();
-
-    return () => {
-      viewport.removeEventListener('resize', update);
-      viewport.removeEventListener('scroll', update);
-    };
-  }, [ref]);
-
-  return distance;
-};
-
 const isMobileDevice = () => {
   if (typeof navigator === 'undefined') return false;
 
@@ -64,11 +37,15 @@ const isMobileDevice = () => {
 };
 
 const isTextInput = (element: Element | null): boolean => {
-  if (element instanceof HTMLTextAreaElement) return !element.disabled;
+  if (element instanceof HTMLTextAreaElement) {
+    return !element.disabled && !element.readOnly;
+  }
 
   if (element instanceof HTMLInputElement) {
     return (
       !element.disabled &&
+      !element.readOnly &&
+      element.getAttribute('role') !== 'combobox' &&
       ![
         'button',
         'checkbox',
