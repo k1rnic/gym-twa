@@ -25,12 +25,26 @@ export const sortByUpdated = <T extends { update_dttm: string }>(
   order: SortOrder = 'desc',
 ) => createDateSorter<T, 'update_dttm'>('update_dttm', order);
 
+const resolveDateLocale = () => {
+  const language = i18next.resolvedLanguage || i18next.language;
+  return DATE_LOCALES[language] ?? language;
+};
+
+const toValidDate = (maybeDate: string | null | Date) => {
+  if (!maybeDate) {
+    return null;
+  }
+
+  const date = typeof maybeDate === 'string' ? new Date(maybeDate) : maybeDate;
+
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
 export const formatDate = (
   maybeDate: string | null | Date,
   format: 'date' | 'datetime' | 'time' = 'date',
 ) => {
-  const language = i18next.resolvedLanguage || i18next.language;
-  const locale = DATE_LOCALES[language] ?? language;
+  const locale = resolveDateLocale();
 
   if (!maybeDate) {
     return i18next.t('common.invalidDate');
@@ -47,4 +61,30 @@ export const formatDate = (
   if (format === 'time') {
     return date.toLocaleTimeString(locale);
   }
+};
+
+export const formatDateTimeLong = (maybeDate: string | null | Date) => {
+  const date = toValidDate(maybeDate);
+
+  if (!date) {
+    return i18next.t('common.invalidDate');
+  }
+
+  return new Intl.DateTimeFormat(resolveDateLocale(), {
+    dateStyle: 'long',
+    timeStyle: 'short',
+  }).format(date);
+};
+
+export const formatMonthYear = (maybeDate: string | null | Date) => {
+  const date = toValidDate(maybeDate);
+
+  if (!date) {
+    return i18next.t('common.invalidDate');
+  }
+
+  return new Intl.DateTimeFormat(resolveDateLocale(), {
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
 };

@@ -2,7 +2,7 @@ import { viewerModel } from '@/entities/viewer';
 import { Api, TaskGroupStatus } from '@/shared/api';
 import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
-import { WorkoutList } from '@/widgets/workout-list';
+import { WorkoutArchive, WorkoutList } from '@/widgets/workout-list';
 import { PlusIcon } from '@phosphor-icons/react';
 import { Segmented } from 'antd';
 import { useMemo } from 'react';
@@ -38,6 +38,7 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
 
   const viewer = viewerModel.useViewer();
   const status = params.status as TaskGroupStatus;
+  const isArchive = status === TaskGroupStatus.Finished;
 
   const filtersLocalized = useMemo(
     () =>
@@ -77,7 +78,11 @@ const Page = ({ loaderData: workouts, params }: Route.ComponentProps) => {
         onChange={filterWorkouts}
       />
 
-      <WorkoutList reorderEnabled data={workouts} />
+      {isArchive ? (
+        <WorkoutArchive data={workouts} />
+      ) : (
+        <WorkoutList reorderEnabled data={workouts} />
+      )}
 
       <FloatButton icon={<PlusIcon />} onClick={createWorkout} />
     </Flex>

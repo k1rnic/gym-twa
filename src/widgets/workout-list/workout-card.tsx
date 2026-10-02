@@ -3,25 +3,32 @@ import { UserAvatar } from '@/entities/user';
 import { workoutModel } from '@/entities/workout';
 import { useCopyWorkoutAction } from '@/features/copy-workout';
 import { useDeleteWorkoutAction } from '@/features/delete-workout';
+import { formatDateTimeLong } from '@/shared/lib/date';
+import { useTheme } from '@/shared/lib/theme';
 import { CardListItem } from '@/shared/ui/card-list';
+import { Flex } from '@/shared/ui/flex';
 import { List, ListItem } from '@/shared/ui/list';
 
-import { CardProps } from 'antd';
+import { CardProps, Typography } from 'antd';
 import { MenuProps } from 'antd/lib';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+
+import { resolveWorkoutDate } from './lib/group-by-month';
 
 export type WorkoutCardProps = {
   id: Exclude<React.Key, bigint>;
   workout: workoutModel.Workout;
   collapsible?: boolean;
   collapsed?: boolean;
+  showFinishedAt?: boolean;
   onClick?: () => void;
 } & Pick<CardProps, 'style'>;
 
 export const WorkoutCard = (props: WorkoutCardProps) => {
   const navigate = useNavigate();
+  const { token } = useTheme();
   const { t } = useTranslation();
 
   const {
@@ -29,6 +36,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
     workout: w,
     collapsible,
     collapsed = true,
+    showFinishedAt,
     style,
     onClick,
   } = props;
@@ -47,6 +55,30 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
     navigate(`${w.task_group_id}/${ex.task_id}`);
   };
 
+  const avatar = w.owner && (
+    <UserAvatar size="small" user={w.owner} compact={false} />
+  );
+
+  const footer = showFinishedAt ? (
+    <Flex
+      vertical={false}
+      justify="space-between"
+      align="center"
+      gap={token.paddingXS}
+    >
+      {avatar}
+
+      <Typography.Text
+        type="secondary"
+        style={{ fontSize: token.fontSizeSM, textAlign: 'right' }}
+      >
+        {formatDateTimeLong(resolveWorkoutDate(w))}
+      </Typography.Text>
+    </Flex>
+  ) : (
+    avatar
+  );
+
   return (
     <CardListItem
       id={id}
@@ -58,9 +90,7 @@ export const WorkoutCard = (props: WorkoutCardProps) => {
       collapsed={collapsed}
       collapsible={collapsible}
       style={style}
-      footer={
-        w.owner && <UserAvatar size="small" user={w.owner} compact={false} />
-      }
+      footer={footer}
       onClick={onClick}
     >
       <List

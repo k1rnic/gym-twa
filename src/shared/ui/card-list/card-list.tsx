@@ -19,7 +19,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { Empty } from 'antd';
-import React, { useMemo } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface RenderItemProps {
@@ -33,6 +33,7 @@ export type CardListProps<T> = {
   loading?: boolean;
   emptyText?: string;
   showEmptyPlaceholder?: boolean;
+  isSection?: (item: T) => boolean;
   onReorder?: (items: T[]) => void;
   renderItem: (item: T, props: RenderItemProps, idx: number) => React.ReactNode;
 };
@@ -44,6 +45,7 @@ export const CardList = <T,>({
   showEmptyPlaceholder = true,
   itemKey,
   reorderEnabled,
+  isSection,
   onReorder,
   renderItem,
 }: CardListProps<T>) => {
@@ -96,33 +98,43 @@ export const CardList = <T,>({
           gap={token.paddingXS}
           style={{ maxHeight: '100%', overflowY: 'auto' }}
         >
-          {items.map((item, idx) => (
-            <ItemContextWrapper
-              id={itemIds[idx].id}
-              index={idx}
-              key={itemIds[idx].id}
-              item={item}
-              renderItem={renderItem}
-            />
-          ))}
+          {items.map((item, idx) => {
+            const { id } = itemIds[idx];
+
+            if (isSection?.(item)) {
+              return (
+                <Fragment key={id}>{renderItem(item, { id }, idx)}</Fragment>
+              );
+            }
+
+            return (
+              <SortableItem
+                id={id}
+                index={idx}
+                key={id}
+                item={item}
+                renderItem={renderItem}
+              />
+            );
+          })}
         </Flex>
       </SortableContext>
     </DndContext>
   );
 };
 
-type ItemContextWrapperProps<T> = {
+type SortableItemProps<T> = {
   id: Exclude<React.Key, bigint>;
   index: number;
   item: T;
 } & Pick<CardListProps<T>, 'renderItem'>;
 
-const ItemContextWrapper = <T,>({
+const SortableItem = <T,>({
   id,
   index,
   item,
   renderItem,
-}: ItemContextWrapperProps<T>) => {
+}: SortableItemProps<T>) => {
   const { setNodeRef, style } = useSortableList(id);
 
   return (
