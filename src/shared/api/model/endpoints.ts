@@ -425,6 +425,45 @@ export interface TaskPropertiesAggregateUpdate {
   sets?: SetUpdate[];
 }
 
+/** ThemeIn */
+export interface ThemeIn {
+  /**
+   * Algorithm
+   * @minLength 1
+   * @maxLength 60
+   */
+  algorithm: string;
+  /** Token */
+  token?: object;
+  /** Components */
+  components?: object;
+}
+
+/** ThemeItem */
+export interface ThemeItem {
+  /** Code */
+  code: string;
+}
+
+/** ThemeOut */
+export interface ThemeOut {
+  /** Theme Cd */
+  theme_cd: string;
+  /** Theme Data */
+  theme_data: object;
+}
+
+/** ThemesResponse */
+export interface ThemesResponse {
+  /**
+   * Defaulttheme
+   * @default "dark"
+   */
+  defaultTheme?: string;
+  /** Themes */
+  themes?: ThemeItem[];
+}
+
 /** Token */
 export interface Token {
   /** Access Token */
@@ -497,9 +536,14 @@ export interface User {
   photos?: string[] | null;
   /**
    * Language Code
-   * @default "ru"
+   * @default "en"
    */
   language_code?: string | null;
+  /**
+   * Theme Cd
+   * @default "dark"
+   */
+  theme_cd?: string | null;
   master?: Master | null;
   gymer?: Gymer | null;
 }
@@ -526,9 +570,14 @@ export interface UserBase {
   photos?: string[] | null;
   /**
    * Language Code
-   * @default "ru"
+   * @default "en"
    */
   language_code?: string | null;
+  /**
+   * Theme Cd
+   * @default "dark"
+   */
+  theme_cd?: string | null;
 }
 
 /** UserIn */
@@ -549,9 +598,14 @@ export interface UserIn {
   photo?: string | null;
   /**
    * Language Code
-   * @default "ru"
+   * @default "en"
    */
   language_code?: string | null;
+  /**
+   * Theme Cd
+   * @default "dark"
+   */
+  theme_cd?: string | null;
 }
 
 /** UserOut */
@@ -562,8 +616,13 @@ export interface UserOut {
 
 /** UserProfile */
 export interface UserProfile {
-  /** Language Code */
-  language_code?: UserProfileLanguageCodeEnum;
+  /**
+   * Language Code
+   * language code
+   */
+  language_code?: UserProfileLanguageCodeEnum | null;
+  /** Theme Cd */
+  theme_cd?: string | null;
 }
 
 /** ValidationError */
@@ -576,7 +635,6 @@ export interface ValidationError {
   type: string;
 }
 
-/** Language Code */
 export enum UserProfileLanguageCodeEnum {
   Ru = "ru",
   En = "en",
@@ -759,7 +817,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.16.0
+ * @version 2.18.0
  */
 export class Endpoints<
   SecurityDataType extends unknown,
@@ -1454,6 +1512,21 @@ export class Endpoints<
          * Поиск по названию упражнения
          */
         search?: string | null;
+        /**
+         * Page
+         * Page number
+         * @min 1
+         * @default 1
+         */
+        page?: number;
+        /**
+         * Limit
+         * Items per page
+         * @min 1
+         * @max 300
+         * @default 300
+         */
+        limit?: number;
       },
       params: RequestParams = {},
     ) =>
@@ -1825,6 +1898,63 @@ export class Endpoints<
         path: `/gym/notification/close_join_request/${notificationId}`,
         method: "POST",
         query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  theme = {
+    /**
+     * No description
+     *
+     * @tags theme
+     * @name GetThemes
+     * @summary Getting available theme list
+     * @request GET:/gym/theme
+     * @secure
+     */
+    getThemes: (params: RequestParams = {}) =>
+      this.request<ThemesResponse, any>({
+        path: `/gym/theme`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags theme
+     * @name AddTheme
+     * @summary Adding a theme
+     * @request POST:/gym/theme
+     * @secure
+     */
+    addTheme: (data: ThemeIn, params: RequestParams = {}) =>
+      this.request<ThemeOut, HTTPValidationError>({
+        path: `/gym/theme`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags theme
+     * @name GetThemes
+     * @summary Getting theme data by theme_cd
+     * @request GET:/gym/theme/{theme_cd}
+     * @secure
+     */
+    getThemes: (themeCd: string, params: RequestParams = {}) =>
+      this.request<ThemeOut, HTTPValidationError>({
+        path: `/gym/theme/${themeCd}`,
+        method: "GET",
         secure: true,
         format: "json",
         ...params,

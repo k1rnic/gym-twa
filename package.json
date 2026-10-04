@@ -9,7 +9,7 @@
     "start": "bunx http-server build/client",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type-check": "react-router typegen && tsc",
-    "api:extract": "bun run src/shared/api/lib/extract-api.ts"
+    "api:extract": "bun run --env-file=.env --env-file=.env.local src/shared/api/lib/extract-api.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
