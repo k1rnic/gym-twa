@@ -99,6 +99,16 @@ export default function Page() {
     updateLanguage(language as UserProfileLanguageCodeEnum);
   }, [language]);
 
+  const updateTheme = async (code: string) => {
+    if (code === viewer.theme_cd) return;
+    await Api.user.updateUserProfile(viewer.user_id, { theme_cd: code });
+    await refreshViewer();
+  };
+
+  useEffect(() => {
+    updateTheme(theme);
+  }, [theme]);
+
   return (
     <PageLayout pageStyle={{ paddingTop: 0 }} contentStyle={{ padding: 0 }}>
       <Flex height="100%" style={{ overflowY: 'auto' }}>
