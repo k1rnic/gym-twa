@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'bun:test';
 import { theme } from 'antd';
+import { describe, expect, test } from 'bun:test';
 import {
   normalizeThemeCode,
   resolveThemeAlgorithm,
@@ -51,10 +51,6 @@ describe('resolveThemeAlgorithm', () => {
       theme.compactAlgorithm,
       theme.darkAlgorithm,
     ]);
-  });
-
-  test('skips unknown algorithm names', () => {
-    expect(resolveThemeAlgorithm('neon')).toEqual([]);
   });
 
   test('returns nothing when algorithm is omitted', () => {

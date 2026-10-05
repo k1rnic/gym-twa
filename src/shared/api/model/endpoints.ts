@@ -12,55 +12,55 @@
 
 /** UrlPathType */
 export enum UrlPathType {
-  Image = 'image',
-  Video = 'video',
+  Image = "image",
+  Video = "video",
 }
 
 /** TaskStatus */
 export enum TaskStatus {
-  Planned = 'planned',
-  Running = 'running',
-  Finished = 'finished',
-  Deleted = 'deleted',
-  Closed = 'closed',
+  Planned = "planned",
+  Running = "running",
+  Finished = "finished",
+  Deleted = "deleted",
+  Closed = "closed",
 }
 
 /** TaskGroupStatus */
 export enum TaskGroupStatus {
-  Planned = 'planned',
-  Running = 'running',
-  Finished = 'finished',
-  Deleted = 'deleted',
-  Closed = 'closed',
+  Planned = "planned",
+  Running = "running",
+  Finished = "finished",
+  Deleted = "deleted",
+  Closed = "closed",
 }
 
 /** TaskGroupBlockType */
 export enum TaskGroupBlockType {
-  Superset = 'superset',
-  Dropset = 'dropset',
-  GiantSet = 'giant_set',
-  Triset = 'triset',
-  Circuit = 'circuit',
-  CompoundSet = 'compound_set',
+  Superset = "superset",
+  Dropset = "dropset",
+  GiantSet = "giant_set",
+  Triset = "triset",
+  Circuit = "circuit",
+  CompoundSet = "compound_set",
 }
 
 /** NotificationType */
 export enum NotificationType {
-  JoinRequest = 'join_request',
+  JoinRequest = "join_request",
 }
 
 /** GymerMasterStatus */
 export enum GymerMasterStatus {
-  CurrentMaster = 'current_master',
-  RejectedRequest = 'rejected_request',
-  AwaitedRequest = 'awaited_request',
-  AcceptsRequests = 'accepts_requests',
+  CurrentMaster = "current_master",
+  RejectedRequest = "rejected_request",
+  AwaitedRequest = "awaited_request",
+  AcceptsRequests = "accepts_requests",
 }
 
 /** ExerciseStatus */
 export enum ExerciseStatus {
-  Active = 'active',
-  Archive = 'archive',
+  Active = "active",
+  Archive = "archive",
 }
 
 /** Body_add_exercise_image_gym_exercise__exercise_id__image_post */
@@ -278,13 +278,13 @@ export interface NotificationUserResponse {
 /** Set */
 export interface Set {
   /** Fact Value */
-  fact_value?: number | 'max' | null;
+  fact_value?: number | "max" | null;
   /** Fact Rep */
-  fact_rep?: number | 'max' | null;
+  fact_rep?: number | "max" | null;
   /** Plan Value */
-  plan_value?: number | 'max' | null;
+  plan_value?: number | "max" | null;
   /** Plan Rep */
-  plan_rep?: number | 'max' | null;
+  plan_rep?: number | "max" | null;
   /** Owner Id */
   owner_id?: number | null;
   /** Set Id */
@@ -297,13 +297,13 @@ export interface Set {
 /** SetUpdate */
 export interface SetUpdate {
   /** Fact Value */
-  fact_value?: number | 'max' | null;
+  fact_value?: number | "max" | null;
   /** Fact Rep */
-  fact_rep?: number | 'max' | null;
+  fact_rep?: number | "max" | null;
   /** Plan Value */
-  plan_value?: number | 'max' | null;
+  plan_value?: number | "max" | null;
   /** Plan Rep */
-  plan_rep?: number | 'max' | null;
+  plan_rep?: number | "max" | null;
   /** Owner Id */
   owner_id?: number | null;
   /** Set Id */
@@ -636,8 +636,8 @@ export interface ValidationError {
 }
 
 export enum UserProfileLanguageCodeEnum {
-  Ru = 'ru',
-  En = 'en',
+  Ru = "ru",
+  En = "en",
 }
 
 import type {
@@ -645,13 +645,13 @@ import type {
   AxiosRequestConfig,
   HeadersDefaults,
   ResponseType,
-} from 'axios';
-import axios from 'axios';
+} from "axios";
+import axios from "axios";
 
 export type QueryParamsType = Record<string | number, any>;
 
 export interface FullRequestParams
-  extends Omit<AxiosRequestConfig, 'data' | 'params' | 'url' | 'responseType'> {
+  extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
   /** request path */
@@ -668,11 +668,11 @@ export interface FullRequestParams
 
 export type RequestParams = Omit<
   FullRequestParams,
-  'body' | 'method' | 'query' | 'path'
+  "body" | "method" | "query" | "path"
 >;
 
 export interface ApiConfig<SecurityDataType = unknown>
-  extends Omit<AxiosRequestConfig, 'data' | 'cancelToken'> {
+  extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
   securityWorker?: (
     securityData: SecurityDataType | null,
   ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
@@ -681,16 +681,16 @@ export interface ApiConfig<SecurityDataType = unknown>
 }
 
 export enum ContentType {
-  Json = 'application/json',
-  FormData = 'multipart/form-data',
-  UrlEncoded = 'application/x-www-form-urlencoded',
-  Text = 'text/plain',
+  Json = "application/json",
+  FormData = "multipart/form-data",
+  UrlEncoded = "application/x-www-form-urlencoded",
+  Text = "text/plain",
 }
 
 export class HttpClient<SecurityDataType = unknown> {
   public instance: AxiosInstance;
   private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
+  private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private secure?: boolean;
   private format?: ResponseType;
 
@@ -702,7 +702,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }: ApiConfig<SecurityDataType> = {}) {
     this.instance = axios.create({
       ...axiosConfig,
-      baseURL: axiosConfig.baseURL || '',
+      baseURL: axiosConfig.baseURL || "",
     });
     this.secure = secure;
     this.format = format;
@@ -736,7 +736,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }
 
   protected stringifyFormItem(formItem: unknown) {
-    if (typeof formItem === 'object' && formItem !== null) {
+    if (typeof formItem === "object" && formItem !== null) {
       return JSON.stringify(formItem);
     } else {
       return `${formItem}`;
@@ -774,7 +774,7 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): Promise<T> => {
     const secureParams =
-      ((typeof secure === 'boolean' ? secure : this.secure) &&
+      ((typeof secure === "boolean" ? secure : this.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
       {};
@@ -785,7 +785,7 @@ export class HttpClient<SecurityDataType = unknown> {
       type === ContentType.FormData &&
       body &&
       body !== null &&
-      typeof body === 'object'
+      typeof body === "object"
     ) {
       body = this.createFormData(body as Record<string, unknown>);
     }
@@ -794,7 +794,7 @@ export class HttpClient<SecurityDataType = unknown> {
       type === ContentType.Text &&
       body &&
       body !== null &&
-      typeof body !== 'string'
+      typeof body !== "string"
     ) {
       body = JSON.stringify(body);
     }
@@ -804,7 +804,7 @@ export class HttpClient<SecurityDataType = unknown> {
         ...requestParams,
         headers: {
           ...(requestParams.headers || {}),
-          ...(type ? { 'Content-Type': type } : {}),
+          ...(type ? { "Content-Type": type } : {}),
         },
         params: query,
         responseType: responseFormat,
@@ -835,9 +835,9 @@ export class Endpoints<
     initUser: (userId: number, params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/user/init/${userId}`,
-        method: 'POST',
+        method: "POST",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -853,9 +853,9 @@ export class Endpoints<
     getListOfMastersGymer: (masterId: number, params: RequestParams = {}) =>
       this.request<MastersGymer[], HTTPValidationError>({
         path: `/gym/user/${masterId}/gymers`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -871,9 +871,9 @@ export class Endpoints<
     getUserDataByTelegramId: (telegramId: number, params: RequestParams = {}) =>
       this.request<User, HTTPValidationError>({
         path: `/gym/user/${telegramId}`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -889,9 +889,9 @@ export class Endpoints<
     getUserDataByUserId: (userId: number, params: RequestParams = {}) =>
       this.request<User, HTTPValidationError>({
         path: `/gym/user/user_by_id/${userId}`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -907,11 +907,11 @@ export class Endpoints<
     addUser: (data: UserIn, params: RequestParams = {}) =>
       this.request<User, HTTPValidationError>({
         path: `/gym/user`,
-        method: 'POST',
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -931,11 +931,11 @@ export class Endpoints<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/user/${userId}/image`,
-        method: 'POST',
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.FormData,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -961,7 +961,7 @@ export class Endpoints<
     ) =>
       this.request<void, HTTPValidationError>({
         path: `/gym/user/${userId}/image`,
-        method: 'DELETE',
+        method: "DELETE",
         query: query,
         secure: true,
         ...params,
@@ -998,10 +998,10 @@ export class Endpoints<
     ) =>
       this.request<MasterProfile[], HTTPValidationError>({
         path: `/gym/user/all/masters`,
-        method: 'GET',
+        method: "GET",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1031,10 +1031,10 @@ export class Endpoints<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/user/master_gymer_break/`,
-        method: 'GET',
+        method: "GET",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1065,10 +1065,10 @@ export class Endpoints<
     ) =>
       this.request<Master, HTTPValidationError>({
         path: `/gym/user/master/${masterId}`,
-        method: 'PUT',
+        method: "PUT",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1088,11 +1088,11 @@ export class Endpoints<
     ) =>
       this.request<User, HTTPValidationError>({
         path: `/gym/user/profile/${userId}`,
-        method: 'PUT',
+        method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -1133,10 +1133,10 @@ export class Endpoints<
     ) =>
       this.request<TaskAggregate | null, HTTPValidationError>({
         path: `/gym/task`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1152,11 +1152,11 @@ export class Endpoints<
     updateTask: (data: UpdateTask, params: RequestParams = {}) =>
       this.request<TaskAggregate, HTTPValidationError>({
         path: `/gym/task`,
-        method: 'PUT',
+        method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1172,11 +1172,11 @@ export class Endpoints<
     reorderTask: (data: TaskOrderIndex[], params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/task/reorder`,
-        method: 'PUT',
+        method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1192,9 +1192,9 @@ export class Endpoints<
     deleteTask: (taskId: number, params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/task/${taskId}`,
-        method: 'DELETE',
+        method: "DELETE",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1210,9 +1210,9 @@ export class Endpoints<
     getTaskByTaskId: (taskId: number, params: RequestParams = {}) =>
       this.request<TaskAggregate | null, HTTPValidationError>({
         path: `/gym/task/${taskId}`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -1248,10 +1248,10 @@ export class Endpoints<
     ) =>
       this.request<TaskGroupAggregate, HTTPValidationError>({
         path: `/gym/task_group`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1286,10 +1286,10 @@ export class Endpoints<
     ) =>
       this.request<TaskGroupAggregate[], HTTPValidationError>({
         path: `/gym/task_group`,
-        method: 'GET',
+        method: "GET",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1308,11 +1308,11 @@ export class Endpoints<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/task_group/reorder`,
-        method: 'PUT',
+        method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1328,9 +1328,9 @@ export class Endpoints<
     deleteTaskGroup: (taskGroupId: number, params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/task_group/${taskGroupId}`,
-        method: 'DELETE',
+        method: "DELETE",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1346,9 +1346,9 @@ export class Endpoints<
     taskGroupById: (taskGroupId: number, params: RequestParams = {}) =>
       this.request<TaskGroupAggregate | null, HTTPValidationError>({
         path: `/gym/task_group/${taskGroupId}`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1374,10 +1374,10 @@ export class Endpoints<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/task_group/${taskGroupId}/title`,
-        method: 'PUT',
+        method: "PUT",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1400,10 +1400,10 @@ export class Endpoints<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/task_group/${taskGroupId}/status`,
-        method: 'PUT',
+        method: "PUT",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1419,9 +1419,9 @@ export class Endpoints<
     copyTaskGroup: (taskGroupId: number, params: RequestParams = {}) =>
       this.request<TaskGroupAggregate, HTTPValidationError>({
         path: `/gym/task_group/copy/${taskGroupId}`,
-        method: 'POST',
+        method: "POST",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -1441,11 +1441,11 @@ export class Endpoints<
     ) =>
       this.request<TaskGroupBlock, HTTPValidationError>({
         path: `/gym/task_group_block`,
-        method: 'POST',
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1465,11 +1465,11 @@ export class Endpoints<
     ) =>
       this.request<TaskGroupBlock, HTTPValidationError>({
         path: `/gym/task_group_block/${taskGroupBlockId}`,
-        method: 'PUT',
+        method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1488,9 +1488,9 @@ export class Endpoints<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/task_group_block/${taskGroupBlockId}`,
-        method: 'DELETE',
+        method: "DELETE",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -1532,10 +1532,10 @@ export class Endpoints<
     ) =>
       this.request<Exercise[], HTTPValidationError>({
         path: `/gym/exercise/${masterId}`,
-        method: 'GET',
+        method: "GET",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1551,9 +1551,9 @@ export class Endpoints<
     getExercise: (exerciseId: number, params: RequestParams = {}) =>
       this.request<ExerciseAggregateOutput, HTTPValidationError>({
         path: `/gym/exercise/id/${exerciseId}`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1569,7 +1569,7 @@ export class Endpoints<
     deleteExerciseImage: (urlPathId: number, params: RequestParams = {}) =>
       this.request<void, HTTPValidationError>({
         path: `/gym/exercise/url_path/${urlPathId}`,
-        method: 'DELETE',
+        method: "DELETE",
         secure: true,
         ...params,
       }),
@@ -1589,11 +1589,11 @@ export class Endpoints<
     ) =>
       this.request<ExerciseAggregateOutput, HTTPValidationError>({
         path: `/gym/exercise`,
-        method: 'PUT',
+        method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1609,11 +1609,11 @@ export class Endpoints<
     createExercise: (data: CreateExercise, params: RequestParams = {}) =>
       this.request<ExerciseAggregateOutput, HTTPValidationError>({
         path: `/gym/exercise`,
-        method: 'POST',
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1633,11 +1633,11 @@ export class Endpoints<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/exercise/${exerciseId}/image`,
-        method: 'POST',
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.FormData,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1668,10 +1668,10 @@ export class Endpoints<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/exercise/${exerciseId}/link`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1687,9 +1687,9 @@ export class Endpoints<
     copyExercise: (exerciseId: number, params: RequestParams = {}) =>
       this.request<ExerciseAggregateOutput, HTTPValidationError>({
         path: `/gym/exercise/copy/${exerciseId}`,
-        method: 'POST',
+        method: "POST",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1705,7 +1705,7 @@ export class Endpoints<
     deleteExercise: (exerciseId: number, params: RequestParams = {}) =>
       this.request<void, HTTPValidationError>({
         path: `/gym/exercise/${exerciseId}`,
-        method: 'DELETE',
+        method: "DELETE",
         secure: true,
         ...params,
       }),
@@ -1731,9 +1731,9 @@ export class Endpoints<
     ) =>
       this.request<UserOut, HTTPValidationError>({
         path: `/auth/signin`,
-        method: 'POST',
+        method: "POST",
         query: query,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1757,9 +1757,9 @@ export class Endpoints<
     ) =>
       this.request<UserOut, HTTPValidationError>({
         path: `/auth/signup`,
-        method: 'POST',
+        method: "POST",
         query: query,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1783,9 +1783,9 @@ export class Endpoints<
     ) =>
       this.request<UserOut, HTTPValidationError>({
         path: `/auth/dev-signin`,
-        method: 'POST',
+        method: "POST",
         query: query,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1803,10 +1803,10 @@ export class Endpoints<
     ) =>
       this.request<UserOut, HTTPValidationError>({
         path: `/auth/dev-signup`,
-        method: 'POST',
+        method: "POST",
         body: data,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -1837,10 +1837,10 @@ export class Endpoints<
     ) =>
       this.request<NotificationResponse, HTTPValidationError>({
         path: `/gym/notification/join_master`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1867,10 +1867,10 @@ export class Endpoints<
     ) =>
       this.request<NotificationUserResponse[], HTTPValidationError>({
         path: `/gym/notification/recipient/${userId}`,
-        method: 'GET',
+        method: "GET",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1896,10 +1896,10 @@ export class Endpoints<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/gym/notification/close_join_request/${notificationId}`,
-        method: 'POST',
+        method: "POST",
         query: query,
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -1916,9 +1916,9 @@ export class Endpoints<
     getThemes: (params: RequestParams = {}) =>
       this.request<ThemesResponse, any>({
         path: `/gym/theme`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1934,11 +1934,11 @@ export class Endpoints<
     addTheme: (data: ThemeIn, params: RequestParams = {}) =>
       this.request<ThemeOut, HTTPValidationError>({
         path: `/gym/theme`,
-        method: 'POST',
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,
-        format: 'json',
+        format: "json",
         ...params,
       }),
 
@@ -1946,17 +1946,17 @@ export class Endpoints<
      * No description
      *
      * @tags theme
-     * @name GetThemes
+     * @name GetTheme
      * @summary Getting theme data by theme_cd
      * @request GET:/gym/theme/{theme_cd}
      * @secure
      */
-    getThemeByCode: (themeCd: string, params: RequestParams = {}) =>
+    getTheme: (themeCd: string, params: RequestParams = {}) =>
       this.request<ThemeOut, HTTPValidationError>({
         path: `/gym/theme/${themeCd}`,
-        method: 'GET',
+        method: "GET",
         secure: true,
-        format: 'json',
+        format: "json",
         ...params,
       }),
   };
@@ -1971,8 +1971,8 @@ export class Endpoints<
     healthz: (params: RequestParams = {}) =>
       this.request<any, any>({
         path: `/healthz`,
-        method: 'GET',
-        format: 'json',
+        method: "GET",
+        format: "json",
         ...params,
       }),
   };
@@ -1987,8 +1987,8 @@ export class Endpoints<
     debugHeaders: (params: RequestParams = {}) =>
       this.request<any, any>({
         path: `/debug/headers`,
-        method: 'GET',
-        format: 'json',
+        method: "GET",
+        format: "json",
         ...params,
       }),
 
@@ -2002,8 +2002,8 @@ export class Endpoints<
     debugRedis: (params: RequestParams = {}) =>
       this.request<any, any>({
         path: `/debug/redis`,
-        method: 'GET',
-        format: 'json',
+        method: "GET",
+        format: "json",
         ...params,
       }),
 
@@ -2017,8 +2017,8 @@ export class Endpoints<
     debugDb: (params: RequestParams = {}) =>
       this.request<any, any>({
         path: `/debug/db`,
-        method: 'GET',
-        format: 'json',
+        method: "GET",
+        format: "json",
         ...params,
       }),
   };
