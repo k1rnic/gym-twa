@@ -22,10 +22,8 @@ export const getThemes = async (): Promise<ThemesIndex> => {
   };
 };
 
-export const getThemeTokens = async (
-  code: ThemeCode,
-): Promise<ThemeConfig> => {
-  const { theme_data: themeData } = await Api.theme.getThemeByCode(code);
+export const getThemeTokens = async (code: ThemeCode): Promise<ThemeConfig> => {
+  const { theme_data: themeData } = await Api.theme.getTheme(code);
 
   return toThemeConfig((themeData ?? {}) as ThemeTokens);
 };
