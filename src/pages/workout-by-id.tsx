@@ -1,5 +1,6 @@
 import { useWorkoutPermissions, workoutModel } from '@/entities/workout';
 import { Api, TaskGroupStatus } from '@/shared/api';
+import { notify } from '@/shared/lib/notification';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
 import { FloatButton } from '@/shared/ui/float-button';
@@ -8,15 +9,25 @@ import { SectionTitle } from '@/shared/ui/section-title';
 import { WorkoutExerciseList } from '@/widgets/workout-exercise-list';
 import { PauseIcon, PlayIcon } from '@phosphor-icons/react';
 import { Form, Input } from 'antd';
+import i18next from 'i18next';
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRevalidator } from 'react-router';
+import { redirect, useRevalidator } from 'react-router';
 import { Route } from './+types/workout-by-id';
 
 type FormValues = workoutModel.Workout;
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs) => {
-  return await Api.taskGroup.taskGroupById(+params.wId);
+  const workout = await Api.taskGroup
+    .taskGroupById(+params.wId)
+    .catch(() => null);
+
+  if (!workout) {
+    notify.error(i18next.t('training.workoutNotFound'));
+    throw redirect(`/workouts/${params.gId}/${params.status}`);
+  }
+
+  return workout;
 };
 
 const Page = ({ loaderData: workout }: Route.ComponentProps) => {
