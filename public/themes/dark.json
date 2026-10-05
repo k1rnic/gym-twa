@@ -1,0 +1,63 @@
+{
+  "algorithm": "dark",
+  "token": {
+    "fontFamily": "Mulish, \"Ubuntu Condensed\", Oswald,Inter, system-ui, sans-serif",
+    "controlHeight": 40,
+    "colorText": "rgba(255,255,255,0.85)",
+    "colorPrimary": "#dd2d4a",
+    "colorSuccess": "#32936F",
+    "colorWarning": "#E9A23B",
+    "colorError": "#e5383b",
+    "colorInfo": "#00b4d8",
+    "colorBgContainer": "rgb(15, 20, 25)",
+    "colorBgElevated": "rgb(15, 20, 25)",
+    "colorBgLayout": "rgb(23, 26, 31)",
+    "colorBorderSecondary": "rgba(215,170,175,0.04)",
+    "colorSplit": "rgba(215,170,175,0.04)",
+    "colorBgMask": "rgba(15, 20, 25, 0.4)",
+    "colorFillTertiary": "rgb(23, 26, 31)",
+    "borderRadius": 8
+  },
+  "components": {
+    "Segmented": {
+      "itemHoverBg": "transparent",
+      "itemActiveBg": "transparent"
+    },
+    "Card": {
+      "headerBg": "rgb(23, 26, 31)",
+      "colorBgContainer": "rgb(23, 26, 31)",
+      "headerPadding": 16
+    },
+    "Form": {
+      "verticalLabelPadding": 0,
+      "itemMarginBottom": 12,
+      "labelColonMarginInlineStart": 100,
+      "labelFontSize": 16
+    },
+    "Input": {
+      "activeBg": "rgb(23, 26, 31)",
+      "colorBorder": "transparent",
+      "colorBgContainerDisabled": "transparent",
+      "colorTextDisabled": "rgba(255,255,255,0.85)"
+    },
+    "InputNumber": {
+      "activeBg": "rgb(23, 26, 31)",
+      "colorBorder": "transparent",
+      "colorBgContainerDisabled": "transparent",
+      "colorTextDisabled": "rgba(255,255,255,0.85)"
+    },
+    "Select": {
+      "colorBgContainerDisabled": "rgb(23, 26, 31)",
+      "colorBorder": "transparent"
+    },
+    "Button": {
+      "defaultShadow": "none"
+    },
+    "Drawer": {
+      "colorBgElevated": "rgb(23, 26, 31)"
+    },
+    "Avatar": {
+      "containerSizeLG": 64
+    }
+  }
+}

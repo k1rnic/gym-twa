@@ -1,12 +1,17 @@
-import { ComponentType, PropsWithChildren, useEffect } from 'react';
-
+import { setMessageApi } from '@/shared/lib/message';
 import { setNotificationApi } from '@/shared/lib/notification';
+import { useViewport } from '@/shared/lib/telegram';
 import { ThemeProvider, useTheme } from '@/shared/lib/theme';
 import { IconContext } from '@phosphor-icons/react';
 import { App } from 'antd';
+import { ComponentType, PropsWithChildren, useEffect } from 'react';
 
-function NotificationBridge() {
-  const { notification } = App.useApp();
+function ApiBridge() {
+  const { message, notification } = App.useApp();
+
+  useEffect(() => {
+    setMessageApi(message);
+  }, [message]);
 
   useEffect(() => {
     setNotificationApi(notification);
@@ -17,6 +22,7 @@ function NotificationBridge() {
 
 function AppShell({ children }: PropsWithChildren) {
   const { token } = useTheme();
+  const { topSafeArea } = useViewport();
 
   useEffect(() => {
     document.body.style.backgroundColor = token.colorBgContainer;
@@ -25,9 +31,10 @@ function AppShell({ children }: PropsWithChildren) {
   return (
     <App
       style={{ height: '100%' }}
+      message={{ top: topSafeArea + token.paddingMD }}
       notification={{ placement: 'bottom', duration: 3 }}
     >
-      <NotificationBridge />
+      <ApiBridge />
       {children}
     </App>
   );
