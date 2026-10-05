@@ -59,6 +59,7 @@
     "detachFromGroup": "Открепить от группы",
     "groupNotFound": "Группа больше не существует",
     "groupUpdateFailed": "Не удалось изменить суперсет",
+    "workoutNotFound": "Тренировка не найдена",
     "groupPositionNotPreserved": "Упражнения добавлены, но порядок списка не удалось сохранить",
     "groupRestNotApplied": "Не удалось проставить упражнениям группы общее время отдыха",
     "exercisesCreated_one": "Добавлено {{count}} упражнение",

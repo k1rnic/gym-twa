@@ -57,6 +57,7 @@
     "detachFromGroup": "Detach from group",
     "groupNotFound": "The group no longer exists",
     "groupUpdateFailed": "Could not update the superset",
+    "workoutNotFound": "Workout not found",
     "groupPositionNotPreserved": "Exercises were added, but the list order could not be preserved",
     "groupRestNotApplied": "Could not apply the shared rest time to the group exercises",
     "exercisesCreated_one": "Added {{count}} exercise",
