@@ -174,6 +174,10 @@
     }
   },
   "validation": {},
+  "theme": "Theme",
+  "themes": {
+    "dark": "Dark"
+  },
   "errors": {
     "unexpected": "Something went wrong =/",
     "unsupportedEnv": "Unsupported env...:(",

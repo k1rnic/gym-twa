@@ -3,7 +3,7 @@ import { PolicyDrawer } from '@/features/policy-consent';
 import { Api, UserProfileLanguageCodeEnum } from '@/shared/api';
 
 import { notify } from '@/shared/lib/notification';
-import { useTheme } from '@/shared/lib/theme';
+import { useTheme, useThemes } from '@/shared/lib/theme';
 import { ActionListItem } from '@/shared/ui/action-list-item';
 import { Flex } from '@/shared/ui/flex';
 import { PageLayout } from '@/shared/ui/page-layout';
@@ -26,6 +26,7 @@ import {
   BellIcon,
   CaretDownIcon,
   FileTextIcon,
+  PaletteIcon,
   TranslateIcon,
   UsersThreeIcon,
 } from '@phosphor-icons/react';
@@ -46,6 +47,7 @@ export default function Page() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { language, setLanguage, languages } = useI18nContext();
+  const { themes, theme, setTheme } = useThemes();
   const [form] = Form.useForm<ReturnType<typeof mapInitialValues>>();
   const [policyOpen, setPolicyOpen] = useState(false);
 
@@ -96,6 +98,16 @@ export default function Page() {
   useEffect(() => {
     updateLanguage(language as UserProfileLanguageCodeEnum);
   }, [language]);
+
+  const updateTheme = async (code: string) => {
+    if (code === viewer.theme_cd) return;
+    await Api.user.updateUserProfile(viewer.user_id, { theme_cd: code });
+    await refreshViewer();
+  };
+
+  useEffect(() => {
+    updateTheme(theme);
+  }, [theme]);
 
   return (
     <PageLayout pageStyle={{ paddingTop: 0 }} contentStyle={{ padding: 0 }}>
@@ -187,6 +199,33 @@ export default function Page() {
                 options={languages.map(({ code, nativeName }) => ({
                   value: code,
                   label: nativeName,
+                }))}
+              />
+            </Card>
+            <Card
+              styles={{
+                body: {
+                  padding: token.paddingSM,
+                  paddingLeft: token.paddingXXS,
+                },
+              }}
+            >
+              <Select
+                value={theme || undefined}
+                onChange={setTheme}
+                placeholder={t('profile.theme')}
+                style={{ width: '100%' }}
+                prefix={
+                  <PaletteIcon
+                    size={28}
+                    color={token.colorText}
+                    style={{ marginRight: token.paddingSM }}
+                  />
+                }
+                suffixIcon={<CaretDownIcon color={token.colorText} />}
+                options={themes.map((code) => ({
+                  value: code,
+                  label: t(`themes.${code}`),
                 }))}
               />
             </Card>

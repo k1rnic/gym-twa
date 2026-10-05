@@ -184,6 +184,10 @@
     }
   },
   "validation": {},
+  "theme": "Тема",
+  "themes": {
+    "dark": "Тёмная"
+  },
   "errors": {
     "unexpected": "Что-то пошло не так =/",
     "unsupportedEnv": "Неподдерживаемое окружение...:(",

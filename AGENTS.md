@@ -25,14 +25,18 @@ Run everything with **bun** (`bun run <script>`), even though the README shows `
 
 ### API client is generated
 
-`src/shared/api/model/endpoints.ts` is codegen output from `${APP_API_BASE_URL}/openapi.json` via `swagger-typescript-api`. Never edit it by hand; run `bun run api:extract` after backend changes. The script reads `process.env.APP_API_BASE_URL`, so it only works under `bun run` (bun auto-loads `.env`); `npm run api:extract` yields `undefined/openapi.json`.
+`src/shared/api/model/endpoints.ts` is codegen output from `${APP_API_BASE_URL}/openapi.json` via `swagger-typescript-api`. Never edit it by hand; run `bun run api:extract` after backend changes.
+
+`/openapi.json` is behind nginx HTTP Basic auth, so the script needs `SWAGGER_BASIC_AUTH_USER` / `SWAGGER_BASIC_AUTH_PASSWORD` from the **git-ignored `.env.local`** — never put real values in the tracked `.env`. Copy `.env.local.example` → `.env.local` and fill them in; missing credentials fail fast with an explicit error. The npm script passes `--env-file=.env --env-file=.env.local` explicitly because a single `--env-file` *replaces* bun's automatic `.env` loading instead of adding to it (bun 1.2.x). Use `bun run api:extract`, not `npm run`.
+
+The script downloads the spec itself and passes it to the generator as `spec` rather than letting the generator fetch by `url`, then hands the response object to `generateApi({ spec })` — swagger-typescript-api's own fetcher ignores the HTTP status, so a 401 previously made it feed the nginx error page into the YAML parser and fail with a bogus parse error instead of an auth error. Keep that manual fetch if you refactor.
 
 Build output is an SPA — whatever serves `build/client` needs a catch-all `/*` → `/index.html` 200 rewrite. (`netlify.toml` with that rewrite existed at HEAD but is deleted in the current working tree.)
 
 ## Environment
 
 - `vite.config.ts` sets `envPrefix: 'APP_'`. Only `APP_*` vars reach the client, accessed as `import.meta.env.APP_*`. Prefix any new client-side var accordingly.
-- `.env` **is tracked in git** (not gitignored) and currently holds `APP_API_BASE_URL`, `APP_LOCAL_STORAGE_KEY`. Add new vars there as well.
+- `.env` **is tracked in git** (not gitignored) and currently holds `APP_API_BASE_URL`, `APP_LOCAL_STORAGE_KEY`. Add new vars there as well — **unless they are secrets**, which go in the git-ignored `.env.local` (see `.env.local.example`). Note bun does *not* auto-load `.env.local`; scripts must opt in via `--env-file=.env.local`.
 - `import.meta.env.APP_LOCAL_STORAGE_KEY` namespaces the app's localStorage keys (`src/shared/lib/hooks/use-local-storage.ts`).
 
 ## Architecture
