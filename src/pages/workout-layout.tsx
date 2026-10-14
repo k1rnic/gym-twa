@@ -27,23 +27,22 @@ const Page = () => {
 
   const navigate = useNavigate();
 
-  const items = useMemo(
-    () =>
-      masterGymmers
-        .map<UserAvatarListItem>((g) => ({
-          id: g.gymer_id,
-          name: formatUserFullName(g) ?? g.username,
-          src: getDefaultUserPhoto(g),
-        }))
-        .sort((a, b) =>
-          a.id === gymer?.gymer_id
-            ? 1
-            : b.id === gymer?.gymer_id
-            ? 1
-            : a.name?.localeCompare(b.name ?? '') ?? -1,
-        ),
-    [masterGymmers, gymer?.gymer_id],
-  );
+  const items = useMemo(() => {
+    const currentGymerId = gymer?.gymer_id;
+
+    return masterGymmers
+      .map<UserAvatarListItem>((g) => ({
+        id: g.gymer_id,
+        name: formatUserFullName(g) ?? g.username,
+        src: getDefaultUserPhoto(g),
+      }))
+      .sort((a, b) => {
+        if (a.id === currentGymerId) return -1;
+        if (b.id === currentGymerId) return 1;
+
+        return (a.name ?? '').localeCompare(b.name ?? '');
+      });
+  }, [masterGymmers, gymer?.gymer_id]);
 
   const selectedItem = useMemo(
     () => items.find((i) => pathname.startsWith(`/workouts/${i.id}`))?.id,
