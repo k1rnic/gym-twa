@@ -31,6 +31,7 @@ export const ExerciseUploadFileModal = (
 
   const [mode, setMode] = useState<'link' | 'file'>('link');
   const [url, setUrl] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   const [files, openFilePicker, clearFileList] = useFilePicker({
     accept: 'image/*,video/*',
@@ -67,6 +68,8 @@ export const ExerciseUploadFileModal = (
     try {
       if (!files[0])
         return notify.error(t('exercise.upload.errors.fileNotSelected'));
+
+      setIsUploading(true);
       await Api.exercise.addExerciseImage(props.exerciseId, {
         image: files[0],
       });
@@ -76,6 +79,8 @@ export const ExerciseUploadFileModal = (
       props.onClose?.();
     } catch (e) {
       notify.error(t('exercise.upload.errors.file'));
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -120,7 +125,12 @@ export const ExerciseUploadFileModal = (
               </Typography.Text>
             </Flex>
 
-            <Button type="primary" disabled={!files[0]} onClick={onSubmitFile}>
+            <Button
+              type="primary"
+              disabled={!files[0]}
+              loading={isUploading}
+              onClick={onSubmitFile}
+            >
               {t('exercise.upload.load')}
             </Button>
           </Flex>
