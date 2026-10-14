@@ -46,6 +46,20 @@ export const List = <T,>(props: ListProps<T>) => {
     marginTop: token.paddingSM,
   } as const;
 
+  const getItemStyle = (selected: boolean): CSSProperties | undefined => {
+    if (variant === 'contained') {
+      return {
+        ...containedItemStyle,
+        border: `1px solid ${
+          selected ? token.colorPrimary : token.colorBorderSecondary
+        }`,
+      };
+    }
+
+    // У простых списков обводки нет, поэтому выделение держим на фоне строки.
+    return selected ? { background: token.colorPrimaryBg } : undefined;
+  };
+
   return (
     <AntdList<T>
       {...listProps}
@@ -60,16 +74,7 @@ export const List = <T,>(props: ListProps<T>) => {
         return (
           <AntdList.Item
             key={rowKey ? undefined : index}
-            style={
-              variant === 'contained'
-                ? {
-                    ...containedItemStyle,
-                    border: `1px solid ${
-                      selected ? token.colorPrimary : token.colorBorderSecondary
-                    }`,
-                  }
-                : undefined
-            }
+            style={getItemStyle(selected)}
           >
             {renderItem(item, index)}
           </AntdList.Item>
