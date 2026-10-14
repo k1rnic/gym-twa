@@ -146,17 +146,18 @@ export const ExercisePickerDrawer = ({
     <Drawer
       destroyOnHidden
       closable={false}
-      maskClosable={!busy}
+      maskClosable={false}
       keyboard={!busy}
       open={open}
       placement="bottom"
-      height={`calc(90% - ${topSafeArea}px)`}
+      height="100%"
       style={{ backgroundColor: token.colorBgContainer }}
       styles={{
-        header: { padding: 0 },
+        header: { padding: 0, paddingTop: topSafeArea },
         body: {
           padding: token.paddingSM,
-          paddingBottom: bottomSafeArea,
+          paddingTop: 0,
+          paddingBottom: 0,
           display: 'flex',
           flexDirection: 'column',
           gap: token.paddingSM,
@@ -187,16 +188,6 @@ export const ExercisePickerDrawer = ({
       }
       onClose={onClose}
     >
-      <Flex flex={1} style={{ minHeight: 0, overflow: 'hidden' }}>
-        <ExerciseList
-          exercises={exercises}
-          masterId={masterId}
-          multiple
-          selectedIds={selectedIds}
-          onSelect={toggleExercise}
-        />
-      </Flex>
-
       <Flex vertical={false} gap={token.paddingSM}>
         <Button
           size="middle"
@@ -219,6 +210,17 @@ export const ExercisePickerDrawer = ({
             ? `${createdCount} ${t('common.of')} ${selectedIds.length}`
             : t('exercise.addSelected', { count: selectedIds.length })}
         </Button>
+      </Flex>
+
+      <Flex flex={1} style={{ minHeight: 0, overflow: 'hidden' }}>
+        <ExerciseList
+          exercises={exercises}
+          masterId={masterId}
+          multiple
+          compact
+          selectedIds={selectedIds}
+          onSelect={toggleExercise}
+        />
       </Flex>
     </Drawer>
   );

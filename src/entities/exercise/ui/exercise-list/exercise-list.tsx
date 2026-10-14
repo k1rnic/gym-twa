@@ -23,6 +23,7 @@ export type ExerciseListProps = {
   extra?: ReactNode;
   multiple?: boolean;
   selectedIds?: number[];
+  compact?: boolean;
 };
 
 export const ExerciseList = ({
@@ -33,6 +34,7 @@ export const ExerciseList = ({
   extra,
   multiple = false,
   selectedIds,
+  compact = false,
 }: ExerciseListProps) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
@@ -71,27 +73,31 @@ export const ExerciseList = ({
         <List
           items={data}
           itemKey="exercise_id"
-          variant="contained"
+          compact={compact}
+          variant={compact ? 'simple' : 'contained'}
           emptyText={t('exercise.empty')}
           selectedKeys={multiple ? selectedIds : undefined}
-          renderItem={(exercise) => (
-            <ListItem
-              nav={!multiple}
-              avatar={<ExerciseAvatar exercise={exercise} size="large" />}
-              header={exercise.exercise_name || t('common.unknownName')}
-              extra={
-                multiple ? (
-                  <Checkbox
-                    checked={Boolean(
-                      exercise.exercise_id &&
-                        selectedIds?.includes(exercise.exercise_id),
-                    )}
+          renderItem={(exercise) => {
+            const selected = Boolean(
+              exercise.exercise_id &&
+                selectedIds?.includes(exercise.exercise_id),
+            );
+
+            return (
+              <ListItem
+                nav={!multiple}
+                avatar={
+                  <ExerciseAvatar
+                    exercise={exercise}
+                    size={compact ? 'default' : 'large'}
                   />
-                ) : undefined
-              }
-              onClick={() => onSelect?.(exercise)}
-            />
-          )}
+                }
+                header={exercise.exercise_name || t('common.unknownName')}
+                extra={multiple ? <Checkbox checked={selected} /> : undefined}
+                onClick={() => onSelect?.(exercise)}
+              />
+            );
+          }}
         />
       </Flex>
     </Flex>

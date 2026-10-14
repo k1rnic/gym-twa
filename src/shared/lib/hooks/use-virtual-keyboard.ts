@@ -45,7 +45,6 @@ const isTextInput = (element: Element | null): boolean => {
     return (
       !element.disabled &&
       !element.readOnly &&
-      element.getAttribute('role') !== 'combobox' &&
       ![
         'button',
         'checkbox',
