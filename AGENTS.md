@@ -27,7 +27,7 @@ Run everything with **bun** (`bun run <script>`), even though the README shows `
 
 `src/shared/api/model/endpoints.ts` is codegen output from `${APP_API_BASE_URL}/openapi.json` via `swagger-typescript-api`. Never edit it by hand; run `bun run api:extract` after backend changes.
 
-`/openapi.json` is behind nginx HTTP Basic auth, so the script needs `SWAGGER_BASIC_AUTH_USER` / `SWAGGER_BASIC_AUTH_PASSWORD` from the **git-ignored `.env.local`** — never put real values in the tracked `.env`. Copy `.env.local.example` → `.env.local` and fill them in; missing credentials fail fast with an explicit error. The npm script passes `--env-file=.env --env-file=.env.local` explicitly because a single `--env-file` *replaces* bun's automatic `.env` loading instead of adding to it (bun 1.2.x). Use `bun run api:extract`, not `npm run`.
+`/openapi.json` is behind nginx HTTP Basic auth, so the script needs `SWAGGER_BASIC_AUTH_USER` / `SWAGGER_BASIC_AUTH_PASSWORD` from the **git-ignored `.env.local`** — never put real values in the tracked `.env.development` / `.env.production`. Missing credentials fail fast with an explicit error. The script passes no `--env-file` flags on purpose: bun auto-loads `.env` → `.env.development` (or `.env.production` when `NODE_ENV=production`) → `.env.local` with increasing precedence, and passing even a single `--env-file` *replaces* that automatic loading instead of adding to it (bun 1.2.x). Use `bun run api:extract`, not `npm run`.
 
 The script downloads the spec itself and passes it to the generator as `spec` rather than letting the generator fetch by `url`, then hands the response object to `generateApi({ spec })` — swagger-typescript-api's own fetcher ignores the HTTP status, so a 401 previously made it feed the nginx error page into the YAML parser and fail with a bogus parse error instead of an auth error. Keep that manual fetch if you refactor.
 
@@ -36,7 +36,7 @@ Build output is an SPA — whatever serves `build/client` needs a catch-all `/*`
 ## Environment
 
 - `vite.config.ts` sets `envPrefix: 'APP_'`. Only `APP_*` vars reach the client, accessed as `import.meta.env.APP_*`. Prefix any new client-side var accordingly.
-- `.env` **is tracked in git** (not gitignored) and currently holds `APP_API_BASE_URL`, `APP_LOCAL_STORAGE_KEY`. Add new vars there as well — **unless they are secrets**, which go in the git-ignored `.env.local` (see `.env.local.example`). Note bun does *not* auto-load `.env.local`; scripts must opt in via `--env-file=.env.local`.
+- `.env.development` and `.env.production` **are tracked in git** (not gitignored); `.env.production` is currently empty, `.env.development` holds `APP_API_BASE_URL` + `APP_LOCAL_STORAGE_KEY`. Add new non-secret vars there as well — **secrets** go in the git-ignored `.env.local`, which bun auto-loads with the highest precedence. Don't put `APP_API_BASE_URL` in `.env.local`: it would shadow the per-mode value everywhere, including `bun run api:extract`. There is no `.env.local.example`; create `.env.local` by hand.
 - `import.meta.env.APP_LOCAL_STORAGE_KEY` namespaces the app's localStorage keys (`src/shared/lib/hooks/use-local-storage.ts`).
 
 ## Architecture

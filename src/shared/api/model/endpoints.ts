@@ -83,6 +83,15 @@ export interface BodyAddUserImageGymUserUserIdImagePost {
   image: File;
 }
 
+/** Body_upload_attachment_gym_task_notes__task_id__attachments_post */
+export interface BodyUploadAttachmentGymTaskNotesTaskIdAttachmentsPost {
+  /**
+   * File
+   * @format binary
+   */
+  file: File;
+}
+
 /** CreateExercise */
 export interface CreateExercise {
   /** Master Id */
@@ -156,6 +165,14 @@ export interface ExerciseAggregateOutput {
   url_path_list?: UrlPath[];
 }
 
+/** ExerciseSetHistoryItem */
+export interface ExerciseSetHistoryItem {
+  /** Weight */
+  weight: number | "max";
+  /** Reps */
+  reps: number | null;
+}
+
 /** Gymer */
 export interface Gymer {
   /** Gymer Id */
@@ -226,6 +243,8 @@ export interface MastersGymer {
   last_name?: string | null;
   /** Username */
   username?: string | null;
+  /** Photos */
+  photos?: string[] | null;
   /** Photo */
   photo?: string | null;
   /** Gymer Id */
@@ -320,6 +339,8 @@ export interface TaskAggregate {
   task_group_block_id?: number | null;
   /** Exercise Id */
   exercise_id: number | null;
+  /** Exercise Version Id */
+  exercise_version_id?: number | null;
   status: TaskStatus;
   /**
    * Create Dttm
@@ -387,6 +408,79 @@ export interface TaskGroupOrderIndex {
   task_group_id: number;
   /** Order Idx */
   order_idx: number;
+}
+
+/** TaskNoteAttachment */
+export interface TaskNoteAttachment {
+  /**
+   * Attachment Id
+   * @format uuid
+   */
+  attachment_id: string;
+  /** Content Type */
+  content_type: string;
+  /** Size Bytes */
+  size_bytes: number;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+}
+
+/** TaskNoteContext */
+export interface TaskNoteContext {
+  /** Task Id */
+  task_id: number;
+  /** Task Group Id */
+  task_group_id: number;
+  /** Gymer Id */
+  gymer_id: number;
+  /** Exercise Id */
+  exercise_id: number | null;
+  /** Exercise Name */
+  exercise_name: string | null;
+  /**
+   * Workout Date
+   * @format date-time
+   */
+  workout_date: string;
+  /** Viewer Role */
+  viewer_role: TaskNoteContextViewerRoleEnum;
+  /** Messages */
+  messages: TaskNoteMessage[];
+}
+
+/** TaskNoteMessage */
+export interface TaskNoteMessage {
+  /** Note Id */
+  note_id: number;
+  /** Author Role */
+  author_role: TaskNoteMessageAuthorRoleEnum;
+  /** Author User Id */
+  author_user_id: number;
+  /** First Name */
+  first_name: string | null;
+  /** Last Name */
+  last_name: string | null;
+  /** Body */
+  body: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+  /** Attachments */
+  attachments: TaskNoteAttachment[];
+}
+
+/** TaskNoteUpdate */
+export interface TaskNoteUpdate {
+  /**
+   * Body
+   * @maxLength 20000
+   */
+  body: string;
 }
 
 /** TaskOrderIndex */
@@ -635,6 +729,18 @@ export interface ValidationError {
   type: string;
 }
 
+/** Viewer Role */
+export enum TaskNoteContextViewerRoleEnum {
+  Gymer = "gymer",
+  Master = "master",
+}
+
+/** Author Role */
+export enum TaskNoteMessageAuthorRoleEnum {
+  Gymer = "gymer",
+  Master = "master",
+}
+
 export enum UserProfileLanguageCodeEnum {
   Ru = "ru",
   En = "en",
@@ -817,7 +923,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Api gym
- * @version 2.18.0
+ * @version 2.24.0
  */
 export class Endpoints<
   SecurityDataType extends unknown,
@@ -891,26 +997,6 @@ export class Endpoints<
         path: `/gym/user/user_by_id/${userId}`,
         method: "GET",
         secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags user
-     * @name AddUser
-     * @summary Adding user
-     * @request POST:/gym/user
-     * @secure
-     */
-    addUser: (data: UserIn, params: RequestParams = {}) =>
-      this.request<User, HTTPValidationError>({
-        path: `/gym/user`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -1216,6 +1302,161 @@ export class Endpoints<
         ...params,
       }),
   };
+  taskNotes = {
+    /**
+     * No description
+     *
+     * @tags task_notes
+     * @name HistoryGymTaskNotesHistoryGet
+     * @summary History
+     * @request GET:/gym/task-notes/history
+     * @secure
+     */
+    historyGymTaskNotesHistoryGet: (
+      query: {
+        /**
+         * Gymer Id
+         * @exclusiveMin 0
+         */
+        gymer_id: number;
+        /** Exercise Id */
+        exercise_id?: number | null;
+        /**
+         * Limit
+         * @min 1
+         * @max 100
+         * @default 50
+         */
+        limit?: number;
+        /**
+         * Offset
+         * @min 0
+         * @default 0
+         */
+        offset?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<TaskNoteContext[], HTTPValidationError>({
+        path: `/gym/task-notes/history`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_notes
+     * @name GetNotesGymTaskNotesTaskIdGet
+     * @summary Get Notes
+     * @request GET:/gym/task-notes/{task_id}
+     * @secure
+     */
+    getNotesGymTaskNotesTaskIdGet: (
+      taskId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<TaskNoteContext, HTTPValidationError>({
+        path: `/gym/task-notes/${taskId}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_notes
+     * @name SaveNotesGymTaskNotesTaskIdPut
+     * @summary Save Notes
+     * @request PUT:/gym/task-notes/{task_id}
+     * @secure
+     */
+    saveNotesGymTaskNotesTaskIdPut: (
+      taskId: number,
+      data: TaskNoteUpdate,
+      params: RequestParams = {},
+    ) =>
+      this.request<TaskNoteContext, HTTPValidationError>({
+        path: `/gym/task-notes/${taskId}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_notes
+     * @name UploadAttachmentGymTaskNotesTaskIdAttachmentsPost
+     * @summary Upload Attachment
+     * @request POST:/gym/task-notes/{task_id}/attachments
+     * @secure
+     */
+    uploadAttachmentGymTaskNotesTaskIdAttachmentsPost: (
+      taskId: number,
+      data: BodyUploadAttachmentGymTaskNotesTaskIdAttachmentsPost,
+      params: RequestParams = {},
+    ) =>
+      this.request<TaskNoteContext, HTTPValidationError>({
+        path: `/gym/task-notes/${taskId}/attachments`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_notes
+     * @name DeleteAttachmentGymTaskNotesAttachmentsAttachmentIdDelete
+     * @summary Delete Attachment
+     * @request DELETE:/gym/task-notes/attachments/{attachment_id}
+     * @secure
+     */
+    deleteAttachmentGymTaskNotesAttachmentsAttachmentIdDelete: (
+      attachmentId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<TaskNoteContext, HTTPValidationError>({
+        path: `/gym/task-notes/attachments/${attachmentId}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags task_notes
+     * @name AttachmentBytesGymTaskNotesAttachmentsAttachmentIdBytesGet
+     * @summary Attachment Bytes
+     * @request GET:/gym/task-notes/attachments/{attachment_id}/bytes
+     * @secure
+     */
+    attachmentBytesGymTaskNotesAttachmentsAttachmentIdBytesGet: (
+      attachmentId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<any, HTTPValidationError>({
+        path: `/gym/task-notes/attachments/${attachmentId}/bytes`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
   taskGroup = {
     /**
      * No description
@@ -1495,6 +1736,36 @@ export class Endpoints<
       }),
   };
   exercise = {
+    /**
+     * No description
+     *
+     * @tags exercise
+     * @name GetExerciseSetsHistory
+     * @summary Get Exercise Sets History
+     * @request GET:/gym/exercise/sets_history
+     * @secure
+     */
+    getExerciseSetsHistory: (
+      query: {
+        /** Exercise Id */
+        exercise_id: number;
+        /** Gymer Id */
+        gymer_id: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        Record<string, ExerciseSetHistoryItem[]>,
+        HTTPValidationError
+      >({
+        path: `/gym/exercise/sets_history`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *

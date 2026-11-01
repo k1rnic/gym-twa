@@ -7,7 +7,7 @@ const baseUrl = process.env.APP_API_BASE_URL;
 
 if (!baseUrl) {
   throw new Error(
-    'APP_API_BASE_URL is not set. Run this script via `bun run api:extract` so that .env gets loaded.',
+    'APP_API_BASE_URL is not set. Run this script via `bun run api:extract` so that bun loads .env.development (or .env.production when NODE_ENV=production).',
   );
 }
 
@@ -17,7 +17,7 @@ const password = process.env.SWAGGER_BASIC_AUTH_PASSWORD;
 if (!username || !password) {
   throw new Error(
     'SWAGGER_BASIC_AUTH_USER and SWAGGER_BASIC_AUTH_PASSWORD are not set.\n' +
-      'The OpenAPI spec is protected by HTTP Basic auth. Copy .env.local.example to .env.local and fill in the credentials.',
+      'The OpenAPI spec is protected by HTTP Basic auth. Put the credentials into the git-ignored .env.local.',
   );
 }
 
