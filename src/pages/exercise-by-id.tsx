@@ -1,5 +1,6 @@
 import { exerciseModel } from '@/entities/exercise';
 import { useViewer } from '@/entities/viewer/model';
+import { ExerciseHistoryButton } from '@/features/exercise-history';
 import { useDeleteExerciseResource } from '@/features/exercise/delete-resource';
 import { ExerciseUploadFileModal } from '@/features/exercise/upload-file';
 import { Api, ExerciseStatus } from '@/shared/api';
@@ -87,12 +88,24 @@ const Page = ({ loaderData: initialValues }: Route.ComponentProps) => {
           size="middle"
           disabled={!canEdit}
         >
-          <Form.Item<exerciseModel.ExerciseDetailed>
-            name="exercise_name"
-            label={t('exercise.name')}
+          <Flex
+            vertical={false}
+            justify="flex-end"
+            width="100%"
+            style={{ flexShrink: 0, marginBottom: token.marginXS }}
           >
-            <TextArea autoSize size="large" />
-          </Form.Item>
+            <Form.Item<exerciseModel.ExerciseDetailed>
+              name="exercise_name"
+              label={t('exercise.name')}
+            >
+              <TextArea autoSize size="large" />
+            </Form.Item>
+            <ExerciseHistoryButton
+              exerciseId={initialValues.exercise_id}
+              gymerId={viewer.gymer?.gymer_id}
+              exerciseName={initialValues.exercise_name}
+            />
+          </Flex>
 
           <Form.Item<exerciseModel.ExerciseDetailed>
             name="description"
