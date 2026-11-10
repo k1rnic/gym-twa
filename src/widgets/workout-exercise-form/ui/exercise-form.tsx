@@ -1,4 +1,5 @@
 import { workoutModel } from '@/entities/workout';
+import { ExerciseHistoryButton } from '@/features/exercise-history';
 import { useVirtualKeyboardOpened } from '@/shared/lib/hooks';
 import { useTheme } from '@/shared/lib/theme';
 import { Flex } from '@/shared/ui/flex';
@@ -100,7 +101,22 @@ export const WorkoutExerciseForm = (props: WorkoutExerciseFormProps) => {
               align="center"
               justify="space-between"
             >
-              <SectionTitle>{t('exercise.setsTitle')}</SectionTitle>
+              <Flex
+                vertical={false}
+                align="center"
+                justify="space-between"
+                gap={token.paddingXS}
+                width="100%"
+                flex={1}
+              >
+                <SectionTitle>{t('exercise.setsTitle')}</SectionTitle>
+
+                <ExerciseHistoryButton
+                  exerciseId={exercise.exercise_id}
+                  gymerId={workout.gymer_id}
+                  exerciseName={exercise.exercise?.exercise_name}
+                />
+              </Flex>
 
               <ExerciseNextButton
                 hidden={

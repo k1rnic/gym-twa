@@ -110,6 +110,13 @@
     "notFound": "Упражнение не найдено",
     "playRest": "Отдых",
     "nextExercise": "Дальше",
+    "history": {
+      "button": "История",
+      "title": "История упражнения",
+      "empty": "Пока нет выполненных подходов",
+      "error": "Не удалось загрузить историю",
+      "retry": "Повторить"
+    },
     "max": "max",
     "videoLinkTitle": "Ссылка на видео",
     "videoLinkPlaceholder": "Ссылка",
